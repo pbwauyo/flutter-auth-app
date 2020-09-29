@@ -12,19 +12,24 @@ class AuthButton extends StatelessWidget {
     return FlatButton(
       padding: const EdgeInsets.only(left: 6, right: 6),
       onPressed: onTap, 
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(right: 5.0),
-            child: icon
-          ),
-          Expanded(
-            child: Text(text,
-              style: TextStyle(),   
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(right: 8.0),
+              child: icon
             ),
-          )
-        ],
+            Expanded(
+              child: Text(text,
+                style: TextStyle(
+                  color: Colors.white
+                ),   
+              ),
+            )
+          ],
+        ),
       )
     );
   }
