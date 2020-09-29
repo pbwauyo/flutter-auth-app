@@ -40,7 +40,7 @@ class Login extends StatelessWidget {
                 onTap: () async{
                   final appUser = await _loginCubit.startFacebookLogin();
                   if(appUser != null){
-                    Navigations.goToScreen(context, Home(appUser: appUser));
+                    Navigations.goToScreen(context, Home());
                   }
                 }
               ),
@@ -60,7 +60,7 @@ class Login extends StatelessWidget {
                 onTap: () async{
                   final appUser = await _loginCubit.startTwitterLogin();
                   if(appUser != null){
-                    Navigations.goToScreen(context, Home(appUser: appUser));
+                    Navigations.goToScreen(context, Home());
                   }
                 }
               ),
@@ -80,7 +80,7 @@ class Login extends StatelessWidget {
                 onTap: () async{
                   final appUser = await _loginCubit.startGoogleLogin();
                   if(appUser != null){
-                    Navigations.goToScreen(context, Home(appUser: appUser));
+                    Navigations.goToScreen(context, Home());
                   }
                 }
               ),

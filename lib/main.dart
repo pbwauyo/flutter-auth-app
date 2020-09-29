@@ -1,5 +1,7 @@
+import 'package:auth_app/cubit/auth_cubit.dart';
 import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
+import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
         BlocProvider(create: (context) => SignupCubit()),
-        
+        BlocProvider(create: (context) => AuthCubit()),
       ],
       child: MaterialApp(
           title: 'Auth App',
@@ -45,8 +47,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, (){
+      context.bloc<AuthCubit>().checkLoggedInUser();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     
-    return Login();
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state){
+        if(state is AuthLoggedIn){ //if theres a logged in user, goto the Home screen else show Login screen
+          return Home();
+        }else {
+          return Login();
+        }
+      }
+    );
   }
 }

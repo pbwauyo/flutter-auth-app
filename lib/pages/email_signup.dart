@@ -155,7 +155,7 @@ class EmailSignup extends StatelessWidget {
                           username: ""
                         );
                         await context.bloc<SignupCubit>().startSignup(password, appUser);
-                        Navigations.goToScreen(context, Home(appUser: appUser,));
+                        Navigations.goToScreen(context, Home());
                       }
 
                     }, 

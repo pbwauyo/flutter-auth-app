@@ -76,7 +76,7 @@ class EmailLogin extends StatelessWidget {
                       if(email.isNotEmpty && password.isNotEmpty){
                         final appUser = await _loginCubit.startFirebaseLogin(email, password);
                         if(appUser != null){
-                          Navigations.goToScreen(context, Home(appUser: appUser,));
+                          Navigations.goToScreen(context, Home());
                         }
                         
                       }
