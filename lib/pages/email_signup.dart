@@ -33,11 +33,10 @@ class EmailSignup extends StatelessWidget {
             }
           },
           child: Container(
+            margin: const EdgeInsets.only(top: 20),
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: ListView(
               children: [
                 Container(
                   margin: const EdgeInsets.only(bottom: 10),
