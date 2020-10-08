@@ -7,8 +7,10 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
+  final _authRepo = AuthRepo();
+
   checkLoggedInUser(){
-    if(AuthRepo.isUserLoggedIn()){
+    if(_authRepo.isUserLoggedIn()){
       emit(AuthLoggedIn());
     }
     else {

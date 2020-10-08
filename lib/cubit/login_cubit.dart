@@ -8,57 +8,55 @@ part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial());
+  final _authRepo = AuthRepo();
 
   Future<AppUser> startFirebaseLogin(String email, String password) async{
     try{
       emit(LoginInProgress());
-      await AuthRepo.signInWithFirebase(email, password);
+      await _authRepo.signInWithFirebase(email, password);
       emit(LoginSuccess());
       emit(LoginInitial());
       PrefManager.saveLoginType("EMAIL");
-      return AuthRepo.getCurrentUserDetails();
+      return _authRepo.getCurrentUserDetails();
     }catch(error){
       emit(LoginError(error));
       return null;
     }
   }
 
-  Future<AppUser> startFacebookLogin() async{
+  Future<Map<String, String>> startFacebookLogin() async{
     try{
       emit(LoginInProgress());
-      await AuthRepo.signInWithFacebook();
+      final profile = await _authRepo.getProfileFromFacebook();
       emit(LoginSuccess());
       emit(LoginInitial());
-      PrefManager.saveLoginType("FACEBOOK");
-      return AuthRepo.getCurrentUserDetails();
+      return profile;
     }catch(error){
       emit(LoginError(error));
       return null;
     }
   }
 
-  Future<AppUser> startTwitterLogin() async{
+  Future<Map<String, String>> startTwitterLogin() async{
     try{
       emit(LoginInProgress());
-      await AuthRepo.signInWithTwitter();
+      final profile = await _authRepo.getProfileFromTwitter();
       emit(LoginSuccess());
       emit(LoginInitial());
-      PrefManager.saveLoginType("TWITTER");
-      return AuthRepo.getCurrentUserDetails();
+      return profile;
     }catch(error){
       emit(LoginError(error));
       return null;
     }
   }
 
-  Future<AppUser> startGoogleLogin() async{
+  Future<Map<String, String>> startGoogleLogin() async{
     try{
       emit(LoginInProgress());
-      await AuthRepo.signInWithgoogle();
+      final profile = await _authRepo.getProfileFromGoogle();
       emit(LoginSuccess());
       emit(LoginInitial());
-      PrefManager.saveLoginType("GOOGLE");
-      return AuthRepo.getCurrentUserDetails();
+      return profile;
     }catch(error){
       emit(LoginError(error));
       return null;

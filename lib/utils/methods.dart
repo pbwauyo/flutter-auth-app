@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:auth_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:math' as math;
+
 
 class Methods {
 
   static showGeneralErrorToast(dynamic error){
     Fluttertoast.showToast(
       msg: error.message,
-      textColor: AppColors.errorColor,
+      textColor: AppColors.ERROR_COLOR,
       toastLength: Toast.LENGTH_LONG
     );
   }
@@ -15,7 +19,7 @@ class Methods {
   static showFirebaseErrorToast(dynamic error){
     Fluttertoast.showToast(
       msg: error,
-      textColor: AppColors.errorColor,
+      textColor: AppColors.ERROR_COLOR,
       toastLength: Toast.LENGTH_LONG
     );
   }
@@ -27,6 +31,13 @@ class Methods {
       backgroundColor: Colors.green,
       toastLength: Toast.LENGTH_SHORT
     );
+  }
+
+  static String generateOauthNonce(){
+    math.Random rnd = new math.Random();
+
+    List<int> values = new List<int>.generate(32, (i) => rnd.nextInt(256));
+     return base64UrlEncode(values).replaceAll(new RegExp('[=/+]'), '');
   }
 
 }

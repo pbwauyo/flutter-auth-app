@@ -1,4 +1,5 @@
 import 'package:auth_app/models/app_user.dart';
+import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
@@ -17,11 +18,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   Future<AppUser> _getCurrentUserDetails;
+  final _authRepo =AuthRepo();
 
   @override
   void initState() {
     super.initState();
-    _getCurrentUserDetails = AuthRepo.getCurrentUserDetails();
+    _getCurrentUserDetails = _authRepo.getCurrentUserDetails();
   }
 
   @override
@@ -67,39 +69,8 @@ class _HomeState extends State<Home> {
                       margin: const EdgeInsets.only(bottom: 10, top: 15),
                       child: Container(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                        child: Text(appUser.email,
+                        child: Text(appUser.username,
                           textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  //if username is empty, show firstname and lastname, else show the username
-                  FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: Card(
-                      margin: const EdgeInsets.only(bottom: 10,),
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),  
-                        child: Text(appUser.username.isNotEmpty ? appUser.username : "${appUser.firstName} ${appUser.lastName}",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  //show phone number
-                  Visibility(
-                    visible: appUser.phoneNumber.isNotEmpty,
-                    child: FractionallySizedBox(
-                      widthFactor: 0.8,
-                      child: Card(
-                        margin: const EdgeInsets.only(bottom: 10,),
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),  
-                          child: Text(appUser.phoneNumber,
-                            textAlign: TextAlign.center,
-                          ),
                         ),
                       ),
                     ),
@@ -112,8 +83,8 @@ class _HomeState extends State<Home> {
                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       color: Colors.amber,
                       onPressed: () async{
-                        await AuthRepo.logoutUser();
-                        Navigations.goToScreen(context, Login());
+                        await _authRepo.logoutUser();
+                        Navigations.goToScreen(context, LandingPage());
                       }, 
                       child: Text("LOG OUT",
                         style: TextStyle(color: Colors.white),

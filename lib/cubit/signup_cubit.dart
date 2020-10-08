@@ -7,11 +7,12 @@ part 'signup_state.dart';
 
 class SignupCubit extends Cubit<SignupState> {
   SignupCubit() : super(SignupInitial());
+  final _authRepo = AuthRepo();
 
   Future<void> startSignup(String password, AppUser appUser) async{
     try{
       emit(SignupInProgress());
-      await AuthRepo.signUpWithFirebase(appUser, password);
+      await _authRepo.signUpWithFirebase(appUser, password);
       emit(SignupSuccess());
     }catch(error){
       emit(SignupError(error)); 

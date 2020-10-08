@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:auth_app/models/app_user.dart';
+import 'package:auth_app/pages/code_verification.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
@@ -9,32 +12,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'package:twitter_api/twitter_api.dart';
+
 
 //Repository to handle login and signup
 class AuthRepo {
-  static final _firestore = FirebaseFirestore.instance;
-  static final _firebaseAuth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final _firebaseAuth = FirebaseAuth.instance;
 
-  static final TwitterLogin _twitterLogin = new TwitterLogin(
+  final TwitterLogin _twitterLogin = new TwitterLogin(
     consumerKey: 'a8VunpkaJEI8h6lkHt2fudB3c',
     consumerSecret:'jLQ9qnm5ViNu7x03wMbsqt19qurrlGk2sWxNa7p62JGNWnqEl5',
   );
 
-  static User getCurrentUser(){
+  User getCurrentUser(){
     return _firebaseAuth.currentUser;
   }
 
-  static Future<AppUser> getCurrentUserDetails() async{
+  Future<AppUser> getCurrentUserDetails() async{
     final _querySnapshot = await _firestore.collection("users").where("email", isEqualTo: getCurrentUser().email).get();
     final docData = _querySnapshot.docs[0].data();
     return AppUser.fromMap(docData);
   }
 
-  static bool isUserLoggedIn(){
+  bool isUserLoggedIn(){
     return _firebaseAuth.currentUser != null;
   }
 
-  static Future<void> logoutUser() async{
+  Future<void> logoutUser() async{
     switch (await PrefManager.getLoginType()) {
       case "EMAIL":  
         await _firebaseAuth.signOut();
@@ -54,134 +60,119 @@ class AuthRepo {
         await GoogleSignIn().signOut();
         await _firebaseAuth.signOut();
         break;
+
+      default:
+        await _firebaseAuth.signOut();
       
     }
   }
 
-  // signin methods
-  static Future<void> signInWithgoogle() async{
-    final googleAuthCredential = await _getGoogleAuthCredentials();
-    final userCredential = await _firebaseAuth.signInWithCredential(googleAuthCredential);
-
-    final user = userCredential.user; 
-
-    //check if user details are saved in firestore
-    if( !(await _userDetailsExist(user.email))){   
-      final appUser = AppUser(
-        email: user.email,
-        username: user.displayName,
-        phoneNumber: user.phoneNumber,
-        photoUrl: user.photoURL
-      );   
-      //save user dtails to firestore
-      await _saveUserDetailsToFirestore(appUser: appUser);
-    }
-  }
-
-  static Future<void> signInWithTwitter() async{
-    final twitterAuthCredential = await _getTwitterAuthCredentials();
-    final userCredential = await _firebaseAuth.signInWithCredential(twitterAuthCredential);
-
-    final user = userCredential.user;
-
-    //check if user details are saved in firestore
-    if( !(await _userDetailsExist(user.email))){      
-      final appUser = AppUser(
-        email: user.email,
-        username: user.displayName,
-        phoneNumber: user.phoneNumber,
-        photoUrl: user.photoURL
-      );
-      //save user details to firestore
-      await _saveUserDetailsToFirestore(appUser: appUser);
-    }
-  }
-
 //signin with registered email and password
-  static Future<UserCredential> signInWithFirebase(String email, String password) async{
+  Future<UserCredential> signInWithFirebase(String email, String password) async{
     return await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
 
   //sign up with email and password
-  static Future<void> signUpWithFirebase(AppUser appUser, String password) async{
-    await _firebaseAuth.createUserWithEmailAndPassword(email: appUser.email, password: password);
+  Future<void> signUpWithFirebase(AppUser appUser, String password) async{
+    await _firebaseAuth.createUserWithEmailAndPassword(email: appUser.username, password: password);
     await _saveUserDetailsToFirestore(appUser: appUser);
   }
 
-  static Future<void> signInWithFacebook() async{
-    final facebookAuthCredential = await _getFacebookAuthCredentials();
-    final userCredential = await _firebaseAuth.signInWithCredential(facebookAuthCredential);
-
-    final user = userCredential.user;
-
-    //check if user details are saved in firestore
-    if( !(await _userDetailsExist(user.email))){   
-      final appUser = AppUser(
-        email: user.email,
-        username: user.displayName,
-        phoneNumber: user.phoneNumber,
-        photoUrl: user.photoURL
-      );
-      //save user details to firestore
-      await _saveUserDetailsToFirestore(appUser: appUser);
-    }
-
+  Future<void> _saveUserDetailsToFirestore({@required AppUser appUser}) async{
+    await _firestore.collection("users").doc(appUser.username).set(appUser.toMap());
   }
 
-  static Future<void> _saveUserDetailsToFirestore({@required AppUser appUser}) async{
-    await _firestore.collection("users").doc(appUser.email).set(appUser.toMap());
-  }
-
-  static Future<GoogleAuthCredential> _getGoogleAuthCredentials() async{
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    // Create a new credential
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-      // Once signed in, return the UserCredential
-    return credential;
-  }
-
-  static Future<TwitterAuthCredential> _getTwitterAuthCredentials() async{
+  Future<Map<String, String>> getProfileFromGoogle() async{
     
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn()
+    .catchError((error){
+      print('GOOGLE SIGN IN ERROR');
+      throw("Failed to Login. Please try again");
+    });
 
+    final Map<String, String> profile = {
+      "email" : googleUser.email,
+      "name" : googleUser.displayName,
+      "photoUrl" : googleUser.photoUrl
+    };
+    await PrefManager.saveLoginType("GOOGLE");
+    return profile;
+  }
+
+  Future<Map<String, String>> getProfileFromTwitter() async{
     // Trigger the sign-in flow
     final TwitterLoginResult loginResult = await _twitterLogin.authorize();
+
+    if(loginResult.status == TwitterLoginStatus.error){
+      throw("Failed to Login. Please try again");
+    }
 
     // Get the Logged In session
     final TwitterSession twitterSession = loginResult.session;
 
-    // Create a credential from the access token
-    final AuthCredential twitterAuthCredential =
-      TwitterAuthProvider.credential(accessToken: twitterSession.token, secret: twitterSession.secret);
+    final _twitterOauth = new twitterApi(
+      consumerKey: "a8VunpkaJEI8h6lkHt2fudB3c",
+      consumerSecret: "jLQ9qnm5ViNu7x03wMbsqt19qurrlGk2sWxNa7p62JGNWnqEl5",
+      token: twitterSession.token,
+      tokenSecret: twitterSession.secret
+    );
 
-    // Once signed in, return the UserCredential
-    return twitterAuthCredential;
+    Future twitterRequest = _twitterOauth.getTwitterRequest(
+      // Http Method
+      "GET", 
+      // Endpoint you are trying to reach
+      "account/verify_credentials.json", 
+      // The options for the request
+      options: {
+        "include_email": "true",
+        "skip_status" : "true"
+      },
+    );
+
+    // Wait for the future to finish
+    var res = await twitterRequest;
+    
+    final decodedResponse = Map<String, dynamic>.from(json.decode(res.body));
+
+    await PrefManager.saveLoginType("TWITTER");
+
+    return {
+      "name" : decodedResponse["name"],
+      "email" : decodedResponse["email"],
+      "photoUrl" : decodedResponse["profile_image_url_https"].toString().replaceFirst("_normal", "") //get fullsize image
+    };
   }
 
-  static Future<FacebookAuthCredential> _getFacebookAuthCredentials() async{
+   Future<Map<String, String>> getProfileFromFacebook() async{
     // Trigger the sign-in flow
-  final LoginResult result = await FacebookAuth.instance.login(); 
+    final LoginResult result = await FacebookAuth.instance.login(); 
 
-  // Create a credential from the access token
-  final FacebookAuthCredential facebookAuthCredential =
-    FacebookAuthProvider.credential(result.accessToken.token);
+    if(result.status != 200){
+      throw("Failed to Login. Please try again");
+    }
 
-  // Once signed in, return the UserCredential
-  return facebookAuthCredential;
+    final token = result.accessToken.token;
+    final graphResponse = await http.get(
+                'https://graph.facebook.com/v2.12/me?fields=name,email,id&access_token=$token');
+    final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();
+    await PrefManager.saveLoginType("FACEBOOK");
+    return {
+      "name" : profile["name"],
+      "email" : profile["email"],
+      "photoUrl" : "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token"
+    };
   }
 
-  static Future<bool> _userDetailsExist(String email) async{
-    final querySnapshot = await _firestore.collection("users")
-                                          .where("email", isEqualTo: email).get();
-
-    return querySnapshot.docs.length > 0;
+  Future<void> verifyUserPhoneNumber(String phoneNumber, BuildContext context) async{
+    await _firebaseAuth.verifyPhoneNumber(
+      phoneNumber: phoneNumber, 
+      verificationCompleted: (PhoneAuthCredential authCredential){}, 
+      verificationFailed: (FirebaseAuthException authException){}, 
+      codeSent: (String verificationId, int resendToken){
+        Navigations.goToScreen(context, CodeVerification(verificationId: verificationId));
+      }, 
+      codeAutoRetrievalTimeout: (String verificationId){}
+    );
   }
    
 
