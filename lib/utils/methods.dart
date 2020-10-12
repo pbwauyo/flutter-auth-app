@@ -40,10 +40,16 @@ class Methods {
      return base64UrlEncode(values).replaceAll(new RegExp('[=/+]'), '');
   }
 
-  static showCustomSnackbar({@required BuildContext context, @required String message}){
+  static showCustomSnackbar({@required BuildContext context, 
+  @required String message, String actionLabel="", VoidCallback actionOnTap}){
     Scaffold.of(context).showSnackBar(
       SnackBar(
-        content: Text(message)
+        duration: actionLabel.isNotEmpty ? Duration(days: 2) : Duration(milliseconds: 4000),
+        content: Text(message),
+        action: SnackBarAction(
+          label: actionLabel, 
+          onPressed: actionOnTap ?? (){}
+        ),
       )
     );
   }

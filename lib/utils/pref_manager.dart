@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PrefManager{
   static const _LOGIN_TYPE = "LOGIN_TYPE";
   static const _TEMPORARY_DETAILS = "TEMPORARY_DETAILS";
+  static const _CURRENT_USERNAME = "CURRENT_USERNAME";
 
   static saveLoginType(String loginType) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,6 +21,21 @@ class PrefManager{
   static clearLoginType() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(_LOGIN_TYPE);
+  }
+
+  static saveLoginUsername(String username) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_CURRENT_USERNAME, username);
+  }
+
+  static Future<String> getLoginUsername() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.get(_CURRENT_USERNAME);
+  }
+
+  static clearLoginUsername() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_CURRENT_USERNAME);
   }
 
   static saveTemporaryUserDetails({@required String name,

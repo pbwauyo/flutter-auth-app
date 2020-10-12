@@ -16,10 +16,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
-class PhoneLogin extends StatelessWidget {
+
+class PhoneLogin extends StatefulWidget {
+  @override
+  _PhoneLoginState createState() => _PhoneLoginState();
+}
+
+class _PhoneLoginState extends State<PhoneLogin> {
   final _phoneTxtController  = TextEditingController();
+
   final _authRepo = AuthRepo();
+  final _initialSelection = "+92";
+  String _dialCode;
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +73,25 @@ class PhoneLogin extends StatelessWidget {
                       child: Container(
                         width: screenWidth * 0.8,
                         margin: const EdgeInsets.only(bottom: 10, top: 80),
-                        child: CustomInputField(
-                          textInputType: TextInputType.phone,
-                          placeholder: "Phone", 
-                          drawUnderlineBorder: true,
-                          showIcon: false,
-                          controller: _phoneTxtController, 
+                        child: Row(
+                          children: [
+                            CountryCodePicker(
+                              showFlag: false,
+                              initialSelection: _initialSelection,
+                              onChanged: (CountryCode countryCode){
+                                _dialCode = countryCode.dialCode;
+                              },
+                            ),
+                            Expanded(
+                              child: CustomInputField(
+                                textInputType: TextInputType.phone,
+                                placeholder: "Phone", 
+                                drawUnderlineBorder: true,
+                                showIcon: false,
+                                controller: _phoneTxtController, 
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -85,7 +108,7 @@ class PhoneLogin extends StatelessWidget {
                               showProgress: state is LoginInProgress,
                               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                               onTap: () async{
-                                final phone = _phoneTxtController.text.trim();
+                                final phone = _dialCode + _phoneTxtController.text.trim();
 
                                 if(phone.isNotEmpty){
                                   if(!(Validators.validatePhoneNumber(phone)) ){
@@ -95,7 +118,7 @@ class PhoneLogin extends StatelessWidget {
                                     );
                                     return;
                                   }
-                                  await _authRepo.verifyUserPhoneNumber(phone, context);
+                                  await _authRepo.verifyUserPhoneNumber(phone, context, isLogin: true);
                                 }
                               }, 
                             );

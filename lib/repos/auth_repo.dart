@@ -31,13 +31,20 @@ class AuthRepo {
   }
 
   Future<AppUser> getCurrentUserDetails() async{
-    final _querySnapshot = await _firestore.collection("users").where("email", isEqualTo: getCurrentUser().email).get();
+    final _querySnapshot = await _firestore.collection("users")
+        .where("username", isEqualTo: PrefManager.getLoginUsername()).get();
     final docData = _querySnapshot.docs[0].data();
     return AppUser.fromMap(docData);
   }
 
   bool isUserLoggedIn(){
     return _firebaseAuth.currentUser != null;
+  }
+
+  Future<bool> userExists({@required String username}) async{
+    final _querySnapshot = await _firestore.collection("users")
+        .where("username", isEqualTo: username).get();
+    return _querySnapshot.docs.length > 0;
   }
 
   Future<void> logoutUser() async{
@@ -62,6 +69,7 @@ class AuthRepo {
         await _firebaseAuth.signOut();
       
     }
+    PrefManager.clearLoginUsername();
   }
 
   //signin with registered email and password
@@ -73,6 +81,7 @@ class AuthRepo {
   Future<void> signUpWithFirebase(AppUser appUser, String password) async{
     await _firebaseAuth.createUserWithEmailAndPassword(email: appUser.username, password: password);
     await _saveUserDetailsToFirestore(appUser: appUser);
+    await PrefManager.saveLoginUsername(appUser.username);
   }
 
   Future<void> _saveUserDetailsToFirestore({@required AppUser appUser}) async{
@@ -94,7 +103,8 @@ class AuthRepo {
         name: userDetails["name"],
         photoUrl: userDetails["photoUrl"],
       );
-      _saveUserDetailsToFirestore(appUser: appUser);
+      await _saveUserDetailsToFirestore(appUser: appUser);
+      await PrefManager.saveLoginUsername(appUser.username);
   }
 
   Future<Map<String, String>> getProfileFromGoogle() async{
@@ -111,6 +121,7 @@ class AuthRepo {
       "photoUrl" : googleUser.photoUrl
     };
     await PrefManager.saveLoginType("GOOGLE");
+    await PrefManager.saveLoginUsername(profile["email"]);
     return profile;
   }
 
@@ -150,6 +161,7 @@ class AuthRepo {
     final decodedResponse = Map<String, dynamic>.from(json.decode(res.body));
 
     await PrefManager.saveLoginType("TWITTER");
+    await PrefManager.saveLoginUsername(decodedResponse["email"]);
 
     return {
       "name" : decodedResponse["name"],
@@ -171,6 +183,8 @@ class AuthRepo {
                 'https://graph.facebook.com/v2.12/me?fields=name,email,id&access_token=$token');
     final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();
     await PrefManager.saveLoginType("FACEBOOK");
+    await PrefManager.saveLoginUsername(profile["email"]);
+    
     return {
       "name" : profile["name"],
       "email" : profile["email"],
@@ -178,13 +192,16 @@ class AuthRepo {
     };
   }
 
-  Future<void> verifyUserPhoneNumber(String phoneNumber, BuildContext context) async{
+  Future<void> verifyUserPhoneNumber(String phoneNumber, BuildContext context, {bool isLogin=false}) async{
     await _firebaseAuth.verifyPhoneNumber(
       phoneNumber: phoneNumber, 
       verificationCompleted: (PhoneAuthCredential authCredential){}, 
       verificationFailed: (FirebaseAuthException authException){}, 
       codeSent: (String verificationId, int resendToken){
-        Navigations.goToScreen(context, CodeVerification(verificationId: verificationId));
+        Navigations.goToScreen(
+          context, 
+          CodeVerification(verificationId: verificationId, isLogin: isLogin, phoneNumber: phoneNumber)
+        );
       }, 
       codeAutoRetrievalTimeout: (String verificationId){}
     );

@@ -1,6 +1,7 @@
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/congratulations.dart';
+import 'package:auth_app/pages/phone_login.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
@@ -20,9 +21,10 @@ import 'home.dart';
 
 class CodeVerification extends StatefulWidget {
   final String verificationId;
+  final bool isLogin;
+  final phoneNumber;
 
-
-  CodeVerification({@required this.verificationId});
+  CodeVerification({@required this.verificationId, @required this.phoneNumber, this.isLogin = false});
 
   @override
   _CodeVerificationState createState() => _CodeVerificationState();
@@ -43,6 +45,7 @@ class _CodeVerificationState extends State<CodeVerification> {
 
   Future<Map<String, String>> _userDetailsFuture;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final _authRepo = AuthRepo();
 
   @override
   void initState() {
@@ -225,7 +228,25 @@ class _CodeVerificationState extends State<CodeVerification> {
 
                             try{
                               await _signUpCubit.startPhoneSignup(verificationId: widget.verificationId, smsCode: fullCode);
-                              Navigations.goToScreen(context, Congratulations());
+                              if(widget.isLogin){
+                                final exists = await _authRepo.userExists(username: widget.phoneNumber);
+
+                                if(!exists){
+                                  _firebaseAuth.signOut();
+                                  Methods.showCustomSnackbar(
+                                    context: context, 
+                                    message: "No matching account with phone number. Please create one",
+                                    actionLabel: "Ok",
+                                    actionOnTap: (){
+                                      Navigations.goToScreen(context, PhoneLogin());
+                                    }
+                                  );
+                                  return;
+                                }
+
+                                Navigations.goToScreen(context, Home());
+                              }
+                              
                             }catch(error){
                               print("ERROR $error");
                               Methods.showCustomSnackbar(context: context, message: "$error");
