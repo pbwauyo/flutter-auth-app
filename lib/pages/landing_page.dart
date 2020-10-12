@@ -91,63 +91,82 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
 
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () async{
-                        try{
-                          final profile = await _loginCubit.startFacebookLogin();
-                          Navigations.goToScreen(context, EmailSignup(profile: profile,));
-                        }catch(error){
-                          print("FACEBOOK LOGIN ERROR: $error");
-                        } 
-                      },
-                      child: SvgPicture.asset(AssetNames.FACEBOOK_LOGO_SVG,
-                        width: 32,
-                        height: 32,
-                        color: Color(0xFF1461AD),
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: () async{
-                        try{
-                          final profile = await _loginCubit.startTwitterLogin();
-                          Navigations.goToScreen(context, EmailSignup(profile: profile,));
-                        }catch(error){
-                          print("TWIITER LOGIN ERROR: $error");
-                        }    
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 15, right: 15),
-                        child: SvgPicture.asset(AssetNames.TWITTER_LOGO_SVG,
-                          width: 32,
-                          height: 32,
-                          color:  Color(0xFF0080E3),
+              Builder(
+                builder: (context) {
+                  return Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () async{
+                            try{
+                              final profile = await _loginCubit.startFacebookLogin();
+                              Navigations.goToScreen(context, EmailSignup(profile: profile,));
+                            }catch(error){
+                              print("FACEBOOK LOGIN ERROR: $error");
+                              Scaffold.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("$error")
+                                )
+                              );
+                            } 
+                          },
+                          child: SvgPicture.asset(AssetNames.FACEBOOK_LOGO_SVG,
+                            width: 32,
+                            height: 32,
+                            color: Color(0xFF1461AD),
+                          ),
                         ),
-                      ),
-                    ),
 
-                    GestureDetector(
-                      onTap: () async{
-                        try{
-                          final profile = await _loginCubit.startGoogleLogin();
-                          Navigations.goToScreen(context, EmailSignup(profile: profile,));
-                        }catch(error){
-                          print("GOOGLE LOGIN ERROR: $error");
-                        } 
-                      },
-                      child: SvgPicture.asset(AssetNames.GOOGLE_LOGO_SVG,
-                        width: 32,
-                        height: 32,
-                        color:  Color(0xFFD54545),
-                      ),
+                        GestureDetector(
+                          onTap: () async{
+                            try{
+                              final profile = await _loginCubit.startTwitterLogin();
+                              Navigations.goToScreen(context, EmailSignup(profile: profile,));
+                            }catch(error){
+                              print("TWIITER LOGIN ERROR: $error");
+                              Scaffold.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("$error")
+                                )
+                              );
+                            }    
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 15, right: 15),
+                            child: SvgPicture.asset(AssetNames.TWITTER_LOGO_SVG,
+                              width: 32,
+                              height: 32,
+                              color:  Color(0xFF0080E3),
+                            ),
+                          ),
+                        ),
+
+                        GestureDetector(
+                          onTap: () async{
+                            try{
+                              final profile = await _loginCubit.startGoogleLogin();
+                              Navigations.goToScreen(context, EmailSignup(profile: profile,));
+                            }catch(error){
+                              print("GOOGLE LOGIN ERROR: $error");
+                              Scaffold.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("$error")
+                                )
+                              );
+                            } 
+                          },
+                          child: SvgPicture.asset(AssetNames.GOOGLE_LOGO_SVG,
+                            width: 32,
+                            height: 32,
+                            color:  Color(0xFFD54545),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                }
               ),
             ],
           ),

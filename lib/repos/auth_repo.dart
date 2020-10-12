@@ -42,9 +42,6 @@ class AuthRepo {
 
   Future<void> logoutUser() async{
     switch (await PrefManager.getLoginType()) {
-      case "EMAIL":  
-        await _firebaseAuth.signOut();
-        break;
 
       case "FACEBOOK":
         await FacebookAuth.instance.logOut();
@@ -67,7 +64,7 @@ class AuthRepo {
     }
   }
 
-//signin with registered email and password
+  //signin with registered email and password
   Future<UserCredential> signInWithFirebase(String email, String password) async{
     return await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
@@ -82,8 +79,26 @@ class AuthRepo {
     await _firestore.collection("users").doc(appUser.username).set(appUser.toMap());
   }
 
+  Future<void> signUpWIthPhone({@required String verificationId, @required String smsCode}) async{
+    // Create a PhoneAuthCredential with the code
+      final phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+
+      // Sign the user in (or link) with the credential
+      await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+      
+      //save user details
+      final Map<String, String> userDetails = await PrefManager.getTemporaryUserDetails();
+
+      final appUser = AppUser(
+        username: userDetails["username"],
+        name: userDetails["name"],
+        photoUrl: userDetails["photoUrl"],
+      );
+      _saveUserDetailsToFirestore(appUser: appUser);
+  }
+
   Future<Map<String, String>> getProfileFromGoogle() async{
-    
+
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn()
     .catchError((error){
       print('GOOGLE SIGN IN ERROR');

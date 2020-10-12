@@ -1,5 +1,5 @@
 class Validators {
-  static bool isValidPhoneNumber(String phoneNumber) {
+  static bool validatePhoneNumber(String phoneNumber) {
     final pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$';
     final regExp = RegExp(pattern);
 

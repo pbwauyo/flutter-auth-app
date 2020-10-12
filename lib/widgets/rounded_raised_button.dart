@@ -40,7 +40,7 @@ class RoundedRaisedButton extends StatelessWidget {
             bold: bold,
             textColor: textColor,
           ) :
-          CustomProgressIndicator(size: fontSize, color: AppColors.PRIMARY_COLOR,)
+          CustomProgressIndicator(size: fontSize, color: Colors.white,)
       ),
     );
   }

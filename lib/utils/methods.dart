@@ -40,4 +40,12 @@ class Methods {
      return base64UrlEncode(values).replaceAll(new RegExp('[=/+]'), '');
   }
 
+  static showCustomSnackbar({@required BuildContext context, @required String message}){
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message)
+      )
+    );
+  }
+
 }

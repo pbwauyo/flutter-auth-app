@@ -1,10 +1,12 @@
 import 'package:auth_app/cubit/auth_cubit.dart';
 import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
+import 'package:auth_app/cubit/t_and_cs_cubit.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,11 +21,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // FirebaseAuth.instance.signOut();
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
         BlocProvider(create: (context) => SignupCubit()),
         BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => TAndCsCubit()),
       ],
       child: MaterialApp(
           title: 'Happr',

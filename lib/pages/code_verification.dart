@@ -3,6 +3,7 @@ import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/congratulations.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:auth_app/widgets/custom_back_button.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
@@ -41,6 +42,7 @@ class _CodeVerificationState extends State<CodeVerification> {
   final _sixthDigitController = TextEditingController();
 
   Future<Map<String, String>> _userDetailsFuture;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -52,6 +54,7 @@ class _CodeVerificationState extends State<CodeVerification> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final _signUpCubit = context.bloc<SignupCubit>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -203,42 +206,33 @@ class _CodeVerificationState extends State<CodeVerification> {
                   margin: const EdgeInsets.only(top: 20),
                   child: FractionallySizedBox(
                     widthFactor: 0.8,
-                    child: RoundedRaisedButton(
-                      borderRadius: 25,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      text: "Verify device", 
-                      onTap: () async{
-                        final firstDigit = _firstDigitController.text.trim();
-                        final secondDigit = _secondDigitController.text.trim();
-                        final thirdDigit = _thirdDigitController.text.trim();
-                        final fourthDigit = _fourthDigitController.text.trim();
-                        final fifthDigit = _fifthDigitController.text.trim();
-                        final sixthDigit = _sixthDigitController.text.trim();
+                    child: BlocBuilder<SignupCubit, SignupState>(
+                      builder: (context, state) {
+                        return RoundedRaisedButton(
+                          borderRadius: 25,
+                          showProgress: state is SignupInProgress,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          text: "Verify device", 
+                          onTap: () async{
+                            final firstDigit = _firstDigitController.text.trim();
+                            final secondDigit = _secondDigitController.text.trim();
+                            final thirdDigit = _thirdDigitController.text.trim();
+                            final fourthDigit = _fourthDigitController.text.trim();
+                            final fifthDigit = _fifthDigitController.text.trim();
+                            final sixthDigit = _sixthDigitController.text.trim();
 
-                        final fullCode = "$firstDigit$secondDigit$thirdDigit$fourthDigit$fifthDigit$sixthDigit";
-                        print("FULL CODE: $fullCode ${widget.verificationId}");
-                        try{
-                          final cred = PhoneAuthProvider.credential(verificationId: widget.verificationId, smsCode: "4555");
-                      
-                        }catch(error){
-                          print("ERROR $error");
-                        }
+                            final fullCode = "$firstDigit$secondDigit$thirdDigit$fourthDigit$fifthDigit$sixthDigit";
 
-                        if(widget.verificationId == fullCode){
-                          final Map<String, String> userDetails = await PrefManager.getTemporaryUserDetails();
-                          Navigations.goToScreen(context, Congratulations());
-                          final appUser = AppUser(
-                            username: userDetails["username"],
-                            name: userDetails["name"],
-                            photoUrl: userDetails["photoUrl"],
-                          );
-                          await context.bloc<SignupCubit>().startSignup(userDetails["password"], appUser);
-                          Navigations.goToScreen(context, Home());
-                        }else{
-
-                          print("Invalid Code");
-                        }
-                        
+                            try{
+                              await _signUpCubit.startPhoneSignup(verificationId: widget.verificationId, smsCode: fullCode);
+                              Navigations.goToScreen(context, Congratulations());
+                            }catch(error){
+                              print("ERROR $error");
+                              Methods.showCustomSnackbar(context: context, message: "$error");
+                            }
+                            
+                          }
+                        );
                       }
                     ),
                   ),

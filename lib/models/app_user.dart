@@ -9,7 +9,7 @@ class AppUser {
 
   Map<String, String> toMap(){
     return {
-      "email" : username ?? "",
+      "username" : username ?? "",
       "firstName" : name ?? "",
       "photoUrl" : photoUrl ?? "",
      };
@@ -17,7 +17,7 @@ class AppUser {
 
  factory AppUser.fromMap(Map<String, dynamic> map){
     return AppUser(
-      username: map["email"],
+      username: map["username"],
       name: map["firstName"],
       photoUrl: map["photoUrl"],
     );

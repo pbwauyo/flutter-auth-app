@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
                       Colors.amber : null,
                   ),
 
-                  //show user email
+                  //show user username
                   FractionallySizedBox(
                     widthFactor: 0.8,
                     child: Card(
@@ -70,6 +70,20 @@ class _HomeState extends State<Home> {
                       child: Container(
                         padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                         child: Text(appUser.username,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  //show user fullname
+                  FractionallySizedBox(
+                    widthFactor: 0.8,
+                    child: Card(
+                      margin: const EdgeInsets.only(bottom: 10, top: 15),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                        child: Text(appUser.name,
                           textAlign: TextAlign.center,
                         ),
                       ),
