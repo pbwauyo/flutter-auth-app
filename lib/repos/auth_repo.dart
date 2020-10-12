@@ -32,7 +32,7 @@ class AuthRepo {
 
   Future<AppUser> getCurrentUserDetails() async{
     final _querySnapshot = await _firestore.collection("users")
-        .where("username", isEqualTo: PrefManager.getLoginUsername()).get();
+        .where("username", isEqualTo: await PrefManager.getLoginUsername()).get();
     final docData = _querySnapshot.docs[0].data();
     return AppUser.fromMap(docData);
   }

@@ -43,6 +43,18 @@ class _CodeVerificationState extends State<CodeVerification> {
 
   final _sixthDigitController = TextEditingController();
 
+  final _firstDigitFocusNode = FocusNode();
+
+  final _secondDigitFocusNode = FocusNode();
+
+  final _thirdDigitFocusNode = FocusNode();
+
+  final _fourthDigitFocusNode = FocusNode();
+
+  final _fifthDigitFocusNode = FocusNode();
+
+  final _sixthDigitFocusNode = FocusNode();
+
   Future<Map<String, String>> _userDetailsFuture;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _authRepo = AuthRepo();
@@ -119,6 +131,8 @@ class _CodeVerificationState extends State<CodeVerification> {
                         width: 50,
                         height: 50,
                         child: CustomInputField(
+                          focusNode: _firstDigitFocusNode,
+                          nextFocusNode: _secondDigitFocusNode,
                           placeholder: "", 
                           controller: _firstDigitController,
                           maxLength: 1,
@@ -134,6 +148,8 @@ class _CodeVerificationState extends State<CodeVerification> {
                         width: 50,
                         height: 50,
                         child: CustomInputField(
+                          focusNode: _secondDigitFocusNode,
+                          nextFocusNode: _thirdDigitFocusNode,
                           placeholder: "", 
                           controller: _secondDigitController,
                           maxLength: 1,
@@ -149,6 +165,8 @@ class _CodeVerificationState extends State<CodeVerification> {
                         width: 50,
                         height: 50,
                         child: CustomInputField(
+                          focusNode: _thirdDigitFocusNode,
+                          nextFocusNode: _fourthDigitFocusNode,
                           placeholder: "", 
                           controller: _thirdDigitController,
                           maxLength: 1,
@@ -164,6 +182,8 @@ class _CodeVerificationState extends State<CodeVerification> {
                         width: 50,
                         height: 50,
                         child: CustomInputField(
+                          focusNode: _fourthDigitFocusNode,
+                          nextFocusNode: _fifthDigitFocusNode,
                           placeholder: "", 
                           controller: _fourthDigitController,
                           maxLength: 1,
@@ -179,6 +199,8 @@ class _CodeVerificationState extends State<CodeVerification> {
                         width: 50,
                         height: 50,
                         child: CustomInputField(
+                          focusNode: _fifthDigitFocusNode,
+                          nextFocusNode: _sixthDigitFocusNode,
                           placeholder: "", 
                           controller: _fifthDigitController,
                           maxLength: 1,
@@ -194,6 +216,8 @@ class _CodeVerificationState extends State<CodeVerification> {
                         width: 50,
                         height: 50,
                         child: CustomInputField(
+                          isLast: true,
+                          focusNode: _sixthDigitFocusNode,
                           placeholder: "", 
                           controller: _sixthDigitController,
                           maxLength: 1,
@@ -228,9 +252,9 @@ class _CodeVerificationState extends State<CodeVerification> {
 
                             try{
                               await _signUpCubit.startPhoneSignup(verificationId: widget.verificationId, smsCode: fullCode);
+
                               if(widget.isLogin){
                                 final exists = await _authRepo.userExists(username: widget.phoneNumber);
-
                                 if(!exists){
                                   _firebaseAuth.signOut();
                                   Methods.showCustomSnackbar(
@@ -243,8 +267,10 @@ class _CodeVerificationState extends State<CodeVerification> {
                                   );
                                   return;
                                 }
-
                                 Navigations.goToScreen(context, Home());
+                              }
+                              else {
+                                Navigations.goToScreen(context, Congratulations());
                               }
                               
                             }catch(error){

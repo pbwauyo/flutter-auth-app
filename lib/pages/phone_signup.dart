@@ -16,6 +16,7 @@ import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/ring.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,8 @@ class _PhoneSignupState extends State<PhoneSignup> {
   String _photoUrl;
 
   final _authRepo = AuthRepo();
+
+  String _dialCode = "+92";
 
   @override
   void initState() {
@@ -132,11 +135,31 @@ class _PhoneSignupState extends State<PhoneSignup> {
 
                       Center(
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 25),
-                          child: CustomInputField(
-                            placeholder: "Mobile number", 
-                            controller: _phoneTxtController, 
-                            drawUnderlineBorder: true,
+                          width: screenWidth * 0.8,
+                          margin: const EdgeInsets.only(bottom: 10,),
+                          child: Row(
+                            children: [
+                              CountryCodePicker(
+                                textStyle: TextStyle(
+                                  fontSize: 18
+                                ),
+                                showFlag: false,
+                                initialSelection: _dialCode,
+                                onChanged: (CountryCode countryCode){
+                                  _dialCode = countryCode.dialCode;
+                                },
+                              ),
+                              Expanded(
+                                child: CustomInputField(
+                                  textAlign: TextAlign.left,
+                                  textInputType: TextInputType.phone,
+                                  placeholder: "Phone", 
+                                  drawUnderlineBorder: true,
+                                  showIcon: false,
+                                  controller: _phoneTxtController, 
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -217,7 +240,7 @@ class _PhoneSignupState extends State<PhoneSignup> {
                                     return;
                                   }
 
-                                  final username = _phoneTxtController.text.trim();
+                                  final username = _dialCode + _phoneTxtController.text.trim();
                                   final name = _nameTxtController.text.trim();
 
                                   if(username.isNotEmpty && name.isNotEmpty){

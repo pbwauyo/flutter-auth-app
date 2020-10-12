@@ -28,8 +28,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
   final _phoneTxtController  = TextEditingController();
 
   final _authRepo = AuthRepo();
-  final _initialSelection = "+92";
-  String _dialCode;
+  String _dialCode = "+92";
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +75,18 @@ class _PhoneLoginState extends State<PhoneLogin> {
                         child: Row(
                           children: [
                             CountryCodePicker(
+                              textStyle: TextStyle(
+                                fontSize: 18
+                              ),
                               showFlag: false,
-                              initialSelection: _initialSelection,
+                              initialSelection: _dialCode,
                               onChanged: (CountryCode countryCode){
                                 _dialCode = countryCode.dialCode;
                               },
                             ),
                             Expanded(
                               child: CustomInputField(
+                                textAlign: TextAlign.left,
                                 textInputType: TextInputType.phone,
                                 placeholder: "Phone", 
                                 drawUnderlineBorder: true,

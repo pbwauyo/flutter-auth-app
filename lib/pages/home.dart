@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
         builder: (context, snapshot) {
           if(snapshot.hasError){
             return Center(
-              child: ErrorText(error: "Error while retrieving user dtails"),
+              child: ErrorText(error: "Error while retrieving user details ${snapshot.error}"),
             );
           }
 
