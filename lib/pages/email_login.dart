@@ -171,18 +171,13 @@ class EmailLogin extends StatelessWidget {
                       Center(
                         child: Container(
                           width: screenWidth * 0.8,
-                          child: BlocBuilder<LoginCubit, LoginState>(
-                            builder: (context, state) {
-                              return RoundedRaisedButton(
-                                borderRadius: 25,
-                                text: "Login with Phone instead",
-                                showProgress: state is LoginInProgress,
-                                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                                onTap: () async{
-                                  Navigations.goToScreen(context, PhoneLogin());
-                                }, 
-                              );
-                            }
+                          child: RoundedRaisedButton(
+                            borderRadius: 25,
+                            text: "Login with Phone instead",
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            onTap: () async{
+                              Navigations.goToScreen(context, PhoneLogin());
+                            }, 
                           ),
                         ),
                       ),

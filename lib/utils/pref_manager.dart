@@ -39,7 +39,7 @@ class PrefManager{
   }
 
   static saveTemporaryUserDetails({@required String name,
-  @required String username, @required String password, String photoUrl = ""}) async {
+  @required String username, String password = "", String photoUrl = ""}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final userDetails = {
       "name" : name,

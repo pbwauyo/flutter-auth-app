@@ -3,9 +3,9 @@ import 'package:auth_app/cubit/t_and_cs_cubit.dart';
 import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/code_verification.dart';
 import 'package:auth_app/pages/congratulations.dart';
+import 'package:auth_app/pages/email_signup.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/login.dart';
-import 'package:auth_app/pages/phone_signup.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
@@ -22,19 +22,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 
-class EmailSignup extends StatefulWidget {
+class PhoneSignup extends StatefulWidget {
   final Map<String, String> profile;
 
-  EmailSignup({this.profile});
+  PhoneSignup({this.profile});
 
   @override
-  _EmailSignupState createState() => _EmailSignupState();
+  _PhoneSignupState createState() => _PhoneSignupState();
 }
 
-class _EmailSignupState extends State<EmailSignup> {
-  final _emailTxtController  = TextEditingController();
+class _PhoneSignupState extends State<PhoneSignup> {
 
-  final _passwordController = TextEditingController();
+  final _phoneTxtController  = TextEditingController();
 
   final _nameTxtController  = TextEditingController();
 
@@ -46,8 +45,8 @@ class _EmailSignupState extends State<EmailSignup> {
   void initState() {
     super.initState();
 
-    //initialise email, photoUrl and name fields incase provided through social auth
-    _emailTxtController.text = (widget.profile != null && widget.profile["email"] != "") ? widget.profile["email"] : "";
+    //initialise phone, photoUrl and name fields incase provided through social auth
+    _phoneTxtController.text = (widget.profile != null && widget.profile["phone"] != "") ? widget.profile["phone"] : "";
     _nameTxtController.text = (widget.profile != null && widget.profile["name"] != "") ? widget.profile["name"] : "";
     _photoUrl = (widget.profile != null && widget.profile["photoUrl"] != "") ? widget.profile["photoUrl"] : "";
   }
@@ -135,21 +134,8 @@ class _EmailSignupState extends State<EmailSignup> {
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 25),
                           child: CustomInputField(
-                            placeholder: "Email", 
-                            controller: _emailTxtController, 
-                            drawUnderlineBorder: true,
-                            textInputType: TextInputType.emailAddress,
-                          ),
-                        ),
-                      ),
-
-                      Center(
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 25),
-                          child: CustomInputField(
-                            obscureText: true,
-                            placeholder: "Password", 
-                            controller: _passwordController,
+                            placeholder: "Mobile number", 
+                            controller: _phoneTxtController, 
                             drawUnderlineBorder: true,
                           ),
                         ),
@@ -231,34 +217,23 @@ class _EmailSignupState extends State<EmailSignup> {
                                     return;
                                   }
 
-                                  final email = _emailTxtController.text.trim();
-                                  final password = _passwordController.text.trim();
+                                  final username = _phoneTxtController.text.trim();
                                   final name = _nameTxtController.text.trim();
 
-                                  if(email.isNotEmpty && password.isNotEmpty && name.isNotEmpty){
-                                    if(!validator.password(password)){
-                                      Methods.showCustomSnackbar(
-                                        context: context, 
-                                        message: "Password should have at least one UPPERCASE, one lowercase, one digit and one special character"
-                                      );
-                                      return;
-                                    }
+                                  if(username.isNotEmpty && name.isNotEmpty){
 
-                                    if(EmailValidator.validate(email)){
-                                      final appUser = AppUser(
-                                        username: email,
-                                        name: name,
-                                        photoUrl: _photoUrl,
-                                      );
-                                      final success = await context.bloc<SignupCubit>().startSignup(password, appUser);
-                                      if(success){
-                                        Navigations.goToScreen(context, Congratulations());
-                                      }       
+                                    if(Validators.validatePhoneNumber(username)){
+                                      await _authRepo.verifyUserPhoneNumber(username, context);
+                                      await PrefManager.saveTemporaryUserDetails(
+                                        name: name, 
+                                        username: username, 
+                                        photoUrl: _photoUrl
+                                      );  //these will be saved later after phone verification
                                     }
                                     else{
                                       Methods.showCustomSnackbar(
                                         context: context, 
-                                        message: "Please use a valid Email"
+                                        message: "Please use a valid Phone number"
                                       );
                                     }
                                   }
@@ -289,18 +264,17 @@ class _EmailSignupState extends State<EmailSignup> {
                       Center(
                         child: Container(
                           width: screenWidth * 0.8,
-                          margin: const EdgeInsets.only(bottom: 30),
                           child: RoundedRaisedButton(
                             borderRadius: 25,
-                            text: "Signup with Phone instead",
+                            text: "Signup with Email instead",
                             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                             onTap: () async{
-                              Navigations.goToScreen(context, PhoneSignup());
+                              Navigations.goToScreen(context, EmailSignup());
                             }, 
                           ),
                         ),
                       ),
- 
+                      
                     ],
                   ),
 
