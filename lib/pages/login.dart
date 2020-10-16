@@ -39,7 +39,7 @@ class Login extends StatelessWidget {
                   color: Colors.white,
                 ), 
                 onTap: () async{
-                  final appUser = await _loginCubit.startFacebookLogin();
+                  final appUser = await _loginCubit.startFacebookLogin(context);
                   if(appUser != null){
                     Navigations.goToScreen(context, Home());
                   }
@@ -59,7 +59,7 @@ class Login extends StatelessWidget {
                   color: Colors.white,
                 ), 
                 onTap: () async{
-                  final appUser = await _loginCubit.startTwitterLogin();
+                  final appUser = await _loginCubit.startTwitterLogin(context);
                   if(appUser != null){
                     Navigations.goToScreen(context, Home());
                   }
@@ -79,7 +79,7 @@ class Login extends StatelessWidget {
                   width: 24,
                 ), 
                 onTap: () async{
-                  final appUser = await _loginCubit.startGoogleLogin();
+                  final appUser = await _loginCubit.startGoogleLogin(context);
                   if(appUser != null){
                     Navigations.goToScreen(context, Home());
                   }

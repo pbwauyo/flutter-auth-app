@@ -101,7 +101,7 @@ class LandingPage extends StatelessWidget {
                         GestureDetector(
                           onTap: () async{
                             try{
-                              final profile = await _loginCubit.startFacebookLogin();
+                              final profile = await _loginCubit.startFacebookLogin(context);
                               Navigations.goToScreen(context, EmailSignup(profile: profile,));
                             }catch(error){
                               print("FACEBOOK LOGIN ERROR: $error");
@@ -122,7 +122,7 @@ class LandingPage extends StatelessWidget {
                         GestureDetector(
                           onTap: () async{
                             try{
-                              final profile = await _loginCubit.startTwitterLogin();
+                              final profile = await _loginCubit.startTwitterLogin(context);
                               Navigations.goToScreen(context, EmailSignup(profile: profile,));
                             }catch(error){
                               print("TWIITER LOGIN ERROR: $error");
@@ -146,7 +146,7 @@ class LandingPage extends StatelessWidget {
                         GestureDetector(
                           onTap: () async{
                             try{
-                              final profile = await _loginCubit.startGoogleLogin();
+                              final profile = await _loginCubit.startGoogleLogin(context);
                               Navigations.goToScreen(context, EmailSignup(profile: profile,));
                             }catch(error){
                               print("GOOGLE LOGIN ERROR: $error");

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/code_verification.dart';
+import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/repos/user_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:twitter_api/twitter_api.dart';
 
 
@@ -20,6 +23,7 @@ import 'package:twitter_api/twitter_api.dart';
 class AuthRepo {
   final _firestore = FirebaseFirestore.instance;
   final _firebaseAuth = FirebaseAuth.instance;
+  final _userRepo = UserRepo();
 
   final TwitterLogin _twitterLogin = new TwitterLogin(
     consumerKey: 'a8VunpkaJEI8h6lkHt2fudB3c',
@@ -78,17 +82,22 @@ class AuthRepo {
   }
 
   //sign up with email and password
-  Future<void> signUpWithFirebase(AppUser appUser, String password) async{
+  Future<void> signUpWithFirebase(BuildContext context, AppUser appUser, String password) async{
     await _firebaseAuth.createUserWithEmailAndPassword(email: appUser.username, password: password);
-    await _saveUserDetailsToFirestore(appUser: appUser);
+    await _saveUserDetailsToFirestore(appUser: appUser, context: context);
     await PrefManager.saveLoginUsername(appUser.username);
   }
 
-  Future<void> _saveUserDetailsToFirestore({@required AppUser appUser}) async{
+  Future<void> _saveUserDetailsToFirestore({@required BuildContext context, @required AppUser appUser}) async{
+    final photoPath = Provider.of<FilePathProvider>(context, listen: false).filePath;
+    if(photoPath.trim().length > 0 && !photoPath.trim().startsWith("http")){
+      final downloadUrl = await _userRepo.uploadFile(filePath: photoPath, folderName: "profile_images");
+      appUser.photoUrl = downloadUrl;
+    }
     await _firestore.collection("users").doc(appUser.username).set(appUser.toMap());
   }
 
-  Future<void> signUpWIthPhone({@required String verificationId, @required String smsCode}) async{
+  Future<void> signUpWIthPhone(BuildContext context, {@required String verificationId, @required String smsCode}) async{
     // Create a PhoneAuthCredential with the code
       final phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
 
@@ -103,11 +112,11 @@ class AuthRepo {
         name: userDetails["name"],
         photoUrl: userDetails["photoUrl"],
       );
-      await _saveUserDetailsToFirestore(appUser: appUser);
+      await _saveUserDetailsToFirestore(appUser: appUser, context: context);
       await PrefManager.saveLoginUsername(appUser.username);
   }
 
-  Future<Map<String, String>> getProfileFromGoogle() async{
+  Future<Map<String, String>> getProfileFromGoogle(BuildContext context) async{
 
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn()
     .catchError((error){
@@ -115,17 +124,18 @@ class AuthRepo {
       throw("Failed to Login. Please try again");
     });
 
+    Provider.of<FilePathProvider>(context, listen: false).filePath = googleUser.photoUrl;
+
     final Map<String, String> profile = {
       "email" : googleUser.email,
       "name" : googleUser.displayName,
-      "photoUrl" : googleUser.photoUrl
     };
     await PrefManager.saveLoginType("GOOGLE");
     await PrefManager.saveLoginUsername(profile["email"]);
     return profile;
   }
 
-  Future<Map<String, String>> getProfileFromTwitter() async{
+  Future<Map<String, String>> getProfileFromTwitter(BuildContext context) async{
     // Trigger the sign-in flow
     final TwitterLoginResult loginResult = await _twitterLogin.authorize();
 
@@ -162,15 +172,16 @@ class AuthRepo {
 
     await PrefManager.saveLoginType("TWITTER");
     await PrefManager.saveLoginUsername(decodedResponse["email"]);
+    final photoUrl = decodedResponse["profile_image_url_https"].toString().replaceFirst("_normal", "");
+    Provider.of<FilePathProvider>(context, listen: false).filePath = photoUrl;
 
     return {
       "name" : decodedResponse["name"],
       "email" : decodedResponse["email"],
-      "photoUrl" : decodedResponse["profile_image_url_https"].toString().replaceFirst("_normal", "") //get fullsize image
     };
   }
 
-   Future<Map<String, String>> getProfileFromFacebook() async{
+   Future<Map<String, String>> getProfileFromFacebook(BuildContext context) async{
     // Trigger the sign-in flow
     final LoginResult result = await FacebookAuth.instance.login(); 
 
@@ -184,11 +195,11 @@ class AuthRepo {
     final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();
     await PrefManager.saveLoginType("FACEBOOK");
     await PrefManager.saveLoginUsername(profile["email"]);
+    Provider.of<FilePathProvider>(context, listen: false).filePath = "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token";
     
     return {
       "name" : profile["name"],
       "email" : profile["email"],
-      "photoUrl" : "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token"
     };
   }
 

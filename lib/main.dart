@@ -6,10 +6,12 @@ import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
+import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,23 +24,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // FirebaseAuth.instance.signOut();
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
-        BlocProvider(create: (context) => LoginCubit()),
-        BlocProvider(create: (context) => SignupCubit()),
-        BlocProvider(create: (context) => AuthCubit()),
-        BlocProvider(create: (context) => TAndCsCubit()),
+        ChangeNotifierProvider(create: (context) => FilePathProvider()),
       ],
-      child: MaterialApp(
-          title: 'Happr',
-          theme: ThemeData(
-            
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => LoginCubit()),
+          BlocProvider(create: (context) => SignupCubit()),
+          BlocProvider(create: (context) => AuthCubit()),
+          BlocProvider(create: (context) => TAndCsCubit()),
+        ],
+        child: MaterialApp(
+            title: 'Happr',
+            theme: ThemeData(
+              
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: Splash(),
+            debugShowCheckedModeBanner: false,
           ),
-          home: Splash(),
-          debugShowCheckedModeBanner: false,
-        ),
+      ),
     );
   }
 }

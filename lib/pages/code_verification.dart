@@ -251,7 +251,7 @@ class _CodeVerificationState extends State<CodeVerification> {
                             final fullCode = "$firstDigit$secondDigit$thirdDigit$fourthDigit$fifthDigit$sixthDigit";
 
                             try{
-                              await _signUpCubit.startPhoneSignup(verificationId: widget.verificationId, smsCode: fullCode);
+                              await _signUpCubit.startPhoneSignup(context ,verificationId: widget.verificationId, smsCode: fullCode);
 
                               if(widget.isLogin){
                                 final exists = await _authRepo.userExists(username: widget.phoneNumber);

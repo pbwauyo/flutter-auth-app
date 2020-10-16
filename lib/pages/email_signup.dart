@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
 import 'package:auth_app/models/app_user.dart';
+import 'package:auth_app/pages/change_profile_pic.dart';
 import 'package:auth_app/pages/code_verification.dart';
 import 'package:auth_app/pages/congratulations.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/phone_signup.dart';
+import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
@@ -16,10 +20,12 @@ import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/ring.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
+import 'package:camera/camera.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 
 class EmailSignup extends StatefulWidget {
@@ -38,8 +44,6 @@ class _EmailSignupState extends State<EmailSignup> {
 
   final _nameTxtController  = TextEditingController();
 
-  String _photoUrl;
-
   final _authRepo = AuthRepo();
 
   @override
@@ -49,7 +53,6 @@ class _EmailSignupState extends State<EmailSignup> {
     //initialise email, photoUrl and name fields incase provided through social auth
     _emailTxtController.text = (widget.profile != null && widget.profile["email"] != "") ? widget.profile["email"] : "";
     _nameTxtController.text = (widget.profile != null && widget.profile["name"] != "") ? widget.profile["name"] : "";
-    _photoUrl = (widget.profile != null && widget.profile["photoUrl"] != "") ? widget.profile["photoUrl"] : "";
   }
 
   @override
@@ -88,35 +91,56 @@ class _EmailSignupState extends State<EmailSignup> {
                     children: [
 
                       Center(
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter, 
-                              end: Alignment.bottomCenter, 
-                              colors: [Color(0xFFA8A8A8), Color(0xFF545454)]
-                            ),
-                          ),
-                          child: widget.profile == null || widget.profile["photoUrl"].isEmpty? 
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image(
-                                  image: AssetImage(AssetNames.PERSON_PNG),
-                                  height: 40,
-                                  width: 40,
+                        child: GestureDetector(
+                          onTap: () async{
+                            final cameras = await availableCameras();
+                            Navigations.goToScreen(context, ChangeProfilePic(camera: cameras.last));
+                          },
+                          child: Consumer<FilePathProvider>(
+                            builder: (_, filePathProvider, child) {
+                              final imagePath = filePathProvider.filePath;
+                              
+                              return Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter, 
+                                    end: Alignment.bottomCenter, 
+                                    colors: [Color(0xFFA8A8A8), Color(0xFF545454)]
+                                  ),
                                 ),
-                                CustomTextView(text: "Smile", textColor: Colors.white,)
-                              ],
-                            ) : 
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(widget.profile["photoUrl"]),
-                            ),
+                                child: imagePath == null || imagePath.isEmpty? 
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image(
+                                        image: AssetImage(AssetNames.PERSON_PNG),
+                                        height: 40,
+                                        width: 40,
+                                      ),
+                                      CustomTextView(text: "Smile", textColor: Colors.white,)
+                                    ],
+                                  ) :
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      image: DecorationImage(
+                                        image: imagePath.startsWith("http") ?
+                                          NetworkImage(imagePath) :
+                                          FileImage(File(imagePath)),
+                                          fit: BoxFit.cover
+                                      )
+                                    ),
+                                  ),
+                              );
+                            }
+                          ),
                         ),
                       ),
 
@@ -248,9 +272,9 @@ class _EmailSignupState extends State<EmailSignup> {
                                       final appUser = AppUser(
                                         username: email,
                                         name: name,
-                                        photoUrl: _photoUrl,
+                                        photoUrl: Provider.of<FilePathProvider>(context, listen: false).filePath,
                                       );
-                                      final success = await context.bloc<SignupCubit>().startSignup(password, appUser);
+                                      final success = await context.bloc<SignupCubit>().startSignup(context, password, appUser);
                                       if(success){
                                         Navigations.goToScreen(context, Congratulations());
                                       }       

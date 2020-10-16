@@ -3,6 +3,7 @@ import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 part 'login_state.dart';
 
@@ -24,10 +25,10 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<Map<String, String>> startFacebookLogin() async{
+  Future<Map<String, String>> startFacebookLogin(BuildContext context) async{
     try{
       emit(LoginInProgress());
-      final profile = await _authRepo.getProfileFromFacebook();
+      final profile = await _authRepo.getProfileFromFacebook(context);
       emit(LoginSuccess());
       emit(LoginInitial());
       return profile;
@@ -37,10 +38,10 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<Map<String, String>> startTwitterLogin() async{
+  Future<Map<String, String>> startTwitterLogin(BuildContext context) async{
     try{
       emit(LoginInProgress());
-      final profile = await _authRepo.getProfileFromTwitter();
+      final profile = await _authRepo.getProfileFromTwitter(context);
       emit(LoginSuccess());
       emit(LoginInitial());
       return profile;
@@ -50,10 +51,10 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<Map<String, String>> startGoogleLogin() async{
+  Future<Map<String, String>> startGoogleLogin(BuildContext context) async{
     try{
       emit(LoginInProgress());
-      final profile = await _authRepo.getProfileFromGoogle();
+      final profile = await _authRepo.getProfileFromGoogle(context);
       emit(LoginSuccess());
       emit(LoginInitial());
       return profile;

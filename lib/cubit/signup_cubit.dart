@@ -10,10 +10,10 @@ class SignupCubit extends Cubit<SignupState> {
   SignupCubit() : super(SignupInitial());
   final _authRepo = AuthRepo();
 
-  Future<bool> startSignup(String password, AppUser appUser) async{
+  Future<bool> startSignup(BuildContext context, String password, AppUser appUser) async{
     try{
       emit(SignupInProgress());
-      await _authRepo.signUpWithFirebase(appUser, password);
+      await _authRepo.signUpWithFirebase(context, appUser, password);
       emit(SignupSuccess());
     }catch(error){
       emit(SignupError(error)); 
@@ -24,10 +24,10 @@ class SignupCubit extends Cubit<SignupState> {
     return true;
   }
 
-  Future<bool> startPhoneSignup({@required String verificationId, @required String smsCode}) async{
+  Future<bool> startPhoneSignup(BuildContext context, {@required String verificationId, @required String smsCode}) async{
     try{
       emit(SignupInProgress());
-      await _authRepo.signUpWIthPhone(verificationId: verificationId, smsCode: smsCode);
+      await _authRepo.signUpWIthPhone(context, verificationId: verificationId, smsCode: smsCode);
       emit(SignupSuccess());
     }catch(error){
       emit(SignupError(error)); 
