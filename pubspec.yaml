@@ -49,7 +49,8 @@ dependencies:
   camera: ^0.5.8+9
   path_provider: ^1.6.21
   provider: ^4.3.2+2
-  media_gallery: ^0.1.4
+  permission_handler: ^5.0.1+1
+  photo_manager: ^0.5.8
 
 dev_dependencies:
   flutter_test:

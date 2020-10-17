@@ -19,6 +19,10 @@ class AppColors {
   static const Color PRIMARY_COLOR = Color(0xFFE3DB00);
 }
 
+class FontSizes {
+  static const double APP_BAR_TITLE = 18;
+}
+
 class Navigations {
   static goToScreen(BuildContext context, Widget newScreen){
     Navigator.of(context).push(

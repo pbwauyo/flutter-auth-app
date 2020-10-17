@@ -7,6 +7,7 @@ import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
             title: 'Happr',
             theme: ThemeData(
-              
-              primarySwatch: Colors.blue,
+              primaryColor: AppColors.PRIMARY_COLOR,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             home: Splash(),
