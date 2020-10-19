@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auth_app/cubit/signup_cubit.dart';
+import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
 import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/change_profile_pic.dart';
@@ -25,6 +26,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 import 'package:camera/camera.dart';
@@ -96,7 +98,12 @@ class _PhoneSignupState extends State<PhoneSignup> {
                         child: GestureDetector(
                           onTap: () async{
                             final cameras = await availableCameras();
-                            Navigations.goToScreen(context, ChangeProfilePic(camera: cameras.last));
+                            final permissionRequestStatus = await Permission.photos.request(); //this will help in showing the gallery images
+                            if(permissionRequestStatus == PermissionStatus.granted){
+                              Navigations.goToScreen(context, ChangeProfilePic(camera: cameras.last));
+                            }else{
+                              Methods.showCustomSnackbar(context: context, message: "Please allow access to photos to continue");
+                            }    
                           },
                           child: Consumer<FilePathProvider>(
                             builder: (_, filePathProvider, child) {
@@ -316,7 +323,8 @@ class _PhoneSignupState extends State<PhoneSignup> {
                             text: "Signup with Email instead",
                             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                             onTap: () async{
-                              Navigations.goToScreen(context, EmailSignup());
+                              Navigations.goToScreen(context, EmailSignup(), routeName: "EMAIL_SIGNUP");
+                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
                             }, 
                           ),
                         ),

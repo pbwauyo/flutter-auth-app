@@ -51,6 +51,7 @@ dependencies:
   provider: ^4.3.2+2
   permission_handler: ^5.0.1+1
   photo_manager: ^0.5.8
+  rxdart: ^0.24.1
 
 dev_dependencies:
   flutter_test:

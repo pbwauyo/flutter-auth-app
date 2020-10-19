@@ -1,5 +1,6 @@
 import 'package:auth_app/cubit/auth_cubit.dart';
 import 'package:auth_app/cubit/login_cubit.dart';
+import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/pages/email_login.dart';
 import 'package:auth_app/pages/email_signup.dart';
 import 'package:auth_app/pages/login.dart';
@@ -54,7 +55,8 @@ class LandingPage extends StatelessWidget {
                     text: "Sign up",
                     textColor: Colors.black, 
                     onTap: (){
-                      Navigations.goToScreen(context, EmailSignup());
+                      Navigations.goToScreen(context, EmailSignup(), routeName: "EMAIL_SIGNUP");
+                      context.bloc<SignupMethodCubit>().emitEmailSignUp();
                     }
                   ),
                 ),
@@ -102,7 +104,8 @@ class LandingPage extends StatelessWidget {
                           onTap: () async{
                             try{
                               final profile = await _loginCubit.startFacebookLogin(context);
-                              Navigations.goToScreen(context, EmailSignup(profile: profile,));
+                              Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
+                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
                             }catch(error){
                               print("FACEBOOK LOGIN ERROR: $error");
                               Scaffold.of(context).showSnackBar(
@@ -123,7 +126,8 @@ class LandingPage extends StatelessWidget {
                           onTap: () async{
                             try{
                               final profile = await _loginCubit.startTwitterLogin(context);
-                              Navigations.goToScreen(context, EmailSignup(profile: profile,));
+                              Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
+                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
                             }catch(error){
                               print("TWIITER LOGIN ERROR: $error");
                               Scaffold.of(context).showSnackBar(
@@ -147,7 +151,8 @@ class LandingPage extends StatelessWidget {
                           onTap: () async{
                             try{
                               final profile = await _loginCubit.startGoogleLogin(context);
-                              Navigations.goToScreen(context, EmailSignup(profile: profile,));
+                              Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
+                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
                             }catch(error){
                               print("GOOGLE LOGIN ERROR: $error");
                               Scaffold.of(context).showSnackBar(

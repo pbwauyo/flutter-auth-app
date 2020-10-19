@@ -24,10 +24,13 @@ class FontSizes {
 }
 
 class Navigations {
-  static goToScreen(BuildContext context, Widget newScreen){
+  static goToScreen(BuildContext context, Widget newScreen, {String routeName}){
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => newScreen
+        builder: (context) => newScreen,
+        settings: RouteSettings(
+          name: routeName
+        )
       )
     );
   }
