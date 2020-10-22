@@ -1,118 +1,158 @@
-import 'package:auth_app/models/app_user.dart';
-import 'package:auth_app/pages/landing_page.dart';
-import 'package:auth_app/pages/login.dart';
-import 'package:auth_app/repos/auth_repo.dart';
+import 'package:auth_app/pages/home.dart';
+import 'package:auth_app/pages/location_permission.dart';
 import 'package:auth_app/utils/constants.dart';
-import 'package:auth_app/widgets/custom_progress_indicator.dart';
-import 'package:auth_app/widgets/error_text.dart';
+import 'package:auth_app/widgets/custom_text_view.dart';
+import 'package:auth_app/widgets/ring.dart';
+import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-import 'email_signup.dart';
-
-class Home extends StatefulWidget {
-  
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-
-  Future<AppUser> _getCurrentUserDetails;
-  final _authRepo =AuthRepo();
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentUserDetails = _authRepo.getCurrentUserDetails();
-  }
-
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Profile"),
+        centerTitle: true,
+        title: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
+        elevation: 0.0,
+        backgroundColor: Colors.white
       ),
-      body: FutureBuilder<AppUser>(
-        future: _getCurrentUserDetails,
-        builder: (context, snapshot) {
-          if(snapshot.hasError){
-            return Center(
-              child: ErrorText(error: "Error while retrieving user details ${snapshot.error}"),
-            );
-          }
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
 
-          else if(snapshot.hasData){
-            final appUser = snapshot.data;
-
-            return Container(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+        },
+        child: Icon(Icons.add,
+          color: Colors.black,
+        ),
+        backgroundColor: AppColors.PRIMARY_COLOR,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 4.0,
+        child: Container(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-
-                  //If the photoUrl is not empty, load the photo else show show a background color
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: appUser.photoUrl.isNotEmpty ? 
-                      NetworkImage(appUser.photoUrl) : null,
-                    backgroundColor: appUser.photoUrl == null ?
-                      Colors.amber : null,
-                  ),
-
-                  //show user username
-                  FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: Card(
-                      margin: const EdgeInsets.only(bottom: 10, top: 15),
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                        child: Text(appUser.username,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  //show user fullname
-                  FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: Card(
-                      margin: const EdgeInsets.only(bottom: 10, top: 15),
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                        child: Text(appUser.name,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10, right: 40),
+                    child: SvgPicture.asset(
+                      AssetNames.HOME_SVG, 
+                      width: 32, 
+                      height: 32,
                     ),
                   ),
 
                   Container(
-                    width: screenWidth * 0.8,
-                    margin: const EdgeInsets.only(top: 20),
-                    child: FlatButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                      color: Colors.amber,
-                      onPressed: () async{
-                        await _authRepo.logoutUser();
-                        Navigations.goToScreen(context, LandingPage());
-                      }, 
-                      child: Text("LOG OUT",
-                        style: TextStyle(color: Colors.white),
-                      )
+                    child: SvgPicture.asset(
+                      AssetNames.ELLIPSE_SVG, 
+                      width: 32, 
+                      height: 32,
                     ),
-                  )
+                  ),
                 ],
               ),
-            );
-          }
-          else {
-            return CustomProgressIndicator(size: 24,);
-          }
-        }
+
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    child: SvgPicture.asset(
+                      AssetNames.BELL_SVG, 
+                      width: 32, 
+                      height: 32,
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(right: 10, left: 40),
+                    child: SvgPicture.asset(
+                      AssetNames.MENU_SVG, 
+                      width: 32, 
+                      height: 32,
+                    ),
+                  ),
+                ],
+              ),
+              
+            ],
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 40),
+                  width: 90,
+                  height: 90,
+                  child: SvgPicture.asset(AssetNames.HAPPY_SVG, width: 110, height: 110,),
+                ),
+              ),
+
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: CustomTextView(
+                    text: "Create your first happy moment.",
+                    fontSize: 18,
+                    bold: true,
+                  ),
+                ),
+              ),
+
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: FractionallySizedBox(
+                    widthFactor: 0.8,
+                    child: RoundedRaisedButton(
+                      borderRadius: 25,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      text: "Create", 
+                      onTap: () async{
+                        final calendarPermissionStatus = await Permission.calendar.request(); 
+                        if(calendarPermissionStatus.isGranted){
+                          Navigations.goToScreen(context, LocationPermission());
+                        }
+                        
+                      }
+                    ),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+
+           Positioned(
+            bottom: 10,
+            right: 10,
+            child: Ring(
+              size: 25,
+              width: 4,
+            )
+          ),
+
+          Positioned(
+            bottom: 60,
+            left: -15,
+            child: Ring(
+              size: 50,
+              width: 4,
+            )
+          ),
+        ],
       ),
     );
   }

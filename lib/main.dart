@@ -3,6 +3,7 @@ import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
+import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
               primaryColor: AppColors.PRIMARY_COLOR,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: Splash(),
+            home: ContactsPermission(),
             debugShowCheckedModeBanner: false,
           ),
       ),
@@ -76,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state){
         if(state is AuthLoggedIn){ //if theres a logged in user, goto the Home screen else show Login screen
-          return Home();
+          return ContactsPermission();
         }else {
           return LandingPage();
         }
