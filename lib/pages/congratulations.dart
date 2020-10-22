@@ -1,3 +1,4 @@
+import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
@@ -64,7 +65,7 @@ class Congratulations extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       text: "I promise", 
                       onTap: (){
-                        Navigations.goToScreen(context, Home());
+                        Navigations.goToScreen(context, ContactsPermission());
                       }
                     ),
                   ),

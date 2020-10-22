@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state){
         if(state is AuthLoggedIn){ //if theres a logged in user, goto the Home screen else show Login screen
-          return ContactsPermission();
+          return Home();
         }else {
           return LandingPage();
         }
