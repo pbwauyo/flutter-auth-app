@@ -16,16 +16,24 @@ final List<Color> colors = [
   Color(0xFF6D99FF),
 ];
 
-class ContactRatingWidget extends StatelessWidget {
+class ContactRatingWidget extends StatefulWidget {
 
   final HapprContact happrContact;
-  final ContactSliderController _contactSliderController = Get.put(ContactSliderController());
 
   ContactRatingWidget({@required this.happrContact});
 
   @override
+  _ContactRatingWidgetState createState() => _ContactRatingWidgetState();
+}
+
+class _ContactRatingWidgetState extends State<ContactRatingWidget> {
+  final ContactSliderController _contactSliderController = Get.put(ContactSliderController());
+
+  double _sliderValue = 0.0;
+  final colorIndex = Random().nextInt(colors.length);
+
+  @override
   Widget build(BuildContext context) {
-    final colorIndex = Random().nextInt(colors.length);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,33 +52,34 @@ class ContactRatingWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(40.0)
               ),
               child: CustomTextView(
-                text: "${happrContact.initials}",
+                text: "${widget.happrContact.initials}",
                 textColor: Colors.white,
               ),
             ),
 
             CustomTextView(
-              text: "${happrContact.displayName}"
+              text: "${widget.happrContact.displayName}"
             ),
           ],
         ),
         
-        Obx(()=> Container(
-            width: 150,
-            child: Slider(
-              min: 0.0,
-              max: 10.0,
-              divisions: 10,
-              value: _contactSliderController.sliderValue.value, 
-              onChanged: (newValue){
-                _contactSliderController.updateValue(newValue);
-              },
-              onChangeEnd: (newValue){
+        Container(
+          width: 150,
+          child: Slider(
+            min: 0.0,
+            max: 10.0,
+            divisions: 10,
+            value: _sliderValue, 
+            onChanged: (newValue){
+              setState(() {
+                _sliderValue = newValue;
+              });
+            },
+            onChangeEnd: (newValue){
 
-              },
-            ),
-          ) 
-        )
+            },
+          ),
+        ) 
       ],
     );
   }

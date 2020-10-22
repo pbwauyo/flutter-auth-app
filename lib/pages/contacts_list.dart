@@ -64,6 +64,8 @@ class ContactsList extends StatelessWidget {
                       final happrContact = HapprContact(
                         displayName: contact.displayName,
                         initials: contact.initials(),
+                        id: contact.identifier,
+                        phone: contact.phones.toList()[0].value
                       );
                       return Center(
                         child: Container(
