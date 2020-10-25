@@ -29,7 +29,7 @@ class ContactRatingWidget extends StatefulWidget {
 class _ContactRatingWidgetState extends State<ContactRatingWidget> {
   final ContactSliderController _contactSliderController = Get.put(ContactSliderController());
 
-  double _sliderValue = 0.0;
+  double _sliderValue = 1.0;
   final colorIndex = Random().nextInt(colors.length);
 
   @override
@@ -66,9 +66,9 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
         Container(
           width: 150,
           child: Slider(
-            min: 0.0,
-            max: 10.0,
-            divisions: 10,
+            min: 1.0,
+            max: 3.0,
+            divisions: 3,
             value: _sliderValue, 
             onChanged: (newValue){
               setState(() {

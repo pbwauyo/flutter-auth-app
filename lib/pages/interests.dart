@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:auth_app/getxcontrollers/categories_search_controller.dart';
+import 'package:auth_app/getxcontrollers/interests_search_controller.dart';
 import 'package:auth_app/getxcontrollers/contacts_list_controller.dart';
-import 'package:auth_app/getxcontrollers/selected_categories_controller.dart';
+import 'package:auth_app/getxcontrollers/selected_interests_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/pages/calendar_permission.dart';
 import 'package:auth_app/utils/constants.dart';
@@ -29,9 +29,9 @@ class Interests extends StatefulWidget {
 class _InterestsState extends State<Interests> {
   final _searchTextController = TextEditingController();
 
-  final SelectedCategoriesController _selectedCategoriesController = Get.put(SelectedCategoriesController());
+  final SelectedInterestsController _selectedCategoriesController = Get.put(SelectedInterestsController());
 
-  final CategoriesSearchController _categoriesSearchController = Get.put(CategoriesSearchController());
+  final InterestsSearchController _categoriesSearchController = Get.put(InterestsSearchController());
 
   Timer _debounce;
 
@@ -87,7 +87,7 @@ class _InterestsState extends State<Interests> {
               onChanged: (value){
                 if(_debounce?.isActive ?? false) _debounce.cancel();
                 _debounce = Timer(const Duration(milliseconds: 500), (){
-                  _categoriesSearchController.updateCategoriesList(value);
+                  _categoriesSearchController.updateInterestsList(value);
                 });
               },
             ),
@@ -116,13 +116,13 @@ class _InterestsState extends State<Interests> {
                       decoration: BoxDecoration(),
                       child: Obx(() => Wrap(
                         spacing: 4.0,
-                        children: _selectedCategoriesController.selectedCategories.length <= 0 ?
+                        children: _selectedCategoriesController.selectedInterests.length <= 0 ?
                           [ 
                             Center(
                               child: CustomTextView(text: "No Selected categories yet"),
                             )
                           ] :
-                         _selectedCategoriesController.selectedCategories.map(
+                         _selectedCategoriesController.selectedInterests.map(
                           (category) => Chip(
                               label: CustomTextView(text: category),
                               deleteIcon: Icon(Icons.clear),
@@ -152,19 +152,19 @@ class _InterestsState extends State<Interests> {
          
                     return ListView(
                       padding: const EdgeInsets.only(left: 35,),
-                      children: _categoriesSearchController.categories.length <= 0 ?
+                      children: _categoriesSearchController.interests.length <= 0 ?
                       [
                         Center(
                           child: EmptyResultsText(message: "No matching categories",),
                         )
                       ] :
                       
-                      _categoriesSearchController.categories.map((category) {
+                      _categoriesSearchController.interests.map((category) {
                         return Obx((){
                           return Container(
                             margin: const EdgeInsets.only(top: 5),
                             child: InterestCategoryItem(
-                              isSelected: _selectedCategoriesController.selectedCategories.contains(category),
+                              isSelected: _selectedCategoriesController.selectedInterests.contains(category),
                               label: category, 
                               onTap: (currentItem){
                                 _selectedCategoriesController.addCategory(currentItem);

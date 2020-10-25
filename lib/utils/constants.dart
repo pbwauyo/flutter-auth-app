@@ -1,3 +1,4 @@
+import 'package:auth_app/models/category.dart';
 import 'package:flutter/material.dart';
 
 class AssetNames {
@@ -16,8 +17,21 @@ class AssetNames {
   static const String CIRCLE_SVG = "$_BASE_ASSET_DIR/circle.svg";
   static const String HOME_SVG = "$_BASE_ASSET_DIR/home.svg";
   static const String ELLIPSE_SVG = "$_BASE_ASSET_DIR/ellipse.svg";
-  static const String   BELL_SVG = "$_BASE_ASSET_DIR/bell.svg";
+  static const String BELL_SVG = "$_BASE_ASSET_DIR/bell.svg";
   static const String MENU_SVG = "$_BASE_ASSET_DIR/menu.svg";
+  static const String CUSTOM_MOMENT = "$_BASE_ASSET_DIR/custom_moment.svg";
+  static const String ONE_CLICK_MOMENT = "$_BASE_ASSET_DIR/one_click_moment.svg";
+  static const String HAPPENING_NOW = "$_BASE_ASSET_DIR/happening_now.svg";
+  static const String QR_CODE = "$_BASE_ASSET_DIR/qr_code.svg";
+  static const String PEOPLE = "$_BASE_ASSET_DIR/people.png";
+  static const String ANIMALS = "$_BASE_ASSET_DIR/animals.png";
+  static const String BEACH = "$_BASE_ASSET_DIR/beach.png";
+  static const String DINING = "$_BASE_ASSET_DIR/dining.png";
+  static const String FAMILY = "$_BASE_ASSET_DIR/family.png";
+  static const String FASHION = "$_BASE_ASSET_DIR/fashion.png";
+  static const String FOOD = "$_BASE_ASSET_DIR/food.png";
+  static const String MUSEUM = "$_BASE_ASSET_DIR/museum.png";
+  static const String TRAVEL = "$_BASE_ASSET_DIR/travel.png";
 }
 
 class AppColors {
@@ -44,7 +58,7 @@ class Navigations {
 }
 
 class Constants {
-  static final List<String> interestsCategories = [
+  static final List<String> interests = [
     'Fashion',
     'Sports',
     'Lorem',
@@ -60,5 +74,17 @@ class Constants {
     'Acting',
     'Dancing',
     'Gaming'
+  ];
+
+  static final List<Category> categories = [
+    Category(name: "People", image: AssetNames.PEOPLE),
+    Category(name: "Animals", image: AssetNames.ANIMALS),
+    Category(name: "Beach", image: AssetNames.BEACH),
+    Category(name: "Dining", image: AssetNames.DINING),
+    Category(name: "Family", image: AssetNames.FAMILY),
+    Category(name: "Fashion", image: AssetNames.FASHION),
+    Category(name: "Food", image: AssetNames.FOOD),
+    Category(name: "Museum", image: AssetNames.MUSEUM),
+    Category(name: "Travel", image: AssetNames.TRAVEL),
   ];
 }

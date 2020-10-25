@@ -1,4 +1,5 @@
 import 'package:auth_app/cubit/auth_cubit.dart';
+import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => AuthCubit()),
           BlocProvider(create: (context) => TAndCsCubit()),
           BlocProvider(create: (context) => SignupMethodCubit()),
+          BlocProvider(create: (context) => HomeCubit()),
         ],
         child: MaterialApp(
             title: 'Happr',
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
               primaryColor: AppColors.PRIMARY_COLOR,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: ContactsPermission(),
+            home: MyHomePage(),
             debugShowCheckedModeBanner: false,
           ),
       ),
