@@ -4,7 +4,6 @@ import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/getxcontrollers/categories_controller.dart';
 import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
 import 'package:auth_app/getxcontrollers/interests_search_controller.dart';
-import 'package:auth_app/getxcontrollers/contacts_list_controller.dart';
 import 'package:auth_app/getxcontrollers/selected_interests_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/pages/calendar_permission.dart';

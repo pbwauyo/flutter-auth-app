@@ -39,28 +39,34 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(right: 8),
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: colors[colorIndex],
-                borderRadius: BorderRadius.circular(40.0)
+        Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(right: 8),
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: colors[colorIndex],
+                  borderRadius: BorderRadius.circular(40.0)
+                ),
+                child: Center(
+                  child: CustomTextView(
+                    text: "${widget.happrContact.initials}",
+                    textColor: Colors.white,
+                  ),
+                ),
               ),
-              child: CustomTextView(
-                text: "${widget.happrContact.initials}",
-                textColor: Colors.white,
-              ),
-            ),
 
-            CustomTextView(
-              text: "${widget.happrContact.displayName}"
-            ),
-          ],
+              Expanded(
+                child: CustomTextView(
+                  text: "${widget.happrContact.displayName}"
+                ),
+              ),
+            ],
+          ),
         ),
         
         Container(
@@ -68,7 +74,7 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
           child: Slider(
             min: 1.0,
             max: 3.0,
-            divisions: 3,
+            divisions: 2,
             value: _sliderValue, 
             onChanged: (newValue){
               setState(() {

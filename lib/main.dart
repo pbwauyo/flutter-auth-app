@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
               primaryColor: AppColors.PRIMARY_COLOR,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: ContactsList(),
+            home: MyHomePage(),
             debugShowCheckedModeBanner: false,
           ),
       ),

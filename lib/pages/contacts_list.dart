@@ -1,4 +1,3 @@
-import 'package:auth_app/getxcontrollers/contacts_list_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/pages/interests.dart';
 import 'package:auth_app/utils/constants.dart';
@@ -14,8 +13,20 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 import 'package:rxdart/subjects.dart';
 
-class ContactsList extends StatelessWidget {
-  final ContactsListController _contactsListController = Get.put(ContactsListController());
+class ContactsList extends StatefulWidget {
+  @override
+  _ContactsListState createState() => _ContactsListState();
+}
+
+class _ContactsListState extends State<ContactsList> {
+
+  Future<List<Contact>> _loadContactsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContactsFuture = _loadContacts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,33 +60,44 @@ class ContactsList extends StatelessWidget {
               ),
               
               Expanded(
-                child: Obx((){
-                  if(_contactsListController.contacts.length <= 0){
-                    return Center(
-                      child: CustomProgressIndicator(size: 40,)
-                    );
-                  }
-
-                  return ListView.builder(
-                    padding:  const EdgeInsets.only(left: 10, right: 10, bottom: 5.0),
-                    itemCount: _contactsListController.contacts.length,
-                    itemBuilder: (context, index){
-                      final contact = _contactsListController.contacts[index];
-                      final happrContact = HapprContact(
-                        displayName: contact.displayName,
-                        initials: contact.initials(),
-                        id: contact.identifier,
-                        phone: contact.phones.toList()[0].value
-                      );
-                      return Center(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: ContactRatingWidget(happrContact: happrContact)
-                        )
+                child: FutureBuilder<List<Contact>>(
+                  future: _loadContactsFuture,
+                  builder: (context, snapshot){
+                    if(snapshot.hasData){
+                      final contacts = snapshot.data;
+                      return ListView.builder(
+                        padding:  const EdgeInsets.only(left: 10, right: 10, bottom: 5.0),
+                        itemCount: contacts.length,
+                        itemBuilder: (context, index){
+                          
+                          final contact = contacts[index];
+                          final phones = contact.phones.toList();
+                          
+                          final happrContact = HapprContact(
+                            displayName: contact.displayName,
+                            initials: contact.initials(),
+                            id: contact.identifier,
+                            phone: phones.length > 0 ? phones[0].value : "N/A"
+                          );
+                          return Center(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              child: ContactRatingWidget(happrContact: happrContact)
+                            )
+                          );
+                        }
                       );
                     }
-                  );
-                })
+                    else if(snapshot.hasError){
+                      return Center(
+                        child: ErrorText(error: "${snapshot.error}"),
+                      );
+                    }
+                    return Center(
+                      child: CustomProgressIndicator()
+                    );
+                  }
+                )
               )
             ],
           ),
@@ -102,4 +124,9 @@ class ContactsList extends StatelessWidget {
     );
   }
 
+  Future<List<Contact>> _loadContacts() async{
+    final fetchedContacts = await ContactsService.getContacts();
+    return fetchedContacts.toList();
+  }
+  
 }
