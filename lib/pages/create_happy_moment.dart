@@ -1,10 +1,15 @@
 import 'package:auth_app/cubit/home_cubit.dart';
+import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
 
 class CreateHappyMoment extends StatelessWidget {
+  final CreateMomentController controller = Get.put(CreateMomentController());
+  
   @override
   Widget build(BuildContext context) {
     final homeCubit = context.bloc<HomeCubit>();

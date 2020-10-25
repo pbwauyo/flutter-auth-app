@@ -15,7 +15,5 @@ class HomePickCategory extends HomeState {}
 
 class HomeMomentDetails extends HomeState {}
 
-class HomeInProgress extends HomeState {}
-
 
 

@@ -22,7 +22,4 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeMomentDetails());
   }
 
-  goToInProgress(){
-    emit(HomeInProgress());
-  }
 }

@@ -32,12 +32,24 @@ class AssetNames {
   static const String FOOD = "$_BASE_ASSET_DIR/food.png";
   static const String MUSEUM = "$_BASE_ASSET_DIR/museum.png";
   static const String TRAVEL = "$_BASE_ASSET_DIR/travel.png";
+  static const String PEOPLE_LARGE = "$_BASE_ASSET_DIR/people_large.jpeg";
+  static const String ANIMALS_LARGE = "$_BASE_ASSET_DIR/animals_large.jpg";
+  static const String BEACH_LARGE = "$_BASE_ASSET_DIR/beach_large.jpg";
+  static const String DINING_LARGE = "$_BASE_ASSET_DIR/dining_large.jpg";
+  static const String FAMILY_LARGE = "$_BASE_ASSET_DIR/family_large.jpg";
+  static const String FASHION_LARGE = "$_BASE_ASSET_DIR/fashion_large.png";
+  static const String FOOD_LARGE = "$_BASE_ASSET_DIR/food_large.jpg";
+  static const String MUSEUM_LARGE = "$_BASE_ASSET_DIR/museum_large.jpg";
+  static const String TRAVEL_LARGE = "$_BASE_ASSET_DIR/travel_large.jpg";
+
 }
 
 class AppColors {
   static const Color ERROR_COLOR = Colors.red;
   static const Color PRIMARY_COLOR = Color(0xFFE3DB00);
   static const Color LIGHT_GREY = Color(0xFFF8F8F8);
+  static const Color LIGHT_GREY_SHADE2 = Color(0xFFF1F1F1);
+  static const Color LIGHT_GREY_TEXT = Color(0xFFBEBEBE);
 }
 
 class FontSizes {
@@ -87,4 +99,16 @@ class Constants {
     Category(name: "Museum", image: AssetNames.MUSEUM),
     Category(name: "Travel", image: AssetNames.TRAVEL),
   ];
+
+  static final Map<String, String> momentImages = {
+    "Food" : AssetNames.FOOD_LARGE,
+    "Animals" : AssetNames.ANIMALS,
+    "Beach" : AssetNames.BEACH_LARGE,
+    "Dining" : AssetNames.DINING_LARGE,
+    "Family" : AssetNames.FAMILY_LARGE,
+    "Fashion" : AssetNames.FASHION_LARGE,
+    "Museum" : AssetNames.MUSEUM_LARGE,
+    "People" : AssetNames.PEOPLE_LARGE,
+    "Travel" : AssetNames.TRAVEL_LARGE
+  };
 }

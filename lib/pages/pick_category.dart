@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/getxcontrollers/categories_controller.dart';
+import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
 import 'package:auth_app/getxcontrollers/interests_search_controller.dart';
 import 'package:auth_app/getxcontrollers/contacts_list_controller.dart';
 import 'package:auth_app/getxcontrollers/selected_interests_controller.dart';
@@ -18,6 +20,7 @@ import 'package:auth_app/widgets/interest_category_item.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
@@ -31,6 +34,7 @@ class _PickCategoryState extends State<PickCategory> {
   final _searchTextController = TextEditingController();
 
   final CategoriesController _categoriesController = Get.put(CategoriesController());
+  final CreateMomentController createMomentController = Get.find();
 
   Timer _debounce;
 
@@ -42,6 +46,7 @@ class _PickCategoryState extends State<PickCategory> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final homeCubit = context.bloc<HomeCubit>();
 
     return Column(
       children: [
@@ -83,7 +88,13 @@ class _PickCategoryState extends State<PickCategory> {
                 spacing: 3.0,
                 runSpacing: 3.0,
                 children: _categoriesController.categories.map(
-                  (category) => CategoryWidget(category: category)).toList(),
+                  (category) => GestureDetector(
+                    onTap: (){
+                      createMomentController.categoryName.value = category.name;
+                      homeCubit.goToMomentDetailsScreen();
+                    },
+                    child: CategoryWidget(category: category))
+                  ).toList(),
               );
             }),
           ),
