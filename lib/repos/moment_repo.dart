@@ -19,7 +19,7 @@ class MomentRepo {
   }
 
   Future<void> updateMomentImage(String momentId, String filePath,) async{
-    final downloadUrl = _userRepo.uploadFile(filePath: filePath, folderName: "moment_images");
+    final downloadUrl = await _userRepo.uploadFile(filePath: filePath, folderName: "moment_images");
     await _collectionRef.doc(momentId).set({"imageUrl" : downloadUrl}, SetOptions(merge: true));
   }
 

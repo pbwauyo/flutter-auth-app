@@ -41,7 +41,7 @@ class AssetNames {
   static const String FOOD_LARGE = "$_BASE_ASSET_DIR/food_large.jpg";
   static const String MUSEUM_LARGE = "$_BASE_ASSET_DIR/museum_large.jpg";
   static const String TRAVEL_LARGE = "$_BASE_ASSET_DIR/travel_large.jpg";
-
+  static const String STACKED_IMAGES = "$_BASE_ASSET_DIR/stacked_images.png";
 }
 
 class AppColors {
@@ -111,4 +111,10 @@ class Constants {
     "People" : AssetNames.PEOPLE_LARGE,
     "Travel" : AssetNames.TRAVEL_LARGE
   };
+
+}
+
+class TakePictureType {
+  static const MOMENT_IMAGE = "MOMENT_IMAGE";
+  static const PROFILE_PICTURE = "PROFILE_PICTURE";
 }

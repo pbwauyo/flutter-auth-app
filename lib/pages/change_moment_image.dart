@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:auth_app/pages/gallery_images_grid_view.dart';
 import 'package:auth_app/pages/preview_image.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
@@ -18,19 +19,21 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
-class ChangeProfilePic extends StatefulWidget {
+class ChangeMomentImage extends StatefulWidget {
   final CameraDescription camera;
+  final String momentId;
 
-  ChangeProfilePic({@required this.camera});
+  ChangeMomentImage({@required this.camera, @required this.momentId});
 
   @override
-  _ChangeProfilePicState createState() => _ChangeProfilePicState();
+  _ChangeMomentImageState createState() => _ChangeMomentImageState();
 }
 
-class _ChangeProfilePicState extends State<ChangeProfilePic> {
+class _ChangeMomentImageState extends State<ChangeMomentImage> {
   CameraController _cameraController;
   Future<void> _initialiseControllerFuture;
   final double _buttonSize = 80;
+  final _momentRepo = MomentRepo();
 
   @override
   void initState() {
@@ -63,7 +66,7 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                           final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
                           print('IMAGE PATH: $path');
                           await _cameraController.takePicture(path);
-                          Provider.of<FilePathProvider>(context, listen: false).filePath = path;
+                          _momentRepo.updateMomentImage(widget.momentId, path);
                           Navigator.pop(context);
                         }catch(error){
                           print("CAMERA ERROR: $error");

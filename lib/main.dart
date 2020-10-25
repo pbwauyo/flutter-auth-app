@@ -4,12 +4,15 @@ import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
+import 'package:auth_app/pages/contacts_list.dart';
 import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/providers/moment_id_provider.dart';
+import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,6 +34,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => FilePathProvider()),
+        ChangeNotifierProvider(create: (context) => TakePictureTypeProvider()),
+        ChangeNotifierProvider(create: (context) => MomentIdProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -47,7 +52,7 @@ class MyApp extends StatelessWidget {
               primaryColor: AppColors.PRIMARY_COLOR,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: MyHomePage(),
+            home: ContactsList(),
             debugShowCheckedModeBanner: false,
           ),
       ),
