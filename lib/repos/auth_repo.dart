@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auth_app/getxcontrollers/logged_in_username.dart';
 import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/code_verification.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
@@ -13,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -24,6 +26,8 @@ class AuthRepo {
   final _firestore = FirebaseFirestore.instance;
   final _firebaseAuth = FirebaseAuth.instance;
   final _userRepo = UserRepo();
+
+  final LoggedInUsernameController loggedInUsernameController = Get.put(LoggedInUsernameController());
 
   final TwitterLogin _twitterLogin = new TwitterLogin(
     consumerKey: 'a8VunpkaJEI8h6lkHt2fudB3c',
@@ -78,6 +82,8 @@ class AuthRepo {
 
   //signin with registered email and password
   Future<UserCredential> signInWithFirebase(String email, String password) async{
+    await PrefManager.saveLoginUsername(email);
+    loggedInUsernameController.loggedInUserEmail = email;
     return await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
 
@@ -86,6 +92,7 @@ class AuthRepo {
     await _firebaseAuth.createUserWithEmailAndPassword(email: appUser.username, password: password);
     await _saveUserDetailsToFirestore(appUser: appUser, context: context);
     await PrefManager.saveLoginUsername(appUser.username);
+    loggedInUsernameController.loggedInUserEmail = appUser.username;
   }
 
   Future<void> _saveUserDetailsToFirestore({@required BuildContext context, @required AppUser appUser}) async{
@@ -99,21 +106,32 @@ class AuthRepo {
 
   Future<void> signUpWIthPhone(BuildContext context, {@required String verificationId, @required String smsCode}) async{
     // Create a PhoneAuthCredential with the code
-      final phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+    final phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
 
-      // Sign the user in (or link) with the credential
-      await _firebaseAuth.signInWithCredential(phoneAuthCredential);
-      
-      //save user details
-      final Map<String, String> userDetails = await PrefManager.getTemporaryUserDetails();
+    // Sign the user in (or link) with the credential
+    await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+    
+    //save user details
+    final Map<String, String> userDetails = await PrefManager.getTemporaryUserDetails();
 
-      final appUser = AppUser(
-        username: userDetails["username"],
-        name: userDetails["name"],
-        photoUrl: userDetails["photoUrl"],
-      );
-      await _saveUserDetailsToFirestore(appUser: appUser, context: context);
-      await PrefManager.saveLoginUsername(appUser.username);
+    final appUser = AppUser(
+      username: userDetails["username"],
+      name: userDetails["name"],
+      photoUrl: userDetails["photoUrl"],
+    );
+    await _saveUserDetailsToFirestore(appUser: appUser, context: context);
+    await PrefManager.saveLoginUsername(appUser.username);
+    loggedInUsernameController.loggedInUserEmail = appUser.username;
+  }
+
+  Future<void> signInWithPhone({@required String verificationId, @required String smsCode}) async{
+    // Create a PhoneAuthCredential with the code
+    final phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+
+    // Sign the user in (or link) with the credential
+    await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+    await PrefManager.saveLoginUsername(getCurrentUser().phoneNumber);
+    loggedInUsernameController.loggedInUserEmail = getCurrentUser().phoneNumber;
   }
 
   Future<Map<String, String>> getProfileFromGoogle(BuildContext context) async{

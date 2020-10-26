@@ -9,12 +9,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   final _authRepo = AuthRepo();
 
-  checkLoggedInUser(){
+  bool checkLoggedInUser(){
     if(_authRepo.isUserLoggedIn()){
       emit(AuthLoggedIn());
+      return true;
     }
     else {
       emit(AuthInitial());
+      return false;
     }
   }
 }

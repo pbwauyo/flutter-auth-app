@@ -25,6 +25,20 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
+  Future<AppUser> startFirebasePhoneLogin(String verificationId, String smsCode) async{
+    try{
+      emit(LoginInProgress());
+      await _authRepo.signInWithPhone(verificationId: verificationId, smsCode: smsCode);
+      emit(LoginSuccess());
+      emit(LoginInitial());
+      PrefManager.saveLoginType("PHONE");
+      return _authRepo.getCurrentUserDetails();
+    }catch(error){
+      emit(LoginError(error));
+      return null;
+    }
+  }
+
   Future<Map<String, String>> startFacebookLogin(BuildContext context) async{
     try{
       emit(LoginInProgress());

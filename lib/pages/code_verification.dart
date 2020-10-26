@@ -1,3 +1,4 @@
+import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/pages/congratulations.dart';
@@ -70,6 +71,7 @@ class _CodeVerificationState extends State<CodeVerification> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final _signUpCubit = context.bloc<SignupCubit>();
+    final _loginCubit = context.bloc<LoginCubit>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -88,21 +90,11 @@ class _CodeVerificationState extends State<CodeVerification> {
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(20, 50, 20, 50),
                   child: Center(
-                    child: FutureBuilder<Map<String, String>>(
-                      future: _userDetailsFuture,
-                      builder: (context, snapshot) {
-                        if(snapshot.hasData){
-                          return CustomTextView(
-                            text: "Please enter the code we just texted to ${snapshot.data['username']}",
-                            textAlign: TextAlign.center,
-                            fontSize: 18,
-                          );
-                        }else if(snapshot.hasError){
-                          return Center(child: ErrorText(error: "${snapshot.error}"));
-                        }
-                        return Center(child: CustomProgressIndicator(size: 20,));
-                      }
-                    ),
+                    child: CustomTextView(
+                      text: "Please enter the code we just texted to ${widget.phoneNumber}",
+                      textAlign: TextAlign.center,
+                      fontSize: 18,
+                    )
                   ),
                 ),
               ),
@@ -250,10 +242,9 @@ class _CodeVerificationState extends State<CodeVerification> {
 
                             final fullCode = "$firstDigit$secondDigit$thirdDigit$fourthDigit$fifthDigit$sixthDigit";
 
-                            try{
-                              await _signUpCubit.startPhoneSignup(context ,verificationId: widget.verificationId, smsCode: fullCode);
-
+                            try{              
                               if(widget.isLogin){
+                                await _loginCubit.startFirebasePhoneLogin(widget.verificationId, fullCode);
                                 final exists = await _authRepo.userExists(username: widget.phoneNumber);
                                 if(!exists){
                                   _firebaseAuth.signOut();
@@ -270,6 +261,7 @@ class _CodeVerificationState extends State<CodeVerification> {
                                 Navigations.goToScreen(context, Home());
                               }
                               else {
+                                await _signUpCubit.startPhoneSignup(context ,verificationId: widget.verificationId, smsCode: fullCode);
                                 Navigations.goToScreen(context, Congratulations());
                               }
                               

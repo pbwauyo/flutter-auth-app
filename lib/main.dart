@@ -4,6 +4,7 @@ import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
+import 'package:auth_app/getxcontrollers/logged_in_username.dart';
 import 'package:auth_app/pages/contacts_list.dart';
 import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
@@ -14,10 +15,12 @@ import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/pref_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/instance_manager.dart';
 import 'package:provider/provider.dart';
 
 void main() async{
@@ -68,14 +71,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final LoggedInUsernameController loggedInUsernameController = Get.put(LoggedInUsernameController());
 
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration.zero, (){
-      context.bloc<AuthCubit>().checkLoggedInUser();
+    WidgetsBinding.instance.addPostFrameCallback((_) async{ 
+      final loggedIn = context.bloc<AuthCubit>().checkLoggedInUser();
+      if(loggedIn){
+        final username = await PrefManager.getLoginUsername();
+        print("USERNAME: $username");
+        loggedInUsernameController.loggedInUserEmail = username;
+      }
     });
+
+    // Future.delayed(Duration.zero, () async{
+      
+
+    // });
   }
 
   @override

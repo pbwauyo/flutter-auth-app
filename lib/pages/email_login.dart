@@ -1,4 +1,5 @@
 import 'package:auth_app/cubit/login_cubit.dart';
+import 'package:auth_app/getxcontrollers/logged_in_username.dart';
 import 'package:auth_app/pages/email_signup.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/phone_login.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/instance_manager.dart';
 
 class EmailLogin extends StatefulWidget {
   @override
@@ -26,6 +28,8 @@ class _EmailLoginState extends State<EmailLogin> {
   final _emailTxtController  = TextEditingController();
 
   final _passwordController = TextEditingController();
+
+  final LoggedInUsernameController _loggedInUsernameController = Get.find();
 
   @override
   Widget build(BuildContext context) {
