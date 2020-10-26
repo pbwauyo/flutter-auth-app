@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:auth_app/pages/gallery_images_grid_view.dart';
 import 'package:auth_app/pages/preview_image.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
@@ -23,7 +24,7 @@ class ChangeMomentImage extends StatefulWidget {
   final CameraDescription camera;
   final String momentId;
 
-  ChangeMomentImage({@required this.camera, @required this.momentId});
+  ChangeMomentImage({@required this.camera, this.momentId});
 
   @override
   _ChangeMomentImageState createState() => _ChangeMomentImageState();
@@ -64,10 +65,15 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                         try{
                           await _initialiseControllerFuture;
                           final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
-                          print('IMAGE PATH: $path');
                           await _cameraController.takePicture(path);
-                          _momentRepo.updateMomentImage(widget.momentId, path);
-                          Navigator.pop(context);
+
+                          final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
+                          if(takePictureType == MOMENT_IMAGE_ADD){
+                            Provider.of<FilePathProvider>(context, listen: false).filePath = path;
+                          }else{
+                            _momentRepo.updateMomentImage(widget.momentId, path);
+                            Navigator.pop(context);
+                          }
                         }catch(error){
                           print("CAMERA ERROR: $error");
                         }

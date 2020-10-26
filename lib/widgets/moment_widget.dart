@@ -140,7 +140,7 @@ class MomentWidget extends StatelessWidget {
                         final cameras = await availableCameras();
                         final permissionRequestStatus = await Permission.photos.request(); //this will help in showing the gallery images
                         if(permissionRequestStatus == PermissionStatus.granted){
-                          Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = "MOMENT_IMAGE";
+                          Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = "MOMENT_IMAGE_EDIT";
                           Provider.of<MomentIdProvider>(context, listen: false).momentid = moment.id;
                           Navigations.goToScreen(
                             context, 

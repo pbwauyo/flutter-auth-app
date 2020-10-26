@@ -1,6 +1,9 @@
 import 'package:auth_app/models/category.dart';
 import 'package:flutter/material.dart';
 
+const MOMENT_IMAGE_ADD = "MOMENT_IMAGE_ADD";
+const MOMENT_IMAGE_EDIT = "MOMENT_IMAGE_EDIT";
+
 class AssetNames {
   static const _BASE_ASSET_DIR = "assets/images";
 
@@ -111,6 +114,11 @@ class Constants {
     "People" : AssetNames.PEOPLE_LARGE,
     "Travel" : AssetNames.TRAVEL_LARGE
   };
+
+  static final List<String> months = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
 
 }
 

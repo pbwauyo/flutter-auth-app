@@ -64,7 +64,7 @@ class _MomentInProgressState extends State<MomentInProgress> {
     final _homeCubit = context.bloc<HomeCubit>();
 
     try{
-      await _momentRepo.saveMoment(widget.moment);
+      await _momentRepo.saveMoment(context, widget.moment);
       _homeCubit.goToInitial();
       Navigator.pop(context);
     }catch(error){

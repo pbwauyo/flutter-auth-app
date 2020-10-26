@@ -44,16 +44,22 @@ class PreviewImage extends StatelessWidget {
                 return GestureDetector(
                   onTap: (){
                     final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
+                    int count = 0;
 
-                    if(takePictureType == "MOMENT_IMAGE"){
+                    if(takePictureType == MOMENT_IMAGE_EDIT){
                       final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
                       _momentRepo.updateMomentImage(momentId, imageFile.path);
-                      int count = 0;
                       Navigator.popUntil(context, (route) {
                           return count++ == 2;
                       });
 
-                    }else {
+                    }else if(takePictureType == MOMENT_IMAGE_ADD){
+                      Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
+                      Navigator.popUntil(context, (route) {
+                          return count++ == 2;
+                      });
+                    }
+                    else {
 
                       Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
                       Methods.showCustomSnackbar(context: context, message: "Image selected successfully");

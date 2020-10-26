@@ -54,7 +54,9 @@ dependencies:
   rxdart: ^0.24.1
   contacts_service: ^0.4.6
   get: ^3.13.2
-
+  flutter_datetime_picker: ^1.4.0
+  intl: ^0.16.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

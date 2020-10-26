@@ -102,6 +102,7 @@ class AuthRepo {
       appUser.photoUrl = downloadUrl;
     }
     await _firestore.collection("users").doc(appUser.username).set(appUser.toMap());
+    Provider.of<FilePathProvider>(context, listen: false).filePath = "";
   }
 
   Future<void> signUpWIthPhone(BuildContext context, {@required String verificationId, @required String smsCode}) async{
