@@ -90,7 +90,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                 textInputType: TextInputType.phone,
                                 placeholder: "Phone", 
                                 drawUnderlineBorder: true,
-                                showIcon: false,
                                 controller: _phoneTxtController, 
                               ),
                             ),

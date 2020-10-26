@@ -22,7 +22,6 @@ import 'package:permission_handler/permission_handler.dart';
 class Home extends StatelessWidget {
   final _momentRepo = MomentRepo();
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -38,7 +37,7 @@ class Home extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-
+          homeCubit.goToCreateMomentScreen(); 
         },
         child: Icon(Icons.add,
           color: Colors.black,

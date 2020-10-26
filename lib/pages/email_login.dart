@@ -17,8 +17,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class EmailLogin extends StatelessWidget {
+class EmailLogin extends StatefulWidget {
+  @override
+  _EmailLoginState createState() => _EmailLoginState();
+}
+
+class _EmailLoginState extends State<EmailLogin> {
   final _emailTxtController  = TextEditingController();
+
   final _passwordController = TextEditingController();
 
   @override
@@ -77,7 +83,7 @@ class EmailLogin extends StatelessWidget {
                             textInputType: TextInputType.emailAddress,
                             placeholder: "Email", 
                             drawUnderlineBorder: true,
-                            showIcon: false,
+                            prefixIcon: Icons.email,
                             controller: _emailTxtController, 
                           ),
                         ),
@@ -92,7 +98,6 @@ class EmailLogin extends StatelessWidget {
                             placeholder: "Password", 
                             controller: _passwordController,
                             prefixIcon: Icons.lock_open,
-                            showIcon: false,
                             drawUnderlineBorder: true,
                           ),
                         ),
@@ -208,5 +213,12 @@ class EmailLogin extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailTxtController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

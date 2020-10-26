@@ -10,7 +10,6 @@ class CustomInputField extends StatelessWidget {
   final IconData prefixIcon;
   final TextInputType textInputType;
   final bool obscureText;
-  final bool showIcon;
   final bool drawUnderlineBorder;
   final double widthFactor;
   final int maxLength;
@@ -23,7 +22,7 @@ class CustomInputField extends StatelessWidget {
   final Widget suffixWidget;
 
   CustomInputField({this.buildContext, @required this.placeholder, @required this.controller, this.widthFactor = 0.8,
-    this.prefixIcon, this.textInputType, this.obscureText = false, this.showIcon = true, this.drawUnderlineBorder = false, 
+    this.prefixIcon, this.textInputType, this.obscureText = false, this.drawUnderlineBorder = false, 
     this.maxLength, this.textAlign = TextAlign.center, this.focusNode, this.nextFocusNode, this.isLast = false, this.onChanged, 
     this.onEditingComplete, this.suffixWidget});
 
@@ -57,8 +56,8 @@ class CustomInputField extends StatelessWidget {
           border: drawUnderlineBorder ? UnderlineInputBorder() : InputBorder.none,
           hintText: placeholder,
           counterText: "",
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon) : Container(),
-          suffixIcon: suffixWidget != null ? suffixWidget : Container()
+          prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+          suffixIcon: suffixWidget != null ? suffixWidget : null,
         ),
         keyboardType: textInputType ?? TextInputType.text,
         obscureText: obscureText,

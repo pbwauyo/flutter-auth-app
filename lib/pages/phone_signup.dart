@@ -186,7 +186,6 @@ class _PhoneSignupState extends State<PhoneSignup> {
                                   textInputType: TextInputType.phone,
                                   placeholder: "Phone", 
                                   drawUnderlineBorder: true,
-                                  showIcon: false,
                                   controller: _phoneTxtController, 
                                 ),
                               ),

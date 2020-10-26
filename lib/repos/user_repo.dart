@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 class UserRepo {
+  final _firebaseAuth = FirebaseAuth.instance;
 
   Future<String> uploadFile({@required String filePath, @required String folderName}) async{
     final userId = FirebaseAuth.instance.currentUser.uid;
@@ -16,5 +17,9 @@ class UserRepo {
     await uploadTask.onComplete;
     final downloadUrl = await storageReference.getDownloadURL();
     return downloadUrl.toString();
+  }
+
+  String getCurrentUserEmail(){
+    return _firebaseAuth.currentUser.email;
   }
 }
