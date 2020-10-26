@@ -73,8 +73,8 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
           width: 150,
           child: Slider(
             min: 1.0,
-            max: 3.0,
-            divisions: 2,
+            max: 4.0,
+            divisions: 3,
             value: _sliderValue, 
             onChanged: (newValue){
               setState(() {

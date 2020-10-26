@@ -1,6 +1,7 @@
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/repos/user_repo.dart';
+import 'package:auth_app/utils/pref_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MomentRepo {
@@ -12,7 +13,7 @@ class MomentRepo {
   Future<void> saveMoment(Moment moment) async{
     final id = _allMomentsCollectionRef.doc().id;
     moment.id = id;
-    moment.creator = _userRepo.getCurrentUserEmail();
+    moment.creator = await PrefManager.getLoginUsername();
     await _allMomentsCollectionRef.doc(id).set(moment.toMap());
   }
 

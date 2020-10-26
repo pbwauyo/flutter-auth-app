@@ -68,11 +68,10 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 child: CustomInputField(
                   placeholder: "Write here", 
                   controller: _titleController,
-                  suffixWidget: Align(
-                    alignment: Alignment.centerRight,
-                    child: Ring(size: 25, width: 4,)
-                  ),
+                  textAlign: TextAlign.start,
+                  suffixIcon: Icons.trip_origin,
                   drawUnderlineBorder: true,
+                  suffixIconColor: AppColors.PRIMARY_COLOR,
                 ),
               )
             ],
@@ -92,12 +91,9 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 Container(
                   child: CustomInputField(
                     placeholder: "Write a location", 
+                    textAlign: TextAlign.start,
                     controller: _locationController,
                     prefixIcon: Icons.location_on,
-                    suffixWidget: Align(
-                      alignment: Alignment.centerRight,
-                      child: Ring(size: 25, width: 4,)
-                    ),
                     drawUnderlineBorder: true,
                   ),
                 )
@@ -118,14 +114,13 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 ),
                 Container(
                   child: CustomInputField(
+                    textAlign: TextAlign.start,
                     placeholder: "Start by typing names", 
                     controller: _attendeesController,
                     prefixIcon: Icons.person,
-                    suffixWidget: Align(
-                      alignment: Alignment.centerRight,
-                      child: Ring(size: 25, width: 4,)
-                    ),
+                    suffixIcon: Icons.trip_origin,
                     drawUnderlineBorder: true,
+                    suffixIconColor: AppColors.PRIMARY_COLOR,
                   ),
                 )
               ],
@@ -145,14 +140,13 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 ),
                 Container(
                   child: CustomInputField(
+                    textAlign: TextAlign.start,
                     placeholder: "Date & Time", 
                     controller: _dateTimeController,
                     prefixIcon: Icons.schedule,
-                    suffixWidget: Align(
-                      alignment: Alignment.centerRight,
-                      child: Ring(size: 25, width: 4,)
-                    ),
+                    suffixIcon: Icons.trip_origin,
                     drawUnderlineBorder: true,
+                    suffixIconColor: AppColors.PRIMARY_COLOR,
                   ),
                 )
               ],
@@ -172,6 +166,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 ),
                 Container(
                   child: CustomInputField(
+                    textAlign: TextAlign.start,
                     placeholder: "Write here", 
                     controller: _notesController,
                     drawUnderlineBorder: true,
