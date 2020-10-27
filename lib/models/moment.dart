@@ -3,7 +3,7 @@ class Moment {
   String creator;
   String title;
   String location;
-  String attendees;
+  List<Map<String, String>> attendees;
   String dateTime;
   String notes;
   String imageUrl;
@@ -17,7 +17,7 @@ class Moment {
       creator: map["creator"],
       title: map["title"],
       location: map["location"],
-      attendees: map["attendees"],
+      attendees: List<dynamic>.from(map["attendees"]).cast<Map<String, String>>(),
       dateTime: map["dateTime"],
       notes: map["notes"],
       imageUrl: map["imageUrl"],
@@ -25,13 +25,13 @@ class Moment {
     );
   }
 
-  Map<String, String> toMap(){
+  Map<String, dynamic> toMap(){
     return {
       "id" : id,
       "creator" : creator,
       "title" : title ?? "",
       "location" : location ?? "",
-      "attendees" : attendees ?? "",
+      "attendees" : attendees ?? [],
       "dateTime" : dateTime ?? "",
       "notes" : notes ?? "",
       "imageUrl" : imageUrl ?? "",

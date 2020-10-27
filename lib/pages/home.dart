@@ -202,14 +202,14 @@ class Home extends StatelessWidget {
             )
           ),
 
-          Positioned(
-            bottom: 60,
-            left: -15,
-            child: Ring(
-              size: 50,
-              width: 4,
-            )
-          ),
+          // Positioned(
+          //   bottom: 60,
+          //   left: -15,
+          //   child: Ring(
+          //     size: 50,
+          //     width: 4,
+          //   )
+          // ),
         ],
       ),
     );

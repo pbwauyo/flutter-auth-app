@@ -6,11 +6,17 @@ import 'package:auth_app/pages/moment_in_progress.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/widgets/contact_avatar.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
+import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
+import 'package:auth_app/widgets/empty_results_text.dart';
+import 'package:auth_app/widgets/error_text.dart';
 import 'package:auth_app/widgets/ring.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:camera/camera.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/instance_manager.dart';
@@ -45,9 +51,19 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
   final _notesController = TextEditingController();
   final _namesController = TextEditingController();
   final CreateMomentController _createMomentController = Get.find();
+  final _autoCompleteTextFieldKey = GlobalKey<AutoCompleteTextFieldState<Contact>>();
+
+  Future<List<Contact>> _contactsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _contactsFuture = _fetchAllContacts();
+  }
  
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     
     return ListView(
       children: [
@@ -149,6 +165,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
 
         Center(
           child: Container(
+            width: screenWidth * 0.8,
             margin: const EdgeInsets.only(top: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -157,17 +174,78 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 CustomTextView(
                   text: "Who do you want to attend with?"
                 ),
-                Container(
-                  child: CustomInputField(
-                    textAlign: TextAlign.start,
-                    placeholder: "Start by typing names", 
-                    controller: _attendeesController,
-                    prefixIcon: Icons.person,
-                    suffixIcon: Icons.trip_origin,
-                    drawUnderlineBorder: true,
-                    suffixIconColor: AppColors.PRIMARY_COLOR,
-                  ),
-                )
+                FutureBuilder<List<Contact>>(
+                  future: _contactsFuture,
+                  builder: (context, snapshot) {
+
+                    if(snapshot.hasData){
+                      final contacts = snapshot.data;
+
+                      if(contacts.length <= 0){
+                        return Center(
+                          child: EmptyResultsText(message: "No contacts to show")
+                        );
+                      }
+
+                      return Container(
+                        child: AutoCompleteTextField<Contact>(
+                          controller: _attendeesController,
+                          itemSubmitted: (contact){
+                            _attendeesController.text = contact.displayName;
+                          }, 
+                          key: _autoCompleteTextFieldKey, 
+                          suggestions: contacts, 
+                          itemBuilder: (context, contactSuggestion){
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
+                              child: ListTile(
+                                leading: ContactAvatar(
+                                  initials: contactSuggestion.initials(),
+                                  size: 30,
+                                ),
+                                title: CustomTextView(
+                                  fontSize: 13,
+                                  text: contactSuggestion.displayName
+                                ),
+                              )
+                            );
+                          }, 
+                          itemSorter: (contact_1, contact_2){
+                            return 0;
+                          }, 
+                          itemFilter: (contactSuggestion, query){
+                            return contactSuggestion.displayName.toLowerCase().contains(query.toLowerCase());
+                          },
+                          clearOnSubmit: false,
+                          decoration: InputDecoration(
+                            hintText: "Start by typing names",
+                            prefixIcon: Icon(Icons.person, color: AppColors.PRIMARY_COLOR,) ,
+                            suffixIcon: Icon(Icons.trip_origin, color: AppColors.PRIMARY_COLOR,),
+                            border: UnderlineInputBorder(),
+                          ),
+                        ),
+                      );
+                    }else if(snapshot.hasError){
+                      return Center(
+                        child: ErrorText(error: "${snapshot.error}"),
+                      );
+                    }
+                    return Center(
+                      child: CustomProgressIndicator(),
+                    );
+                  }
+                ),
+                // Container(
+                //   child: CustomInputField(
+                //     textAlign: TextAlign.start,
+                //     placeholder: "Start by typing names", 
+                //     controller: _attendeesController,
+                //     prefixIcon: Icons.person,
+                //     suffixIcon: Icons.trip_origin,
+                //     drawUnderlineBorder: true,
+                //     suffixIconColor: AppColors.PRIMARY_COLOR,
+                //   ),
+                // )
               ],
             ),
           ),
@@ -264,7 +342,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                   final moment = Moment(
                     title: title,
                     location: location,
-                    attendees: attendees,
+                    attendees: [],
                     dateTime: dateTime,
                     notes: notes,
                     category: _createMomentController.categoryName.value
@@ -278,6 +356,16 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
         )
       ],
     );
+  }
+
+  Future<List<Contact>> _fetchAllContacts() async{
+    final permissionStatus = await Permission.contacts.request();
+    if(permissionStatus.isGranted){
+      return (await ContactsService.getContacts()).toList();
+    }
+    else {
+      return [];
+    }
   }
 
   @override
