@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auth_app/getxcontrollers/contacts_controller.dart';
 import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/moment_in_progress.dart';
@@ -19,6 +20,7 @@ import 'package:camera/camera.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -51,6 +53,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
   final _notesController = TextEditingController();
   final _namesController = TextEditingController();
   final CreateMomentController _createMomentController = Get.find();
+  final ContactsController _contactsController = Get.put(ContactsController());
   final _autoCompleteTextFieldKey = GlobalKey<AutoCompleteTextFieldState<Contact>>();
 
   Future<List<Contact>> _contactsFuture;
@@ -188,42 +191,46 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                       }
 
                       return Container(
-                        child: AutoCompleteTextField<Contact>(
-                          controller: _attendeesController,
-                          itemSubmitted: (contact){
-                            _attendeesController.text = contact.displayName;
-                          }, 
-                          key: _autoCompleteTextFieldKey, 
-                          suggestions: contacts, 
-                          itemBuilder: (context, contactSuggestion){
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
-                              child: ListTile(
-                                leading: ContactAvatar(
-                                  initials: contactSuggestion.initials(),
-                                  size: 30,
-                                ),
-                                title: CustomTextView(
-                                  fontSize: 13,
-                                  text: contactSuggestion.displayName
-                                ),
-                              )
-                            );
-                          }, 
-                          itemSorter: (contact_1, contact_2){
-                            return 0;
-                          }, 
-                          itemFilter: (contactSuggestion, query){
-                            return contactSuggestion.displayName.toLowerCase().contains(query.toLowerCase());
-                          },
-                          clearOnSubmit: false,
-                          decoration: InputDecoration(
-                            hintText: "Start by typing names",
-                            prefixIcon: Icon(Icons.person, color: AppColors.PRIMARY_COLOR,) ,
-                            suffixIcon: Icon(Icons.trip_origin, color: AppColors.PRIMARY_COLOR,),
-                            border: UnderlineInputBorder(),
-                          ),
-                        ),
+                        child: Obx((){
+                          print('CURRENT CONTACTS: ${_contactsController.contacts.length}');
+                          return AutoCompleteTextField<Contact>(
+                            controller: _attendeesController,
+                            itemSubmitted: (contact){
+                              _contactsController.contacts.add(contact);
+                              _attendeesController.text = "";
+                            }, 
+                            key: _autoCompleteTextFieldKey, 
+                            suggestions: contacts, 
+                            itemBuilder: (context, contactSuggestion){
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
+                                child: ListTile(
+                                  leading: ContactAvatar(
+                                    initials: contactSuggestion.initials(),
+                                    size: 30,
+                                  ),
+                                  title: CustomTextView(
+                                    fontSize: 13,
+                                    text: contactSuggestion.displayName
+                                  ),
+                                )
+                              );
+                            }, 
+                            itemSorter: (contact_1, contact_2){
+                              return 0;
+                            }, 
+                            itemFilter: (contactSuggestion, query){
+                              return contactSuggestion.displayName.toLowerCase().contains(query.toLowerCase());
+                            },
+                            clearOnSubmit: false,
+                            decoration: InputDecoration(
+                              hintText: _contactsController.contacts.length <= 0 ? "Start by typing names" : "Add more people",
+                              prefixIcon: Icon(Icons.person, color: AppColors.PRIMARY_COLOR,) ,
+                              suffixIcon: Icon(Icons.trip_origin, color: AppColors.PRIMARY_COLOR,),
+                              border: InputBorder.none
+                            ),
+                          );
+                        }),
                       );
                     }else if(snapshot.hasError){
                       return Center(
@@ -235,19 +242,33 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                     );
                   }
                 ),
-                // Container(
-                //   child: CustomInputField(
-                //     textAlign: TextAlign.start,
-                //     placeholder: "Start by typing names", 
-                //     controller: _attendeesController,
-                //     prefixIcon: Icons.person,
-                //     suffixIcon: Icons.trip_origin,
-                //     drawUnderlineBorder: true,
-                //     suffixIconColor: AppColors.PRIMARY_COLOR,
-                //   ),
-                // )
               ],
             ),
+          ),
+        ),
+
+        Center(
+          child: Container(
+            width: screenWidth * 0.8,
+            child: Obx((){
+              return Wrap(
+                spacing: 3.0,
+                runSpacing: 2.0,
+                children: _contactsController.contacts.map(
+                  (contact) => ContactAvatar(
+                    initials: contact.initials(),
+                    size: 25,
+                  )
+                ).toList(),
+              );
+            })
+          ),
+        ),
+
+        Center(
+          child: Container(
+            width: screenWidth * 0.8,
+            child: Divider(thickness: 1.5, color: AppColors.LIGHT_GREY_TEXT,)
           ),
         ),
 
@@ -274,7 +295,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                           final year = dateTime.year;
                           final hour = dateTime.hour;
                           final minute = dateTime.minute;
-                          _dateTimeController.text = "$hour:$minute, $day $month $year";
+                          _dateTimeController.text = "$hour:$minute, $day $month, $year";
                           
                           // final period = ;
                         },
@@ -333,16 +354,28 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
               child: RoundedRaisedButton(
                 text: "Make it happen", 
                 onTap: (){
+                  final List<Map<String, String>> attendees = [];
+                  _contactsController.contacts.forEach((contact) {
+                      final phones = contact.phones.toList();
+                      attendees.add({
+                        "id" : "${contact.identifier}",
+                        "displayName" : contact.displayName,
+                        "phoneNumber" : phones.length > 0 ? phones[0].value : "N/A"
+                      });
+                     }
+                  );
+
+                  _contactsController.contacts.clear();
+
                   final title = _titleController.text.trim();
                   final location = _locationController.text.trim();
-                  final attendees = _attendeesController.text.trim();
                   final dateTime = _dateTimeController.text.trim();
                   final notes = _notesController.text.trim();
 
                   final moment = Moment(
                     title: title,
                     location: location,
-                    attendees: [],
+                    attendees: attendees,
                     dateTime: dateTime,
                     notes: notes,
                     category: _createMomentController.categoryName.value
