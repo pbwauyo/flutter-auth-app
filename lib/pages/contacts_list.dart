@@ -105,6 +105,7 @@ class _ContactsListState extends State<ContactsList> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
+              height: 50,
               margin: const EdgeInsets.only(bottom: 10),
               child: FractionallySizedBox(
                 widthFactor: 0.8,

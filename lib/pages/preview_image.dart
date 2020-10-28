@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/models/memory.dart';
+import 'package:auth_app/pages/moment_in_progress.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
+import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
@@ -61,6 +63,14 @@ class PreviewImage extends StatelessWidget {
                       Navigator.popUntil(context, (route) {
                           return count++ == 2;
                       });
+                    }else if(takePictureType == MOMENT_IMAGE_HAPPENING_NOW){
+                      Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
+                      final moment = Provider.of<MomentProvider>(context, listen: false).moment;
+                      Navigator.popUntil(context, (route) {
+                          return count++ == 2;
+                      });
+                      Navigations.goToScreen(context, MomentInProgress(moment: moment));
+
                     }else if(takePictureType == MEMORY_IMAGE_ADD){
                       final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
                       _memoryRepo.postMemory(Memory(momentId: momentId), imageFile.path);

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auth_app/models/app_user.dart';
+import 'package:auth_app/utils/pref_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +27,12 @@ class UserRepo {
 
   String getCurrentUserEmail(){
     return _firebaseAuth.currentUser.email;
+  }
+
+  Future<AppUser> getCurrentUserDetails() async{
+    final username = await PrefManager.getLoginUsername();
+    final docSnapshot =await _usersCollectionRef.doc(username).get();
+    return AppUser.fromMap(docSnapshot.data());
   }
 
   Future<AppUser> getUserDetails(String username) async{

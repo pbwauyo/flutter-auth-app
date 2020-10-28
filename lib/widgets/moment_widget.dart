@@ -2,8 +2,11 @@ import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/add_memory.dart';
 import 'package:auth_app/pages/change_moment_image.dart';
+import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
+import 'package:auth_app/repos/memory_repo.dart';
+import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
@@ -13,10 +16,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class MomentWidget extends StatelessWidget {
+class MomentWidget extends StatefulWidget {
   final Moment moment;
 
   MomentWidget({@required this.moment});
+
+  @override
+  _MomentWidgetState createState() => _MomentWidgetState();
+}
+
+class _MomentWidgetState extends State<MomentWidget> {
+  final _momentRepo = MomentRepo();
+
+  var _tapPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +37,33 @@ class MomentWidget extends StatelessWidget {
 
     return GestureDetector(
       onTap: (){
-        homeCubit.goToMomentDetailsScreen(moment);
+        homeCubit.goToMomentDetailsScreen(widget.moment);
+      },
+      onTapDown: _storePosition,
+      onLongPress: (){
+        final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+        showMenu(
+          initialValue: 2,
+          context: context, 
+          position: RelativeRect.fromRect(
+              _tapPosition & const Size(40, 40), // smaller rect, the touch area
+              Offset.zero & overlay.size   // Bigger rect, the entire screen
+          ),
+          items: <PopupMenuEntry<int>>[
+            PopupMenuItem(value: 1, child: CustomTextView(text: "DELETE", textColor: Colors.red,)),
+            PopupMenuItem(value: 2, child: CustomTextView(text: "EDIT", textColor: Colors.orange,))
+          ]
+        ).then((value){
+          if(value == 1){
+            _momentRepo.deleteMoment(momentId: widget.moment.id);
+          }else{
+            final imageUrl = widget.moment.imageUrl;
+            homeCubit.goToAddMomentDetailsScreen(moment: widget.moment);
+            if(imageUrl.isNotEmpty){
+              Provider.of<FilePathProvider>(context, listen: false).filePath = imageUrl;
+            }
+          }
+        });
       },
       child: Card(
         elevation: 4.0,
@@ -42,9 +80,9 @@ class MomentWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                 image: DecorationImage(
-                  image: moment.imageUrl.isNotEmpty ? 
-                    NetworkImage(moment.imageUrl) :
-                    AssetImage(Constants.momentImages[moment.category]),
+                  image: widget.moment.imageUrl.isNotEmpty ? 
+                    NetworkImage(widget.moment.imageUrl) :
+                    AssetImage(Constants.momentImages[widget.moment.category]),
                   fit: BoxFit.cover
                 )
               ),
@@ -56,7 +94,7 @@ class MomentWidget extends StatelessWidget {
                 margin: const EdgeInsets.only(left: 20, top: 15),
                 child: CustomTextView(
                   fontSize: 18,
-                  text: moment.title,
+                  text: widget.moment.title,
                   bold: true,
                 ),
               ),
@@ -77,7 +115,7 @@ class MomentWidget extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: CustomTextView(
-                          text: moment.location,
+                          text: widget.moment.location,
                           textColor: AppColors.LIGHT_GREY_TEXT,
                         ),
                       )
@@ -93,7 +131,7 @@ class MomentWidget extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: CustomTextView(
-                          text: moment.dateTime,
+                          text: widget.moment.dateTime,
                           textColor: AppColors.LIGHT_GREY_TEXT,
                         ),
                       )
@@ -161,7 +199,7 @@ class MomentWidget extends StatelessWidget {
 
                           if(permissionStatus.isGranted){
                             final cameras = await availableCameras();
-                            Provider.of<MomentIdProvider>(context, listen: false).momentid = moment.id;
+                            Provider.of<MomentIdProvider>(context, listen: false).momentid = widget.moment.id;
                             Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MEMORY_IMAGE_ADD;
                             Navigations.goToScreen(context, AddMemory(camera: cameras.first));
                           }   
@@ -188,5 +226,9 @@ class MomentWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+   void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
   }
 }

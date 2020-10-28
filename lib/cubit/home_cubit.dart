@@ -20,8 +20,12 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomePickCategory());
   }
 
-  goToAddMomentDetailsScreen(){
-    emit(HomeAddMomentDetails());
+  goToAddMomentDetailsScreen({Moment moment}){
+    if(moment != null){
+      emit(HomeAddMomentDetails(moment: moment));
+    }else {
+      emit(HomeAddMomentDetails());
+    }   
   }
   
   goToMomentDetailsScreen(Moment moment){

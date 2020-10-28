@@ -13,7 +13,10 @@ class HomeCreateMoment extends HomeState {}
 
 class HomePickCategory extends HomeState {}
 
-class HomeAddMomentDetails extends HomeState {}
+class HomeAddMomentDetails extends HomeState {
+  final Moment moment;
+  HomeAddMomentDetails({this.moment});
+}
 
 class HomeMomentDetails extends HomeState {
   final Moment moment;

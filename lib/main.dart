@@ -13,6 +13,7 @@ import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
+import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/pref_manager.dart';
@@ -22,6 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
 import 'package:provider/provider.dart';
+
+import 'getxcontrollers/create_moment_controller.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => FilePathProvider()),
         ChangeNotifierProvider(create: (context) => TakePictureTypeProvider()),
         ChangeNotifierProvider(create: (context) => MomentIdProvider()),
+        ChangeNotifierProvider(create: (context) => MomentProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -72,6 +76,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final LoggedInUsernameController loggedInUsernameController = Get.put(LoggedInUsernameController());
+  final CreateMomentController controller = Get.put(CreateMomentController());
 
   @override
   void initState() {

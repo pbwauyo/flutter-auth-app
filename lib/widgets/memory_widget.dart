@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 
 class MemoryWidget extends StatelessWidget{
   final Memory memory;
-  final double size = 160;
+  final double width;
+  final double height;
 
-  MemoryWidget({@required this.memory});
+  MemoryWidget({@required this.memory, this.width = 160, this.height = 160});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: size,
+      height: height,
       child: Stack(
         children: [
           Card(
@@ -21,8 +22,8 @@ class MemoryWidget extends StatelessWidget{
               borderRadius: BorderRadius.circular(10.0)
             ),
             child: Container(
-              height: size,
-              width: size,
+              height: height,
+              width: width,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 image: DecorationImage(

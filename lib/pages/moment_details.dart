@@ -3,6 +3,7 @@ import 'package:auth_app/models/comment.dart';
 import 'package:auth_app/models/memory.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/add_memory.dart';
+import 'package:auth_app/pages/all_memories.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/comment_repo.dart';
@@ -159,9 +160,14 @@ class MomentDetails extends StatelessWidget {
                     CustomTextView(
                       text: "Memories",
                     ),
-                    CustomTextView(
-                      text: "SEE ALL",
-                      showUnderline: true,
+                    GestureDetector(
+                      onTap: (){
+                        Navigations.goToScreen(context, AllMemories());
+                      },
+                      child: CustomTextView(
+                        text: "SEE ALL",
+                        showUnderline: true,
+                      ),
                     ),
                   ],
                 ),

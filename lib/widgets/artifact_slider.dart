@@ -42,7 +42,6 @@ class _ArtifactSliderState extends State<ArtifactSlider> {
           onChanged: (newValue){
             setState(() {
               _sliderValue = newValue;
-              print("VALUE: $newValue");
             });
           },
           onChangeEnd: (newValue){

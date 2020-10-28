@@ -17,16 +17,24 @@ class MomentRepo {
   CollectionReference get _allMomentsCollectionRef => _firestore.collection("moments");
 
   Future<void> saveMoment(BuildContext context, Moment moment) async{
-    final id = _allMomentsCollectionRef.doc().id;
+    if(moment.id.isEmpty){
+      final id = _allMomentsCollectionRef.doc().id;
+      moment.id = id;
+    } 
+
     final filePathProvider =  Provider.of<FilePathProvider>(context, listen: false);
     final photoPath = filePathProvider.filePath;
     if(photoPath.trim().length > 0){
-      final downloadUrl = await _userRepo.uploadFile(filePath: photoPath, folderName: "moment_images");
-      moment.imageUrl = downloadUrl;
+      if(photoPath.startsWith("http")){
+        moment.imageUrl = photoPath;
+      }else{
+        final downloadUrl = await _userRepo.uploadFile(filePath: photoPath, folderName: "moment_images");
+        moment.imageUrl = downloadUrl;
+      }
     }
-    moment.id = id;
+    
     moment.creator = await PrefManager.getLoginUsername();
-    await _allMomentsCollectionRef.doc(id).set(moment.toMap(), SetOptions(merge: true));
+    await _allMomentsCollectionRef.doc(moment.id).set(moment.toMap(), SetOptions(merge: true));
     filePathProvider.filePath = ""; //reset file path
   }
 

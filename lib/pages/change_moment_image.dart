@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/gallery_images_grid_view.dart';
+import 'package:auth_app/pages/moment_in_progress.dart';
 import 'package:auth_app/pages/preview_image.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
@@ -70,7 +73,11 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                           final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
                           if(takePictureType == MOMENT_IMAGE_ADD){
                             Provider.of<FilePathProvider>(context, listen: false).filePath = path;
-                          }else{
+                          }else if(takePictureType == MOMENT_IMAGE_HAPPENING_NOW){
+                            Provider.of<FilePathProvider>(context, listen: false).filePath = path;
+                            final moment = Provider.of<MomentProvider>(context, listen: false).moment;
+                            Navigations.goToScreen(context, MomentInProgress(moment: moment));
+                          } else{
                             _momentRepo.updateMomentImage(widget.momentId, path);
                             Navigator.pop(context);
                           }

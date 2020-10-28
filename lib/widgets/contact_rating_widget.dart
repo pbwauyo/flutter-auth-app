@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:auth_app/getxcontrollers/contact_slider_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
+import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/contact_avatar.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
@@ -21,7 +21,7 @@ class ContactRatingWidget extends StatefulWidget {
 }
 
 class _ContactRatingWidgetState extends State<ContactRatingWidget> {
-  final ContactSliderController _contactSliderController = Get.put(ContactSliderController());
+  final _happrContactRepo = HapprContactRepo();  
 
   double _sliderValue = 0.0;
 
@@ -65,11 +65,13 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
               onChanged: (newValue){
                 setState(() {
                   _sliderValue = newValue;
-                  print("VALUE: $newValue");
                 });
               },
               onChangeEnd: (newValue){
-
+                _happrContactRepo.setHapprContactRating(
+                  happrContact: widget.happrContact, 
+                  rating: newValue
+                );
               },
             ),
           ),

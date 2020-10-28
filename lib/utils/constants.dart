@@ -1,9 +1,11 @@
 import 'package:auth_app/models/category.dart';
 import 'package:auth_app/models/memory.dart';
+import 'package:auth_app/models/moment.dart';
 import 'package:flutter/material.dart';
 
 const MOMENT_IMAGE_ADD = "MOMENT_IMAGE_ADD";
 const MOMENT_IMAGE_EDIT = "MOMENT_IMAGE_EDIT";
+const MOMENT_IMAGE_HAPPENING_NOW = "MOMENT_IMAGE_HAPPENING_NOW";
 const MEMORY_IMAGE_ADD = "MEMORY_IMAGE_ADD";
 
 const ARTIFACT_TYPE_MEMORY = "MEMORY";
@@ -129,6 +131,58 @@ class Constants {
   static final List<String> months = [
     "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"
+  ];
+
+  static final List<Moment> randomMoments = [
+    Moment(
+      title: "Tasty food",
+      location: "Karachi",
+      attendees: [],
+      dateTime: "1 Pm, 21 October 2020",
+      imageUrl: "",
+      category: "Food",
+      id: ""
+    ),
+
+     Moment(
+      title: "Family Outing",
+      location: "Islamabad",
+      attendees: [],
+      dateTime: "3 PM, 23 July 2020",
+      imageUrl: "",
+      category: "People",
+      id: ""
+    ),
+
+     Moment(
+      title: "Hang out with friends",
+      location: "Lahore",
+      attendees: [],
+      dateTime: "4 PM, 25 June 2020",
+      imageUrl: "",
+      category: "Beach",
+      id: ""
+    ),
+
+    Moment(
+      title: "Go for a fashion night",
+      location: "Swat",
+      attendees: [],
+      dateTime: "2 PM, 25 May 2020",
+      imageUrl: "",
+      category: "Fashion",
+      id: ""
+    ),
+
+    Moment(
+      title: "Visit ancient sites",
+      location: "Mohenjo Daro",
+      attendees: [],
+      dateTime: "8 AM, 25 May 2020",
+      imageUrl: "",
+      category: "Travel",
+      id: ""
+    ),
   ];
 
   static final Map<String, String> memoryImages = {

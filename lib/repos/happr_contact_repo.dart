@@ -11,10 +11,8 @@ class HapprContactRepo {
   final LoggedInUsernameController _loggedInUsernameController = Get.find();
 
   Future<void> postHapprContact(HapprContact happrContact) async{
-    final id = _happrContactCollectionsRef.doc().id;
-    happrContact.id = id;
     happrContact.ownerUsername = await PrefManager.getLoginUsername();
-    await _happrContactCollectionsRef.doc(id).set(happrContact.toMap(), SetOptions(merge: true));
+    await _happrContactCollectionsRef.doc(happrContact.id).set(happrContact.toMap(), SetOptions(merge: true));
   }
 
   Stream<QuerySnapshot> getHapprContactsAsStream(){
