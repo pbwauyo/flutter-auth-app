@@ -1,3 +1,5 @@
+import 'package:auth_app/models/memory.dart';
+import 'package:auth_app/models/moment.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -18,8 +20,15 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomePickCategory());
   }
 
-  goToMomentDetailsScreen(){
-    emit(HomeMomentDetails());
+  goToAddMomentDetailsScreen(){
+    emit(HomeAddMomentDetails());
+  }
+  
+  goToMomentDetailsScreen(Moment moment){
+    emit(HomeMomentDetails(moment));
   }
 
+  goToMemoryDetailsScreen(Memory memory){
+    emit(HomeMemoryDetails(memory));
+  }
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:auth_app/models/app_user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,6 +10,9 @@ import 'package:path/path.dart';
 
 class UserRepo {
   final _firebaseAuth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  CollectionReference get _usersCollectionRef => _firestore.collection("users");
 
   Future<String> uploadFile({@required String filePath, @required String folderName}) async{
     final userId = FirebaseAuth.instance.currentUser.uid;
@@ -21,5 +26,14 @@ class UserRepo {
 
   String getCurrentUserEmail(){
     return _firebaseAuth.currentUser.email;
+  }
+
+  Future<AppUser> getUserDetails(String username) async{
+    final docSnapshot = await _usersCollectionRef.doc(username).get();
+    if(docSnapshot.exists){
+      return AppUser.fromMap(docSnapshot.data());
+    }else {
+      return AppUser();
+    }
   }
 }

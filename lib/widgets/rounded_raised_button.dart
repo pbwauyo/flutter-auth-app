@@ -16,11 +16,12 @@ class RoundedRaisedButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool showProgress;
   final Color borderColor;
+  final Icon leadingIcon;
 
   RoundedRaisedButton({@required this.text, this.bgColor = AppColors.PRIMARY_COLOR, 
       this.borderRadius = 25, this.elevation = 3.0, this.textColor = Colors.black, 
       this.fontSize = 16, this.bold = false, this.padding, @required this.onTap, 
-      this.showProgress = false, this.borderColor = AppColors.PRIMARY_COLOR});
+      this.showProgress = false, this.borderColor = AppColors.PRIMARY_COLOR, this.leadingIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +38,22 @@ class RoundedRaisedButton extends StatelessWidget {
       onPressed: showProgress ? null : onTap,
       child: Container(
         child: !showProgress ? 
-          CustomTextView(
-            text: text,
-            fontSize: fontSize,
-            bold: bold,
-            textColor: textColor,
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 5.0),
+                  child: leadingIcon
+                ) ?? Container(),
+                CustomTextView(
+                  text: text,
+                  fontSize: fontSize,
+                  bold: bold,
+                  textColor: textColor,
+                ),
+              ],
+            ),
           ) :
           CustomProgressIndicator(size: fontSize, color: Colors.white,)
       ),

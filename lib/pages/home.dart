@@ -4,6 +4,8 @@ import 'package:auth_app/pages/add_moment_details.dart';
 import 'package:auth_app/pages/create_happy_moment.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/location_permission.dart';
+import 'package:auth_app/pages/memory_details.dart';
+import 'package:auth_app/pages/moment_details.dart';
 import 'package:auth_app/pages/pick_category.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
@@ -103,6 +105,14 @@ class Home extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Ring(
+              size: 25,
+              width: 4,
+            )
+          ),
           BlocBuilder<HomeCubit, HomeState>(
             builder: (context, state) {
               if(state is HomeCreateMoment){
@@ -112,6 +122,12 @@ class Home extends StatelessWidget {
                 return PickCategory();
               }
               else if(state is HomeMomentDetails){
+                return MomentDetails(moment: state.moment);
+              }
+              else if(state is HomeMemoryDetails){
+                return MemoryDetails(memory: state.memory);
+              }
+              else if(state is HomeAddMomentDetails){
                 return AddMomentDetails();
               }
               else {
@@ -191,15 +207,6 @@ class Home extends StatelessWidget {
                 );
               }
             }
-          ),
-
-           Positioned(
-            bottom: 10,
-            right: 10,
-            child: Ring(
-              size: 25,
-              width: 4,
-            )
           ),
 
           // Positioned(

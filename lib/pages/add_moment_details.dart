@@ -224,7 +224,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                             },
                             clearOnSubmit: false,
                             decoration: InputDecoration(
-                              hintText: _contactsController.contacts.length <= 0 ? "Start by typing names" : "Add more people",
+                              hintText: _contactsController.contacts.length <= 0 ? "Start by typing names" : "Add more people", //bug here
                               prefixIcon: Icon(Icons.person, color: AppColors.PRIMARY_COLOR,) ,
                               suffixIcon: Icon(Icons.trip_origin, color: AppColors.PRIMARY_COLOR,),
                               border: InputBorder.none

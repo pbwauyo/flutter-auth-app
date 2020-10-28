@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:auth_app/getxcontrollers/contact_slider_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
+import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/contact_avatar.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -22,7 +23,7 @@ class ContactRatingWidget extends StatefulWidget {
 class _ContactRatingWidgetState extends State<ContactRatingWidget> {
   final ContactSliderController _contactSliderController = Get.put(ContactSliderController());
 
-  double _sliderValue = 1.0;
+  double _sliderValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,21 +51,29 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
         
         Container(
           width: 150,
-          child: Slider(
-            min: 1.0,
-            max: 4.0,
-            divisions: 3,
-            value: _sliderValue, 
-            onChanged: (newValue){
-              setState(() {
-                _sliderValue = newValue;
-              });
-            },
-            onChangeEnd: (newValue){
+          child: SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              valueIndicatorColor: Constants.SLIDER_LABEL_COLORS[_sliderValue]
+            ),
+            child: Slider(
+              min: 0.0,
+              max: 3.0,
+              label: Constants.SLIDER_LABELS[_sliderValue],
+              
+              divisions: 3,
+              value: _sliderValue, 
+              onChanged: (newValue){
+                setState(() {
+                  _sliderValue = newValue;
+                  print("VALUE: $newValue");
+                });
+              },
+              onChangeEnd: (newValue){
 
-            },
+              },
+            ),
           ),
-        ) 
+        )
       ],
     );
   }

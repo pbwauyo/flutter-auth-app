@@ -90,7 +90,7 @@ class _PickCategoryState extends State<PickCategory> {
                   (category) => GestureDetector(
                     onTap: (){
                       createMomentController.categoryName.value = category.name;
-                      homeCubit.goToMomentDetailsScreen();
+                      homeCubit.goToAddMomentDetailsScreen();
                     },
                     child: CategoryWidget(category: category))
                   ).toList(),

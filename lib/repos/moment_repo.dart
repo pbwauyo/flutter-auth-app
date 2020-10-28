@@ -26,7 +26,7 @@ class MomentRepo {
     }
     moment.id = id;
     moment.creator = await PrefManager.getLoginUsername();
-    await _allMomentsCollectionRef.doc(id).set(moment.toMap());
+    await _allMomentsCollectionRef.doc(id).set(moment.toMap(), SetOptions(merge: true));
     filePathProvider.filePath = ""; //reset file path
   }
 
@@ -39,4 +39,11 @@ class MomentRepo {
     await _allMomentsCollectionRef.doc(momentId).set({"imageUrl" : downloadUrl}, SetOptions(merge: true));
   }
 
+  Future<void> deleteMoment({@required String momentId}) async{
+    await _allMomentsCollectionRef.doc(momentId).delete();
+  }
+
+  // Future<void> updateMoment({@required Moment newMoment}) async{
+  //   await 
+  // }
 }

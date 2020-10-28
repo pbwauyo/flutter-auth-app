@@ -1,8 +1,13 @@
 import 'package:auth_app/models/category.dart';
+import 'package:auth_app/models/memory.dart';
 import 'package:flutter/material.dart';
 
 const MOMENT_IMAGE_ADD = "MOMENT_IMAGE_ADD";
 const MOMENT_IMAGE_EDIT = "MOMENT_IMAGE_EDIT";
+const MEMORY_IMAGE_ADD = "MEMORY_IMAGE_ADD";
+
+const ARTIFACT_TYPE_MEMORY = "MEMORY";
+const ARTIFACT_TYPE_MOMENT = "MOMENT";
 
 class AssetNames {
   static const _BASE_ASSET_DIR = "assets/images";
@@ -45,6 +50,12 @@ class AssetNames {
   static const String MUSEUM_LARGE = "$_BASE_ASSET_DIR/museum_large.jpg";
   static const String TRAVEL_LARGE = "$_BASE_ASSET_DIR/travel_large.jpg";
   static const String STACKED_IMAGES = "$_BASE_ASSET_DIR/stacked_images.png";
+  static const String DEFAULT_USER = "$_BASE_ASSET_DIR/default_user.png";
+  static const String YUMMY = "$_BASE_ASSET_DIR/yummy.jpg";
+  static const String BEEF_STEAK = "$_BASE_ASSET_DIR/beef_steak.jpg";
+  static const String SALADS = "$_BASE_ASSET_DIR/salads.jpg";
+  static const String PIZZA = "$_BASE_ASSET_DIR/pizza.jpg";
+  static const String CHICKEN = "$_BASE_ASSET_DIR/chicken.jpg";
 }
 
 class AppColors {
@@ -119,6 +130,54 @@ class Constants {
     "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"
   ];
+
+  static final Map<String, String> memoryImages = {
+    "Yummy" : AssetNames.YUMMY,
+    "Salads" : AssetNames.SALADS,
+    "Chicken" : AssetNames.CHICKEN,
+    "Beef Steak" : AssetNames.BEEF_STEAK,
+    "Pizza" : AssetNames.PIZZA
+  };
+
+  static final List<Memory> testMemoryMocks = [
+    Memory(
+      title: "Yummy",
+      image: "Yummy",
+    ),
+
+    Memory(
+      title: "I am hungry",
+      image: "Salads",
+    ),
+
+    Memory(
+      title: "Very tasty chicken",
+      image: "Chicken",
+    ),
+
+    Memory(
+      title: "The beef steak is really tasty.",
+      image: "Beef Steak",
+    ),
+
+    Memory(
+      title: "Really enjoyed the Pizza",
+      image: "Pizza",
+    ),
+  ];
+
+  static final Map<double, dynamic> SLIDER_LABELS = {
+    0.0 : null,
+    1.0 : "Happy",
+    2.0 : "Very Happy",
+    3.0 : "Blissful"
+  };
+
+  static final Map<double, Color> SLIDER_LABEL_COLORS = {
+    1.0 : AppColors.PRIMARY_COLOR,
+    2.0 : Colors.blue,
+    3.0 : Colors.greenAccent
+  };
 
 }
 
