@@ -1,4 +1,5 @@
 import 'package:auth_app/cubit/home_cubit.dart';
+import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/add_memory.dart';
 import 'package:auth_app/pages/change_moment_image.dart';
@@ -13,6 +14,7 @@ import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +29,7 @@ class MomentWidget extends StatefulWidget {
 
 class _MomentWidgetState extends State<MomentWidget> {
   final _momentRepo = MomentRepo();
+  final CreateMomentController _createMomentController = Get.find();
 
   var _tapPosition;
 
@@ -43,7 +46,6 @@ class _MomentWidgetState extends State<MomentWidget> {
       onLongPress: (){
         final RenderBox overlay = Overlay.of(context).context.findRenderObject();
         showMenu(
-          initialValue: 2,
           context: context, 
           position: RelativeRect.fromRect(
               _tapPosition & const Size(40, 40), // smaller rect, the touch area
@@ -56,12 +58,16 @@ class _MomentWidgetState extends State<MomentWidget> {
         ).then((value){
           if(value == 1){
             _momentRepo.deleteMoment(momentId: widget.moment.id);
-          }else{
+          }
+          else {
             final imageUrl = widget.moment.imageUrl;
-            homeCubit.goToAddMomentDetailsScreen(moment: widget.moment);
-            if(imageUrl.isNotEmpty){
+            if(imageUrl == null || imageUrl.isEmpty){
+              _createMomentController.categoryName.value = widget.moment.category;
+            }
+            else {
               Provider.of<FilePathProvider>(context, listen: false).filePath = imageUrl;
             }
+            homeCubit.goToAddMomentDetailsScreen(moment: widget.moment);      
           }
         });
       },

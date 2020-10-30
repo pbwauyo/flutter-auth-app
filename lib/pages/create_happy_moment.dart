@@ -55,9 +55,11 @@ class CreateHappyMoment extends StatelessWidget {
                     title: "1-Click HappyMoment", 
                     body: "Lorem ipsum dolor sit amet, conse",
                     onTap: (){
+                      final randomMoment = Constants.randomMoments[randomInt];
+                      
                       Navigations.goToScreen(context, 
                         MomentInProgress(
-                          moment: Constants.randomMoments[randomInt],
+                          moment: randomMoment,
                           isAutoMoment: true,
                         )
                       );
