@@ -15,7 +15,7 @@ class HapprContact {
       initials: map["initials"],
       rating: map["rating"],
       phone: map["phone"],
-      ownerUsername: map["ownerEmail"]
+      ownerUsername: map["ownerUsername"]
     );
   }
 
@@ -26,7 +26,7 @@ class HapprContact {
       "initials" : initials,
       "rating" : rating ?? 0.0,
       "phone" : phone ?? "",
-      "ownerEmail" : ownerUsername
+      "ownerUsername" : ownerUsername
     };
   }
 }
