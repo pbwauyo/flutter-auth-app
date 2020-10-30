@@ -197,10 +197,14 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                               if(_currentDescription == widget.cameras.first){
                                 setState(() {
                                   _currentDescription = widget.cameras.last;
+                                  _cameraController = CameraController(_currentDescription, ResolutionPreset.medium);
+                                  _initialiseControllerFuture = _cameraController.initialize();
                                 });
                               }else{
                                 setState(() {
                                   _currentDescription = widget.cameras.first;
+                                  _cameraController = CameraController(_currentDescription, ResolutionPreset.medium);
+                                  _initialiseControllerFuture = _cameraController.initialize();
                                 });
                               }
                             },
