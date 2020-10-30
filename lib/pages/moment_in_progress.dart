@@ -13,6 +13,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MomentInProgress extends StatefulWidget {
   final Moment moment;
@@ -71,21 +72,30 @@ class _MomentInProgressState extends State<MomentInProgress> {
 
     try{
       if(widget.isAutoMoment){
-        final contacts = (await ContactsService.getContacts()).toList().sublist(1, 10);
-        final currentUsername = await PrefManager.getLoginUsername();
-        final happrContacts = contacts.map((contact) => HapprContact(
-          id: contact.identifier,
-          initials: contact.initials(),
-          displayName: contact.displayName,
-          rating: 0.0,
-          phone: "",
-          ownerUsername: currentUsername
-        )).toList();
-        
-        happrContacts.forEach((happrContact) async{
-          await _happrContactsRepo.postHapprContact(happrContact);
-        });
+        final contactsPermissions = Permission.contacts;
+
+        if(!await contactsPermissions.isGranted){
+          final contactsPermissionStatus = await contactsPermissions.request();
+
+          if(contactsPermissionStatus.isGranted){
+            final contacts = (await ContactsService.getContacts()).toList().sublist(1, 10);
+            final currentUsername = await PrefManager.getLoginUsername();
+            final happrContacts = contacts.map((contact) => HapprContact(
+              id: contact.identifier,
+              initials: contact.initials(),
+              displayName: contact.displayName,
+              rating: 0.0,
+              phone: "",
+              ownerUsername: currentUsername
+            )).toList();
+            
+            happrContacts.forEach((happrContact) async{
+              await _happrContactsRepo.postHapprContact(happrContact);
+            });
+          }
+        } 
       }
+      
       await _momentRepo.saveMoment(context, widget.moment);
       _homeCubit.goToInitial();
       Navigator.pop(context);
