@@ -57,6 +57,7 @@ dependencies:
   flutter_datetime_picker: ^1.4.0
   intl: ^0.16.1
   autocomplete_textfield: ^1.7.3
+  photofilters: ^2.0.1
   
 dev_dependencies:
   flutter_test:

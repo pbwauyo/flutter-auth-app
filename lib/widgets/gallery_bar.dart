@@ -1,17 +1,36 @@
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:auth_app/models/memory.dart';
 import 'package:auth_app/pages/gallery_images_grid_view.dart';
+import 'package:auth_app/pages/moment_in_progress.dart';
 import 'package:auth_app/pages/preview_image.dart';
+import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/providers/moment_id_provider.dart';
+import 'package:auth_app/providers/moment_provider.dart';
+import 'package:auth_app/providers/take_picture_type_provider.dart';
+import 'package:auth_app/repos/memory_repo.dart';
+import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/error_text.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'dart:math' as math;
+import 'package:image/image.dart' as imageLib;
+import 'package:path/path.dart';
+import 'package:photofilters/photofilters.dart';
+import 'package:provider/provider.dart';
 
 import 'custom_progress_indicator.dart';
 
 class GalleryBar extends StatefulWidget {
+  final String momentImageIdUpdate;
+  final bool addMemory;
+  final bool isMomentImage;
+
+  GalleryBar({this.momentImageIdUpdate, this.addMemory = false, this.isMomentImage = false});
+
   @override
   _GalleryBarState createState() => _GalleryBarState();
 }
@@ -22,6 +41,8 @@ class _GalleryBarState extends State<GalleryBar> {
   int _currentPage = 0;
   int _lastPage;
   List<AssetEntity> _assetEntityList = [];
+  final _momentRepo = MomentRepo();
+  final _memoryRepo = MemoryRepo();
 
   @override
   void initState() {
@@ -51,19 +72,6 @@ class _GalleryBarState extends State<GalleryBar> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Transform.rotate(
-          angle:  90 * math.pi / 180,
-          child: GestureDetector(
-            onTap: (){
-              Navigations.goToScreen(context, GalleryImagesGridView());
-            },
-            child: Icon(
-              Icons.chevron_left,
-              color: Colors.white,
-              size: 32,
-            ),
-          )
-        ),
         Container(
           height: barHeight,
           child: ListView.builder(
@@ -86,8 +94,114 @@ class _GalleryBarState extends State<GalleryBar> {
                       final _thumbnailFile = snapshot.data;
                       return GestureDetector(
                         onTap: () async{
-                          final _imageFile = await _assetEntityList[index].file;
-                          Navigations.goToScreen(context, PreviewImage(imageFile: _imageFile));
+                          final imageFile = await _assetEntityList[index].file;
+                          final fileName = basename(imageFile.path);
+                          var image = imageLib.decodeImage(imageFile.readAsBytesSync());
+                          image = imageLib.copyResize(image, width: 600);
+
+                          final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
+                          if(widget.isMomentImage){
+                            if(takePictureType == MOMENT_IMAGE_ADD){                
+                              Map resultMap = await Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                  builder: (context) => PhotoFilterSelector(
+                                    title: Text("Filter Photo"),
+                                    image: image,
+                                    filters: presetFiltersList,
+                                    filename: fileName,
+                                    loader: Center(child: CircularProgressIndicator()),
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              );
+                              if(resultMap != null){
+                                if(resultMap.containsKey('image_filtered')){
+                                  Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
+                                }else {
+                                  Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
+                                }
+                              }
+                              Navigator.pop(context);
+                            }
+                            else if(takePictureType == MOMENT_IMAGE_HAPPENING_NOW){
+                              Map resultMap = await Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                  builder: (context) => PhotoFilterSelector(
+                                    title: Text("Filter Photo"),
+                                    image: image,
+                                    filters: presetFiltersList,
+                                    filename: fileName,
+                                    loader: Center(child: CircularProgressIndicator()),
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              );
+                              if(resultMap != null){
+                                if(resultMap.containsKey('image_filtered')){
+                                  Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
+                                }else {
+                                  Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
+                                }
+                              }
+                              final moment = Provider.of<MomentProvider>(context, listen: false).moment;
+                              Navigator.pop(context);
+                              Navigations.goToScreen(context, MomentInProgress(moment: moment, isAutoMoment: true,));
+                            }
+                            else{
+                              _momentRepo.updateMomentImage(widget.momentImageIdUpdate, imageFile.path);
+                              Navigator.pop(context);
+                            }
+                          }
+                          else if(widget.addMemory){
+                            final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
+                            Map resultMap = await Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) => PhotoFilterSelector(
+                                  title: Text("Filter Photo"),
+                                  image: image,
+                                  filters: presetFiltersList,
+                                  filename: fileName,
+                                  loader: Center(child: CircularProgressIndicator()),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            );
+                            if(resultMap != null){
+                              if(resultMap.containsKey('image_filtered')){
+                                _memoryRepo.postMemory(Memory(momentId: momentId), (resultMap["image_filtered"] as File).path);
+                              }else {
+                                _memoryRepo.postMemory(Memory(momentId: momentId), imageFile.path);
+                              }
+                            }
+                          
+                            Navigator.pop(context);
+                          }
+                          else {
+                            Map resultMap = await Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) => PhotoFilterSelector(
+                                  title: Text("Filter Photo"),
+                                  image: image,
+                                  filters: presetFiltersList,
+                                  filename: fileName,
+                                  loader: Center(child: CircularProgressIndicator()),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            );
+                            if(resultMap != null){
+                              if(resultMap.containsKey('image_filtered')){
+                                Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
+                              }else {
+                                Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
+                              }
+                            }
+                            Navigator.pop(context);
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(

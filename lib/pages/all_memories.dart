@@ -11,7 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AllMemories extends StatelessWidget {
+  final String momentId;
   final _memoryRepo = MemoryRepo();
+
+  AllMemories({this.momentId});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class AllMemories extends StatelessWidget {
         backgroundColor: Colors.white
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _memoryRepo.getAllMemoriesAsStream(),
+        stream: _memoryRepo.getMomentMemoriesAsStream(momentId: momentId),
         builder: (context, snapshot) {
           if(snapshot.hasData){
             final docs = snapshot.data.docs;

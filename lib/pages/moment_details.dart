@@ -162,7 +162,7 @@ class MomentDetails extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigations.goToScreen(context, AllMemories());
+                        Navigations.goToScreen(context, AllMemories(momentId: moment.id,));
                       },
                       child: CustomTextView(
                         text: "SEE ALL",
@@ -242,7 +242,7 @@ class MomentDetails extends StatelessWidget {
                       final cameras = await availableCameras();
                       Provider.of<MomentIdProvider>(context, listen: false).momentid = moment.id;
                       Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MEMORY_IMAGE_ADD;
-                      Navigations.goToScreen(context, AddMemory(camera: cameras.first));
+                      Navigations.goToScreen(context, AddMemory(cameras: cameras));
                     }   
                   },
                   leadingIcon: Icon(Icons.camera_alt, color: Colors.black),

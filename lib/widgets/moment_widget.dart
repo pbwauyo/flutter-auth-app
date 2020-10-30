@@ -201,7 +201,7 @@ class _MomentWidgetState extends State<MomentWidget> {
                             final cameras = await availableCameras();
                             Provider.of<MomentIdProvider>(context, listen: false).momentid = widget.moment.id;
                             Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MEMORY_IMAGE_ADD;
-                            Navigations.goToScreen(context, AddMemory(camera: cameras.first));
+                            Navigations.goToScreen(context, AddMemory(cameras: cameras));
                           }   
                         },
                         child: Container(

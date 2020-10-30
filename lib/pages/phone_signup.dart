@@ -100,7 +100,7 @@ class _PhoneSignupState extends State<PhoneSignup> {
                             final cameras = await availableCameras();
                             final permissionRequestStatus = await Permission.photos.request(); //this will help in showing the gallery images
                             if(permissionRequestStatus == PermissionStatus.granted){
-                              Navigations.goToScreen(context, ChangeProfilePic(camera: cameras.last));
+                              Navigations.goToScreen(context, ChangeProfilePic(cameras: cameras));
                             }else{
                               Methods.showCustomSnackbar(context: context, message: "Please allow access to photos to continue");
                             }    

@@ -17,7 +17,7 @@ class MomentRepo {
   CollectionReference get _allMomentsCollectionRef => _firestore.collection("moments");
 
   Future<void> saveMoment(BuildContext context, Moment moment) async{
-    if(moment.id.isEmpty){
+    if(moment.id == null || moment.id.isEmpty){
       final id = _allMomentsCollectionRef.doc().id;
       moment.id = id;
     } 

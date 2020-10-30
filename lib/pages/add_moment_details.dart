@@ -97,7 +97,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                   Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MOMENT_IMAGE_ADD;
                   Navigations.goToScreen(
                     context, 
-                    ChangeMomentImage(camera: cameras.first),
+                    ChangeMomentImage(cameras: cameras),
                   );
                 }
               },

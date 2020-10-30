@@ -141,7 +141,8 @@ class Constants {
       dateTime: "1 Pm, 21 October 2020",
       imageUrl: "",
       category: "Food",
-      id: ""
+      id: "",
+      notes: ""
     ),
 
      Moment(
@@ -151,7 +152,8 @@ class Constants {
       dateTime: "3 PM, 23 July 2020",
       imageUrl: "",
       category: "People",
-      id: ""
+      id: "",
+      notes: ""
     ),
 
      Moment(
@@ -161,7 +163,8 @@ class Constants {
       dateTime: "4 PM, 25 June 2020",
       imageUrl: "",
       category: "Beach",
-      id: ""
+      id: "",
+      notes: ""
     ),
 
     Moment(
@@ -171,7 +174,8 @@ class Constants {
       dateTime: "2 PM, 25 May 2020",
       imageUrl: "",
       category: "Fashion",
-      id: ""
+      id: "",
+      notes: ""
     ),
 
     Moment(
@@ -181,7 +185,8 @@ class Constants {
       dateTime: "8 AM, 25 May 2020",
       imageUrl: "",
       category: "Travel",
-      id: ""
+      id: "",
+      notes: ""
     ),
   ];
 

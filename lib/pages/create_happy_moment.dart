@@ -57,7 +57,8 @@ class CreateHappyMoment extends StatelessWidget {
                     onTap: (){
                       Navigations.goToScreen(context, 
                         MomentInProgress(
-                          moment: Constants.randomMoments[randomInt]
+                          moment: Constants.randomMoments[randomInt],
+                          isAutoMoment: true,
                         )
                       );
                     },
@@ -86,7 +87,7 @@ class CreateHappyMoment extends StatelessWidget {
                       Provider.of<MomentProvider>(context, listen: false).moment = Constants.randomMoments[randomInt];
 
                       final cameras = await availableCameras();
-                      Navigations.goToScreen(context, ChangeMomentImage(camera: cameras.first));
+                      Navigations.goToScreen(context, ChangeMomentImage(cameras: cameras));
                     }else{
                       await cameraPermissions.request();
                       await photosPermissions.request();
