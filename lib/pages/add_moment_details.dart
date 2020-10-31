@@ -6,6 +6,7 @@ import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/moment_in_progress.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
+import 'package:auth_app/providers/moment_type_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/utils/constants.dart';
@@ -83,6 +84,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final momentType = Provider.of<MomentTypeProvider>(context, listen: false).momentType;
     
     return ListView(
       children: [
@@ -368,7 +370,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
             child: Container(
               margin: const EdgeInsets.only(top: 20, bottom: 35),
               child: RoundedRaisedButton(
-                text: widget.moment == null ? "Make it happen" : "Update Moment", 
+                text: (widget.moment == null || momentType == MOMENT_TYPE_ONE_CLICK) ? "Make it happen" : "Update Moment", 
                 onTap: (){
                   final List<Map<String, String>> attendees = [];
                   _happrContactsController.contacts.forEach((contact) {
@@ -430,6 +432,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
     _notesController.dispose();
     _namesController.dispose();
     _attendeesController.dispose();
+    Provider.of<MomentTypeProvider>(context).momentType = "";
     super.dispose();
   }
 }

@@ -15,6 +15,7 @@ import 'package:auth_app/providers/camera_type_provider.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
 import 'package:auth_app/providers/moment_provider.dart';
+import 'package:auth_app/providers/moment_type_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/pref_manager.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => MomentIdProvider()),
         ChangeNotifierProvider(create: (context) => MomentProvider()),
         ChangeNotifierProvider(create: (context) => CameraTypeProvider()),
+        ChangeNotifierProvider(create: (context) => MomentTypeProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

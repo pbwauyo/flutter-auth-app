@@ -149,7 +149,7 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                             }
                             final moment = Provider.of<MomentProvider>(context, listen: false).moment;
                             Navigator.pop(context);
-                            Navigations.goToScreen(context, MomentInProgress(moment: moment, isAutoMoment: true,));
+                            Navigations.goToScreen(context, MomentInProgress(moment: moment));
                           }
                           else{
                             _momentRepo.updateMomentImage(widget.momentId, path);

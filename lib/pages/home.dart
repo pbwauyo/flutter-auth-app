@@ -8,6 +8,7 @@ import 'package:auth_app/pages/location_permission.dart';
 import 'package:auth_app/pages/memory_details.dart';
 import 'package:auth_app/pages/moment_details.dart';
 import 'package:auth_app/pages/pick_category.dart';
+import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
@@ -21,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   final _momentRepo = MomentRepo();
@@ -36,15 +38,16 @@ class Home extends StatelessWidget {
         if(homeCubit.state is HomeInitial){
           return true;
         }
-        // else if(homeCubit.state is HomeCreateMoment){
-        //   homeCubit.goToInitial();
-        // }
-        // else if(homeCubit.state is HomePickCategory){
-        //   homeCubit.goToCreateMomentScreen();
-        // }
-        // else if(homeCubit.state is HomeMomentDetails){
-        //   homeCubit.goToPickCategoryScreen();
-        // }
+        else if(homeCubit.state is HomeMemoryDetails){
+          final moment = Provider.of<MomentProvider>(context, listen: false).moment;
+          return homeCubit.goToMomentDetailsScreen(moment);
+        }
+        else if(homeCubit.state is HomePickCategory){
+          homeCubit.goToCreateMomentScreen();
+        }
+        else if(homeCubit.state is AddMomentDetails){
+          homeCubit.goToPickCategoryScreen();
+        }
         else {
           homeCubit.goToInitial();
         }
@@ -64,14 +67,21 @@ class Home extends StatelessWidget {
         ),
         endDrawer: CustomNavigationDrawer(),
         
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            homeCubit.goToCreateMomentScreen(); 
-          },
-          child: Icon(Icons.add,
-            color: Colors.black,
-          ),
-          backgroundColor: AppColors.PRIMARY_COLOR,
+        floatingActionButton: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            return Visibility(
+              visible: state is HomeInitial,
+              child: FloatingActionButton(
+                onPressed: (){
+                  homeCubit.goToCreateMomentScreen(); 
+                },
+                child: Icon(Icons.add,
+                  color: Colors.black,
+                ),
+                backgroundColor: AppColors.PRIMARY_COLOR,
+              ),
+            );
+          }
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(

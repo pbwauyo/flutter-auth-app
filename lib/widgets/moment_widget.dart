@@ -5,6 +5,7 @@ import 'package:auth_app/pages/add_memory.dart';
 import 'package:auth_app/pages/change_moment_image.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
+import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
@@ -41,6 +42,7 @@ class _MomentWidgetState extends State<MomentWidget> {
     return GestureDetector(
       onTap: (){
         homeCubit.goToMomentDetailsScreen(widget.moment);
+        Provider.of<MomentProvider>(context, listen: false).moment = widget.moment; //will be used when back button is pressed
       },
       onTapDown: _storePosition,
       onLongPress: (){

@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
+import 'package:auth_app/pages/add_moment_details.dart';
 import 'package:auth_app/pages/change_moment_image.dart';
 import 'package:auth_app/pages/moment_in_progress.dart';
 import 'package:auth_app/providers/moment_provider.dart';
+import 'package:auth_app/providers/moment_type_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_card.dart';
@@ -17,6 +19,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class CreateHappyMoment extends StatelessWidget {
+  final CreateMomentController _createMomentController = Get.find();
   
   @override
   Widget build(BuildContext context) {
@@ -56,13 +59,10 @@ class CreateHappyMoment extends StatelessWidget {
                     body: "Lorem ipsum dolor sit amet, conse",
                     onTap: (){
                       final randomMoment = Constants.randomMoments[randomInt];
+                      Provider.of<MomentTypeProvider>(context, listen: false).momentType = MOMENT_TYPE_ONE_CLICK;
+                      _createMomentController.categoryName.value = randomMoment.category;
+                      homeCubit.goToAddMomentDetailsScreen(moment: randomMoment);
                       
-                      Navigations.goToScreen(context, 
-                        MomentInProgress(
-                          moment: randomMoment,
-                          isAutoMoment: true,
-                        )
-                      );
                     },
                   ),
                 ),

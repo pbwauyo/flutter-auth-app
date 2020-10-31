@@ -17,9 +17,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 class MomentInProgress extends StatefulWidget {
   final Moment moment;
-  final bool isAutoMoment;
 
-  MomentInProgress({@required this.moment, this.isAutoMoment = false});
+  MomentInProgress({@required this.moment});
 
   @override
   _MomentInProgressState createState() => _MomentInProgressState();
@@ -71,30 +70,6 @@ class _MomentInProgressState extends State<MomentInProgress> {
     final _homeCubit = context.bloc<HomeCubit>();
 
     try{
-      if(widget.isAutoMoment){
-        final contactsPermissions = Permission.contacts;
-
-        if(!await contactsPermissions.isGranted){
-          final contactsPermissionStatus = await contactsPermissions.request();
-
-          if(contactsPermissionStatus.isGranted){
-            final contacts = (await ContactsService.getContacts()).toList().sublist(1, 10);
-            final currentUsername = await PrefManager.getLoginUsername();
-            final happrContacts = contacts.map((contact) => HapprContact(
-              id: contact.identifier,
-              initials: contact.initials(),
-              displayName: contact.displayName,
-              rating: 0.0,
-              phone: "",
-              ownerUsername: currentUsername
-            )).toList();
-            
-            happrContacts.forEach((happrContact) async{
-              await _happrContactsRepo.postHapprContact(happrContact);
-            });
-          }
-        } 
-      }
       
       await _momentRepo.saveMoment(context, widget.moment);
       _homeCubit.goToInitial();

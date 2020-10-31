@@ -133,7 +133,8 @@ class _EmailLoginState extends State<EmailLogin> {
 
                                     final appUser = await _loginCubit.startFirebaseLogin(email, password);
                                     if(appUser != null){
-                                      Navigations.goToScreen(context, Home());
+                                      Navigations.goToScreen(context, 
+                                      Home());
                                     }
                                     
                                   }

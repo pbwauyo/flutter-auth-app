@@ -1,12 +1,19 @@
 import 'package:auth_app/models/category.dart';
 import 'package:auth_app/models/memory.dart';
 import 'package:auth_app/models/moment.dart';
+import 'package:auth_app/pages/home.dart';
 import 'package:flutter/material.dart';
 
+//take picture types
 const MOMENT_IMAGE_ADD = "MOMENT_IMAGE_ADD";
 const MOMENT_IMAGE_EDIT = "MOMENT_IMAGE_EDIT";
 const MOMENT_IMAGE_HAPPENING_NOW = "MOMENT_IMAGE_HAPPENING_NOW";
 const MEMORY_IMAGE_ADD = "MEMORY_IMAGE_ADD";
+
+//moment types
+const MOMENT_TYPE_ONE_CLICK = "MOMENT_TYPE_ONE_CLICK";
+const MOMENT_TYPE_CUSTOM = "MOMENT_TYPE_CUSTOM";
+const MOMENT_TYPE_HAPPENING_NOW = "MOMENT_TYPE_HAPPENING_NOW";
 
 const ARTIFACT_TYPE_MEMORY = "MEMORY";
 const ARTIFACT_TYPE_MOMENT = "MOMENT";
@@ -73,15 +80,24 @@ class FontSizes {
 }
 
 class Navigations {
-  static goToScreen(BuildContext context, Widget newScreen, {String routeName}){
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => newScreen,
-        settings: RouteSettings(
-          name: routeName
-        )
+  static goToScreen(BuildContext context, Widget newScreen, {String routeName, bool withReplacement = false}){
+    final route = MaterialPageRoute(
+      builder: (context) => newScreen,
+      settings: RouteSettings(
+        name: routeName
       )
     );
+
+    if(newScreen is Home){
+      withReplacement = true;
+    }
+
+    if(withReplacement){
+      Navigator.pushReplacement(context, route);
+    }
+    else {
+       Navigator.push(context, route);
+    }
   }
 }
 

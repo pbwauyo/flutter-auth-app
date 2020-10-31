@@ -144,7 +144,7 @@ class _GalleryImagesGridViewState extends State<GalleryImagesGridView> {
                         }
                         final moment = Provider.of<MomentProvider>(context, listen: false).moment;
                         Navigator.popUntil(context, (route) => count++ == 2);
-                        Navigations.goToScreen(context, MomentInProgress(moment: moment, isAutoMoment: true,));
+                        Navigations.goToScreen(context, MomentInProgress(moment: moment));
                       }else{
                         _momentRepo.updateMomentImage(widget.momentImageIdUpdate, imageFile.path);
                         Navigator.popUntil(context, (route) => count++ == 2);
