@@ -1,6 +1,7 @@
 import 'package:auth_app/models/category.dart';
 import 'package:auth_app/models/memory.dart';
 import 'package:auth_app/models/moment.dart';
+import 'package:auth_app/pages/congratulations.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:flutter/material.dart';
 
@@ -81,7 +82,7 @@ class FontSizes {
 
 class Navigations {
   static goToScreen(BuildContext context, Widget newScreen, {String routeName, bool withReplacement = false}){
-    final route = MaterialPageRoute(
+    var route = MaterialPageRoute(
       builder: (context) => newScreen,
       settings: RouteSettings(
         name: routeName
@@ -89,14 +90,37 @@ class Navigations {
     );
 
     if(newScreen is Home){
-      withReplacement = true;
+      print("NEW SCREEN IS HOME");
+      routeName = "HOME";
+      route = MaterialPageRoute(
+        builder: (context) => newScreen,
+        settings: RouteSettings(
+          name: routeName
+        )
+      );
+      Navigator.popUntil(context, (route) => route.settings.name == "HOME");
+      Navigator.push(context, route);
+      
     }
-
-    if(withReplacement){
-      Navigator.pushReplacement(context, route);
+    else if(newScreen is Congratulations){
+      print("NEW SCREEN IS CONGS");
+      routeName = "CONGRATULATIONS";
+      route = MaterialPageRoute(
+        builder: (context) => newScreen,
+        settings: RouteSettings(
+          name: routeName
+        )
+      );
+      Navigator.popUntil(context, (route) => route.settings.name == "CONGRATULATIONS");
+      Navigator.push(context, route); 
     }
-    else {
-       Navigator.push(context, route);
+    else{
+      if(withReplacement){
+        Navigator.pushReplacement(context, route);
+      }
+      else {
+        Navigator.push(context, route);
+      }
     }
   }
 }

@@ -81,7 +81,7 @@ class _CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
                         color: AppColors.PRIMARY_COLOR,
                         onPressed: (){
                           _authRepo.logoutUser();
-                          Navigations.goToScreen(context, LandingPage());
+                          Navigations.goToScreen(context, LandingPage(), withReplacement: true);
                         }, 
                         child: CustomTextView(text: "LOGOUT")
                       ),

@@ -283,7 +283,7 @@ class _EmailSignupState extends State<EmailSignup> {
                                       );
                                       final success = await context.bloc<SignupCubit>().startSignup(context, password, appUser);
                                       if(success){
-                                        Navigations.goToScreen(context, Congratulations());
+                                        Navigations.goToScreen(context, Congratulations(),);
                                       }       
                                     }
                                     else{
