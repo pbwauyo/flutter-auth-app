@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>302866764913-11eh15uhocgitr6ndb663eto5c7udg5p.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.302866764913-11eh15uhocgitr6ndb663eto5c7udg5p</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>302866764913-jr8as4uo168s5pq38kfupb1lfh9m1bns.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBP0Z3iTHZHf5k89djd8t2TjWOaEcTy88k</string>
+	<key>GCM_SENDER_ID</key>
+	<string>302866764913</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.happr.ios</string>
+	<key>PROJECT_ID</key>
+	<string>signin-c790a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>signin-c790a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:302866764913:ios:7d2efa979886c9c8c337d0</string>
+	<key>DATABASE_URL</key>
+	<string>https://signin-c790a.firebaseio.com</string>
+</dict>
+</plist>

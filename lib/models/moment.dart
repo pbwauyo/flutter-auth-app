@@ -4,12 +4,17 @@ class Moment {
   String title;
   String location;
   List<Map<String, String>> attendees;
-  String dateTime;
+  String startDateTime;
+  String endDateTime;
+  DateTime realStartDateTime;
+  DateTime realEndDateTime;
   String notes;
   String imageUrl;
   String category;
+  String momentCalenderId;
 
-  Moment({this.id, this.creator, this.title, this.location, this.attendees, this.dateTime, this.notes, this.imageUrl, this.category});
+  Moment({this.id, this.creator, this.title, this.location, this.attendees, this.startDateTime, this.endDateTime, 
+  this.notes, this.imageUrl, this.category, this.momentCalenderId, this.realStartDateTime, this.realEndDateTime});
 
   factory Moment.fromMap(Map<String, dynamic> map){
     return Moment(
@@ -18,10 +23,12 @@ class Moment {
       title: map["title"],
       location: map["location"],
       attendees: List<dynamic>.from(map["attendees"]).cast<Map<String, String>>(),
-      dateTime: map["dateTime"],
+      startDateTime: map["dateTime"],
+      endDateTime: map["endDateTime"],
       notes: map["notes"],
       imageUrl: map["imageUrl"],
-      category: map["category"]
+      category: map["category"],
+      momentCalenderId: map["momentCalenderId"]
     );
   }
 
@@ -32,10 +39,12 @@ class Moment {
       "title" : title ?? "",
       "location" : location ?? "",
       "attendees" : attendees ?? [],
-      "dateTime" : dateTime ?? "",
+      "dateTime" : startDateTime ?? "",
+      "endDateTime" : endDateTime ?? "",
       "notes" : notes ?? "",
       "imageUrl" : imageUrl ?? "",
-      "category" : category ?? ""
+      "category" : category ?? "",
+      "momentCalenderId" : momentCalenderId ?? ""
     };
   }
 }

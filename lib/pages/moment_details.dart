@@ -103,7 +103,7 @@ class MomentDetails extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.only(left: 10),
                           child: CustomTextView(
-                            text: moment.dateTime,
+                            text: moment.startDateTime,
                             textColor: AppColors.LIGHT_GREY_TEXT,
                           ),
                         )

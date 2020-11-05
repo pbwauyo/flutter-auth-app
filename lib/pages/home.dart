@@ -40,7 +40,7 @@ class Home extends StatelessWidget {
         }
         else if(homeCubit.state is HomeMemoryDetails){
           final moment = Provider.of<MomentProvider>(context, listen: false).moment;
-          return homeCubit.goToMomentDetailsScreen(moment);
+          homeCubit.goToMomentDetailsScreen(moment);
         }
         else if(homeCubit.state is HomePickCategory){
           homeCubit.goToCreateMomentScreen();
@@ -57,6 +57,31 @@ class Home extends StatelessWidget {
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         appBar: AppBar(
+          leading: GestureDetector(
+            onTap: (){
+              if(homeCubit.state is HomeInitial){
+                Navigator.pop(context);
+              }
+              else if(homeCubit.state is HomeMemoryDetails){
+                final moment = Provider.of<MomentProvider>(context, listen: false).moment;
+                homeCubit.goToMomentDetailsScreen(moment);
+              }
+              else if(homeCubit.state is HomePickCategory){
+                homeCubit.goToCreateMomentScreen();
+              }
+              else if(homeCubit.state is AddMomentDetails){
+                homeCubit.goToPickCategoryScreen();
+              }
+              else {
+                homeCubit.goToInitial();
+              }
+            },
+            child: Icon(
+              Icons.keyboard_arrow_left,
+              color: Colors.black,
+              size: 32,
+            ),
+          ),
           centerTitle: true,
           title: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
           elevation: 0.0,

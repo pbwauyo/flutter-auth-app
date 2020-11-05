@@ -78,7 +78,16 @@ class _CodeVerificationState extends State<CodeVerification> {
       appBar: AppBar(
         centerTitle: true,
         title: CustomTextView(text: "Verify device", fontSize: 20, bold: true,),
-        leading: CustomBackButton(currentContext: context),
+        leading: GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.keyboard_arrow_left, 
+            color: Colors.black,
+            size: 32,
+          ),
+        ),
         elevation: 0.0,
         backgroundColor: Colors.white,
       ),

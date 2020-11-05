@@ -178,7 +178,7 @@ class Constants {
       title: "Tasty food",
       location: "Karachi",
       attendees: [],
-      dateTime: "1 Pm, 21 October 2020",
+      startDateTime: "1 Pm, 21 October 2020",
       imageUrl: "",
       category: "Food",
       id: "",
@@ -189,7 +189,7 @@ class Constants {
       title: "Family Outing",
       location: "Islamabad",
       attendees: [],
-      dateTime: "3 PM, 23 July 2020",
+      startDateTime: "3 PM, 23 July 2020",
       imageUrl: "",
       category: "People",
       id: "",
@@ -200,7 +200,7 @@ class Constants {
       title: "Hang out with friends",
       location: "Lahore",
       attendees: [],
-      dateTime: "4 PM, 25 June 2020",
+      startDateTime: "4 PM, 25 June 2020",
       imageUrl: "",
       category: "Beach",
       id: "",
@@ -211,7 +211,7 @@ class Constants {
       title: "Go for a fashion night",
       location: "Swat",
       attendees: [],
-      dateTime: "2 PM, 25 May 2020",
+      startDateTime: "2 PM, 25 May 2020",
       imageUrl: "",
       category: "Fashion",
       id: "",
@@ -222,7 +222,7 @@ class Constants {
       title: "Visit ancient sites",
       location: "Mohenjo Daro",
       attendees: [],
-      dateTime: "8 AM, 25 May 2020",
+      startDateTime: "8 AM, 25 May 2020",
       imageUrl: "",
       category: "Travel",
       id: "",
@@ -273,9 +273,9 @@ class Constants {
   };
 
   static final Map<double, Color> SLIDER_LABEL_COLORS = {
-    1.0 : AppColors.PRIMARY_COLOR,
+    1.0 : Colors.green,
     2.0 : Colors.blue,
-    3.0 : Colors.greenAccent
+    3.0 : AppColors.PRIMARY_COLOR
   };
 
 }

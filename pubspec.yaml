@@ -58,6 +58,7 @@ dependencies:
   intl: ^0.16.1
   autocomplete_textfield: ^1.7.3
   photofilters: ^2.0.1
+  device_calendar: ^3.1.0
   
 dev_dependencies:
   flutter_test:

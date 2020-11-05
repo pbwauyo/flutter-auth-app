@@ -139,7 +139,7 @@ class _MomentWidgetState extends State<MomentWidget> {
                       Container(
                         margin: const EdgeInsets.only(left: 10),
                         child: CustomTextView(
-                          text: widget.moment.dateTime,
+                          text: widget.moment.startDateTime,
                           textColor: AppColors.LIGHT_GREY_TEXT,
                         ),
                       )

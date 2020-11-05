@@ -10,6 +10,7 @@ import 'package:auth_app/providers/moment_type_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/widgets/calendar_dropdown.dart';
 import 'package:auth_app/widgets/contact_avatar.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
@@ -55,7 +56,8 @@ class AddMomentDetails extends StatefulWidget {
 class _AddMomentDetailsState extends State<AddMomentDetails> {
   final _titleController = TextEditingController();
   final _locationController = TextEditingController();
-  final _dateTimeController = TextEditingController(); 
+  final _startDateTimeController = TextEditingController(); 
+  final _endDateTimeController = TextEditingController(); 
   final _attendeesController = TextEditingController(); 
   final _notesController = TextEditingController();
   final _namesController = TextEditingController();
@@ -66,6 +68,8 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
   Future<List<HapprContact>> _happrContactsFuture;
 
   final _happrContactsRepo = HapprContactRepo();
+  DateTime _startDateTime;
+  DateTime _endDateTime;
 
   @override
   void initState() {
@@ -75,9 +79,8 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
       final _moment = widget.moment;
       _titleController.text = _moment.title;
       _locationController.text = _moment.location;
-      _dateTimeController.text = _moment.dateTime;
+      _startDateTimeController.text = _moment.startDateTime;
       _notesController.text = _moment.notes;
-      
     }
   }
  
@@ -89,52 +92,74 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
     return ListView(
       children: [
         Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.8,
-            child: GestureDetector(
-              onTap: ()async{
-                final cameras = await availableCameras();
-                final permissionRequestStatus = await Permission.photos.request(); //this will help in showing the gallery images
-                if(permissionRequestStatus == PermissionStatus.granted){
-                  Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MOMENT_IMAGE_ADD;
-                  Navigations.goToScreen(
-                    context, 
-                    ChangeMomentImage(cameras: cameras),
-                  );
-                }
-              },
-              child: Consumer<FilePathProvider>(
-                builder: (_, filePathProvider, child) {
-                  final imagePath = filePathProvider.filePath;
+          child: Stack(
+            children: [
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: Consumer<FilePathProvider>(
+                  builder: (_, filePathProvider, child) {
+                    final imagePath = filePathProvider.filePath;
 
-                  return imagePath == null || imagePath.isEmpty?  
-                    Container(
-                      height: 160,
-                      margin: const EdgeInsets.only(top: 10, bottom: 15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: AssetImage(momentImages[_createMomentController.categoryName.value]),
-                          fit: BoxFit.cover
-                        )
-                      ),
-                    ) : 
-                    Container(
-                      height: 160,
-                      margin: const EdgeInsets.only(top: 10, bottom: 15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: imagePath.startsWith("http") ?
-                            NetworkImage(imagePath) :
-                            FileImage(File(imagePath)),
-                          fit: BoxFit.cover
-                        )
-                      ),
-                    );
-                }
+                    return imagePath == null || imagePath.isEmpty?  
+                      Container(
+                        height: 160,
+                        margin: const EdgeInsets.only(top: 10, bottom: 15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          image: DecorationImage(
+                            image: AssetImage(momentImages[_createMomentController.categoryName.value]),
+                            fit: BoxFit.cover
+                          )
+                        ),
+                      ) : 
+                      Container(
+                        height: 160,
+                        margin: const EdgeInsets.only(top: 10, bottom: 15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          image: DecorationImage(
+                            image: imagePath.startsWith("http") ?
+                              NetworkImage(imagePath) :
+                              FileImage(File(imagePath)),
+                            fit: BoxFit.cover
+                          )
+                        ),
+                      );
+                  }
+                ),
               ),
-            ),
+
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () async{
+                    final cameras = await availableCameras();
+                    final permissionRequestStatus = await Permission.photos.request(); //this will help in showing the gallery images
+                    if(permissionRequestStatus == PermissionStatus.granted){
+                      Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MOMENT_IMAGE_ADD;
+                      Navigations.goToScreen(
+                        context, 
+                        ChangeMomentImage(cameras: cameras),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: AppColors.PRIMARY_COLOR,
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Icon(
+                      Icons.camera_alt, 
+                      size: 32,
+                      color: Colors.white,
+                      semanticLabel: "Change image",
+                    ),
+                  ),
+                )
+              )
+            ],
           ),
         ),
 
@@ -292,6 +317,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
 
         Center(
           child: Container(
+            width: screenWidth * 0.8,
             margin: const EdgeInsets.only(top: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -306,14 +332,14 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                       DatePicker.showDateTimePicker(context,
                         minTime: DateTime(1990),
                         maxTime: DateTime(2030),
-                        onConfirm: (dateTime){
-                          print("DATETIME: $dateTime");
-                          final day = dateTime.day;
-                          final month = Constants.months[dateTime.month-1];
-                          final year = dateTime.year;
-                          final hour = dateTime.hour;
-                          final minute = dateTime.minute;
-                          _dateTimeController.text = "$hour:$minute, $day $month, $year";
+                        onConfirm: (startDateTime){
+                          _startDateTime = startDateTime;
+                          final day = startDateTime.day;
+                          final month = Constants.months[startDateTime.month-1];
+                          final year = startDateTime.year;
+                          final hour = startDateTime.hour;
+                          final minute = startDateTime.minute;
+                          _startDateTimeController.text = "$hour:$minute, $day $month, $year";
                           
                           // final period = ;
                         },
@@ -326,8 +352,8 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                     child: AbsorbPointer(
                       child: CustomInputField(
                         textAlign: TextAlign.start,
-                        placeholder: "Date & Time", 
-                        controller: _dateTimeController,
+                        placeholder: "Start Date & Time", 
+                        controller: _startDateTimeController,
                         prefixIcon: Icons.schedule,
                         suffixIcon: Icons.trip_origin,
                         drawUnderlineBorder: true,
@@ -335,6 +361,48 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                       ),
                     ),
                   ),
+                ),
+
+                Container(
+                  child: GestureDetector(
+                    onTap: (){
+                      DatePicker.showDateTimePicker(context,
+                        minTime: DateTime(1990),
+                        maxTime: DateTime(2030),
+                        onConfirm: (endDateTime){
+                          _endDateTime = endDateTime;
+                          final day = endDateTime.day;
+                          final month = Constants.months[endDateTime.month-1];
+                          final year = endDateTime.year;
+                          final hour = endDateTime.hour;
+                          final minute = endDateTime.minute;
+                          _endDateTimeController.text = "$hour:$minute, $day $month, $year";
+                          
+                          // final period = ;
+                        },
+                        onChanged: (dateTime){
+
+                        },
+                        currentTime: DateTime.now()
+                      );
+                    },
+                    child: AbsorbPointer(
+                      child: CustomInputField(
+                        textAlign: TextAlign.start,
+                        placeholder: "End Date & Time", 
+                        controller: _endDateTimeController,
+                        prefixIcon: Icons.schedule,
+                        suffixIcon: Icons.trip_origin,
+                        drawUnderlineBorder: true,
+                        suffixIconColor: AppColors.PRIMARY_COLOR,
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  margin: const EdgeInsets.only(top: 5, bottom: 5),
+                  child: CalendarDropDown(),
                 )
               ],
             ),
@@ -343,7 +411,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
 
         Center(
           child: Container(
-            margin: const EdgeInsets.only(top: 20),
+            margin: const EdgeInsets.only(top: 5),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +454,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
 
                   final title = _titleController.text.trim();
                   final location = _locationController.text.trim();
-                  final dateTime = _dateTimeController.text.trim();
+                  final dateTime = _startDateTimeController.text.trim();
                   final notes = _notesController.text.trim();
 
                   Moment _moment;
@@ -395,7 +463,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                     _moment = widget.moment;
                     _moment.title = title;
                     _moment.location = location;
-                    _moment.dateTime = dateTime;
+                    _moment.startDateTime = dateTime;
                     _moment.notes = notes;
                     _moment.attendees = attendees;
                   }else{
@@ -403,9 +471,11 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                       title: title,
                       location: location,
                       attendees: attendees,
-                      dateTime: dateTime,
+                      startDateTime: dateTime,
                       notes: notes,
-                      category: _createMomentController.categoryName.value
+                      category: _createMomentController.categoryName.value,
+                      realStartDateTime: _startDateTime,
+                      realEndDateTime: _endDateTime
                     );
                   }
 
@@ -428,11 +498,11 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
   void dispose() {
     _titleController.dispose();
     _locationController.dispose();
-    _dateTimeController.dispose();
+    _startDateTimeController.dispose();
     _notesController.dispose();
     _namesController.dispose();
     _attendeesController.dispose();
-    Provider.of<MomentTypeProvider>(context).momentType = "";
+    Provider.of<MomentTypeProvider>(context, listen: false).momentType = "";
     super.dispose();
   }
 }

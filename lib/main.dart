@@ -5,6 +5,7 @@ import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
 import 'package:auth_app/getxcontrollers/logged_in_username.dart';
+import 'package:auth_app/getxcontrollers/selected_calendar_controller.dart';
 import 'package:auth_app/pages/contacts_list.dart';
 import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
@@ -81,6 +82,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final LoggedInUsernameController loggedInUsernameController = Get.put(LoggedInUsernameController());
   final CreateMomentController controller = Get.put(CreateMomentController());
+  final SelectedCalendarController selectedCalendarController = Get.put(SelectedCalendarController());
 
   @override
   void initState() {

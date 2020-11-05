@@ -10,7 +10,7 @@ class CustomBackButton extends StatelessWidget{
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Navigator.pop(currentContext);
+        Navigator.pop(context);
       },
       child: Icon(
         CupertinoIcons.left_chevron, 
