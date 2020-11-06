@@ -98,7 +98,13 @@ class _AddMemoryState extends State<AddMemory> {
                               context,
                               new MaterialPageRoute(
                                 builder: (context) => PhotoFilterSelector(
-                                  title: Text("Filter Photo"),
+                                  appBarColor: AppColors.PRIMARY_COLOR,
+                                  title: Center(
+                                    child: CustomTextView(
+                                      text: "Filter Photo", 
+                                      fontSize: FontSizes.APP_BAR_TITLE,
+                                    ),
+                                  ),
                                   image: image,
                                   filters: presetFiltersList,
                                   filename: fileName,

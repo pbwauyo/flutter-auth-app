@@ -108,7 +108,13 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                               context,
                               new MaterialPageRoute(
                                 builder: (context) => PhotoFilterSelector(
-                                  title: Text("Filter Photo"),
+                                  appBarColor: AppColors.PRIMARY_COLOR,
+                                  title: Center(
+                                    child: CustomTextView(
+                                      text: "Filter Photo", 
+                                      fontSize: FontSizes.APP_BAR_TITLE,
+                                    ),
+                                  ),
                                   image: image,
                                   filters: presetFiltersList,
                                   filename: fileName,
@@ -131,7 +137,13 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                               context,
                               new MaterialPageRoute(
                                 builder: (context) => PhotoFilterSelector(
-                                  title: Text("Filter Photo"),
+                                  appBarColor: AppColors.PRIMARY_COLOR,
+                                  title: Center(
+                                    child: CustomTextView(
+                                      text: "Filter Photo", 
+                                      fontSize: FontSizes.APP_BAR_TITLE,
+                                    ),
+                                  ),
                                   image: image,
                                   filters: presetFiltersList,
                                   filename: fileName,
