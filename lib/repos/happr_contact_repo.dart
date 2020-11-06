@@ -29,11 +29,16 @@ class HapprContactRepo {
   }
 
   Future<void> setHapprContactRating({@required HapprContact happrContact, @required double rating}) async{
-    final docSnapshot = await _happrContactCollectionsRef.doc(happrContact.id).get();
+        final docSnapshot = await _happrContactCollectionsRef.doc(happrContact.id).get();
     if(docSnapshot.exists){
       await docSnapshot.reference.set({"rating" : rating}, SetOptions(merge: true));
     }else {
       await postHapprContact(happrContact);
     }
+  }
+
+  String getHapprContactId(){
+    final id = _happrContactCollectionsRef.doc().id;
+    return id;
   }
 }

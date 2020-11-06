@@ -1,5 +1,6 @@
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/pages/interests.dart';
+import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/contact_rating_widget.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
@@ -21,6 +22,7 @@ class ContactsList extends StatefulWidget {
 class _ContactsListState extends State<ContactsList> {
 
   Future<List<Contact>> _loadContactsFuture;
+  final _happrContactRepo = HapprContactRepo();
 
   @override
   void initState() {
@@ -76,7 +78,7 @@ class _ContactsListState extends State<ContactsList> {
                           final happrContact = HapprContact(
                             displayName: contact.displayName,
                             initials: contact.initials(),
-                            id: contact.identifier,
+                            id: _happrContactRepo.getHapprContactId(),
                             phone: phones.length > 0 ? phones[0].value : "N/A"
                           );
                           return Center(
