@@ -31,7 +31,7 @@ class HapprContactRepo {
   Future<void> setHapprContactRating({@required HapprContact happrContact, @required double rating}) async{
     final docSnapshot = await _happrContactCollectionsRef.doc(happrContact.id).get();
     if(docSnapshot.exists){
-      docSnapshot.reference.set({"rating" : rating}, SetOptions(merge: true));
+      await docSnapshot.reference.set({"rating" : rating}, SetOptions(merge: true));
     }else {
       await postHapprContact(happrContact);
     }

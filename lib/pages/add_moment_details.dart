@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auth_app/getxcontrollers/contacts_controller.dart';
 import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
+import 'package:auth_app/getxcontrollers/selected_calendar_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/moment_in_progress.dart';
@@ -62,6 +63,7 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
   final _notesController = TextEditingController();
   final _namesController = TextEditingController();
   final CreateMomentController _createMomentController = Get.find();
+  final SelectedCalendarController _selectedCalendarController = Get.find();
   final HapprContactsController _happrContactsController = Get.put(HapprContactsController());
   final _autoCompleteTextFieldKey = GlobalKey<AutoCompleteTextFieldState<HapprContact>>();
 
@@ -80,7 +82,13 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
       _titleController.text = _moment.title;
       _locationController.text = _moment.location;
       _startDateTimeController.text = _moment.startDateTime;
+      _endDateTimeController.text = _moment.endDateTime ?? "";
       _notesController.text = _moment.notes;
+
+      print("CALENDAR ID VALUE: ${_moment.calendarId}");
+      _selectedCalendarController.calendarId.value = _moment.calendarId;
+      _startDateTime = _moment.realStartDateTime;
+      _endDateTime = _moment.realEndDateTime;
     }
   }
  
@@ -341,10 +349,9 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                           final minute = startDateTime.minute;
                           _startDateTimeController.text = "$hour:$minute, $day $month, $year";
                           
-                          // final period = ;
                         },
                         onChanged: (dateTime){
-
+                          
                         },
                         currentTime: DateTime.now()
                       );
@@ -454,7 +461,8 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
 
                   final title = _titleController.text.trim();
                   final location = _locationController.text.trim();
-                  final dateTime = _startDateTimeController.text.trim();
+                  final startDateTime = _startDateTimeController.text.trim();
+                  final endDateTime = _endDateTimeController.text.trim();
                   final notes = _notesController.text.trim();
 
                   Moment _moment;
@@ -463,17 +471,23 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                     _moment = widget.moment;
                     _moment.title = title;
                     _moment.location = location;
-                    _moment.startDateTime = dateTime;
+                    _moment.startDateTime = startDateTime;
+                    _moment.endDateTime = endDateTime;
                     _moment.notes = notes;
                     _moment.attendees = attendees;
+                    _moment.realStartDateTime = _startDateTime;
+                    _moment.realEndDateTime = _endDateTime;
+                    
                   }else{
                     _moment = Moment(
                       title: title,
                       location: location,
                       attendees: attendees,
-                      startDateTime: dateTime,
+                      startDateTime: startDateTime,
                       notes: notes,
                       category: _createMomentController.categoryName.value,
+                      endDateTime: endDateTime,
+                      calendarId: _selectedCalendarController.calendarId.value,
                       realStartDateTime: _startDateTime,
                       realEndDateTime: _endDateTime
                     );

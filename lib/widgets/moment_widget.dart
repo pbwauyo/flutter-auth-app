@@ -1,5 +1,6 @@
 import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/getxcontrollers/create_moment_controller.dart';
+import 'package:auth_app/getxcontrollers/selected_calendar_controller.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/add_memory.dart';
 import 'package:auth_app/pages/change_moment_image.dart';
@@ -31,6 +32,7 @@ class MomentWidget extends StatefulWidget {
 class _MomentWidgetState extends State<MomentWidget> {
   final _momentRepo = MomentRepo();
   final CreateMomentController _createMomentController = Get.find();
+  final SelectedCalendarController _selectedCalendarController = Get.find();
 
   var _tapPosition;
 
@@ -54,12 +56,16 @@ class _MomentWidgetState extends State<MomentWidget> {
               Offset.zero & overlay.size   // Bigger rect, the entire screen
           ),
           items: <PopupMenuEntry<int>>[
-            PopupMenuItem(value: 1, child: CustomTextView(text: "DELETE", textColor: Colors.red,)),
-            PopupMenuItem(value: 2, child: CustomTextView(text: "EDIT", textColor: Colors.orange,))
+            PopupMenuItem(value: 1, child: CustomTextView(text: "DELETE", textColor: Colors.red, bold: true,),),
+            PopupMenuItem(value: 2, child: CustomTextView(text: "EDIT", textColor: Colors.green, bold: true,))
           ]
         ).then((value){
           if(value == 1){
-            _momentRepo.deleteMoment(momentId: widget.moment.id);
+            _momentRepo.deleteMoment(
+              momentId: widget.moment.id, 
+              calendarId: widget.moment.calendarId, 
+              eventId: widget.moment.momentCalenderId
+            );
           }
           else {
             final imageUrl = widget.moment.imageUrl;
@@ -69,6 +75,7 @@ class _MomentWidgetState extends State<MomentWidget> {
             else {
               Provider.of<FilePathProvider>(context, listen: false).filePath = imageUrl;
             }
+            _selectedCalendarController.calendarId.value = widget.moment.calendarId ?? "";
             homeCubit.goToAddMomentDetailsScreen(moment: widget.moment);      
           }
         });

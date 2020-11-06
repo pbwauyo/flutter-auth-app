@@ -40,7 +40,11 @@ class MomentRepo {
     await _allMomentsCollectionRef.doc(moment.id).set(moment.toMap(), SetOptions(merge: true));
     final result = await addOrUpdateMomentOnCalendar(moment: moment); // add to calendar
     if(result.isSuccess){
-      await _allMomentsCollectionRef.doc(moment.id).set({"momentCalenderId": result.data}, SetOptions(merge: true));
+      final data = {
+        "momentCalenderId": result.data,
+        "calendarId" : _selectedCalendarController.calendarId.value
+      };
+      await _allMomentsCollectionRef.doc(moment.id).set(data, SetOptions(merge: true));
     }
     filePathProvider.filePath = ""; //reset file path
   }
@@ -64,7 +68,8 @@ class MomentRepo {
     }
 
     if(moment.realStartDateTime == null && moment.realEndDateTime == null){
-      momentEvent.allDay = true;
+      momentEvent.start = DateTime.now().add(Duration(days: 1));
+      momentEvent.end = DateTime.now().add(Duration(days: 3));
     }
 
     moment.attendees.forEach((attendee) {
@@ -79,6 +84,11 @@ class MomentRepo {
     return await deviceCalendarPlugin.createOrUpdateEvent(momentEvent);
   }
 
+  Future<void> deleteCalendarEvent(String calendarId, String eventId) async{
+    final deviceCalendarPlugin = DeviceCalendarPlugin();
+    await deviceCalendarPlugin.deleteEvent(calendarId, eventId);
+  }
+
   Stream<QuerySnapshot> getMomentsAsStream(){
     return _allMomentsCollectionRef.where("creator", isEqualTo: _loggedInUsernameController.loggedInUserEmail).snapshots();
   }
@@ -88,8 +98,9 @@ class MomentRepo {
     await _allMomentsCollectionRef.doc(momentId).set({"imageUrl" : downloadUrl}, SetOptions(merge: true));
   }
 
-  Future<void> deleteMoment({@required String momentId}) async{
+  Future<void> deleteMoment({@required String momentId, String calendarId, String eventId}) async{
     await _allMomentsCollectionRef.doc(momentId).delete();
+    await deleteCalendarEvent(calendarId, eventId);
   }
 
   // Future<void> updateMoment({@required Moment newMoment}) async{

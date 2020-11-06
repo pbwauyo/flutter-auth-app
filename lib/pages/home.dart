@@ -95,7 +95,7 @@ class Home extends StatelessWidget {
         floatingActionButton: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             return Visibility(
-              visible: state is HomeInitial,
+              visible: state is HomeInitial || state is HomeCreateMoment,
               child: FloatingActionButton(
                 onPressed: (){
                   homeCubit.goToCreateMomentScreen(); 
@@ -109,66 +109,73 @@ class Home extends StatelessWidget {
           }
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          shape: CircularNotchedRectangle(),
-          notchMargin: 4.0,
-          child: Container(
-            height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 10, right: 40),
-                      child: SvgPicture.asset(
-                        AssetNames.HOME_SVG, 
-                        width: 32, 
-                        height: 32,
-                      ),
-                    ),
+        bottomNavigationBar: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            return Visibility(
+              visible: state is HomeInitial || state is HomeCreateMoment,
+              child: BottomAppBar(
+                shape: CircularNotchedRectangle(),
+                notchMargin: 4.0,
+                child: Container(
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 10, right: 40),
+                            child: SvgPicture.asset(
+                              AssetNames.HOME_SVG, 
+                              width: 32, 
+                              height: 32,
+                            ),
+                          ),
 
-                    Container(
-                      child: SvgPicture.asset(
-                        AssetNames.ELLIPSE_SVG, 
-                        width: 32, 
-                        height: 32,
+                          Container(
+                            child: SvgPicture.asset(
+                              AssetNames.ELLIPSE_SVG, 
+                              width: 32, 
+                              height: 32,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            child: SvgPicture.asset(
+                              AssetNames.BELL_SVG, 
+                              width: 32, 
+                              height: 32,
+                            ),
+                          ),
+
+                          GestureDetector(
+                            onTap: (){
+                              _scaffoldKey.currentState.openEndDrawer();
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 10, left: 40),
+                              child: SvgPicture.asset(
+                                AssetNames.MENU_SVG, 
+                                width: 32, 
+                                height: 32,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                    ],
+                  ),
                 ),
-
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      child: SvgPicture.asset(
-                        AssetNames.BELL_SVG, 
-                        width: 32, 
-                        height: 32,
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: (){
-                        _scaffoldKey.currentState.openEndDrawer();
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 10, left: 40),
-                        child: SvgPicture.asset(
-                          AssetNames.MENU_SVG, 
-                          width: 32, 
-                          height: 32,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                
-              ],
-            ),
-          ),
+              ),
+            );
+          }
         ),
         body: Stack(
           children: [

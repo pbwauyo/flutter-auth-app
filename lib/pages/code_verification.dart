@@ -7,7 +7,6 @@ import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
-import 'package:auth_app/widgets/custom_back_button.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';

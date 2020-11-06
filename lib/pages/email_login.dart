@@ -7,7 +7,6 @@ import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/validators.dart';
-import 'package:auth_app/widgets/custom_back_button.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/ring.dart';
@@ -43,7 +42,15 @@ class _EmailLoginState extends State<EmailLogin> {
         elevation: 0.0,
         centerTitle: true,
         title: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
-        leading: CustomBackButton(currentContext: context),
+        leading: GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Icon(
+            CupertinoIcons.left_chevron, 
+            color: Colors.black, size: 32,
+          ),
+        ),
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 10, top: 10),
