@@ -222,6 +222,7 @@ class Home extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             itemCount: docs.length,
                             itemBuilder: (context, index){
+                              print("MOMENT REAL_STARTDATE: ${docs[index].data()}");
                               final moment = Moment.fromMap(docs[index].data());
                               return MomentWidget(moment: moment);
                             }

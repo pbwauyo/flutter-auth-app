@@ -32,8 +32,8 @@ class Moment {
       category: map["category"],
       momentCalenderId: map["momentCalenderId"],
       calendarId: map["calendarId"],
-      realStartDateTime: (map["realStartDateTime"] != null && map["realStartDateTime"].toString().isNotEmpty) ? DateTime.parse(map["realStartDateTime"]) : null,
-      realEndDateTime: (map["realEndDateTime"] != null && map["realEndDateTime"].toString().isNotEmpty) ? DateTime.parse(map["realEndDateTime"]) : null
+      realStartDateTime: (map["realStartDateTime"] != null && map["realStartDateTime"].toString().isNotEmpty && map["realStartDateTime"] != "null") ? DateTime.parse(map["realStartDateTime"]) : null,
+      realEndDateTime: (map["realEndDateTime"] != null && map["realEndDateTime"].toString().isNotEmpty && map["realEndDateTime"] != "null") ? DateTime.parse(map["realEndDateTime"]) : null
     );
   }
 
