@@ -53,7 +53,7 @@ class _InterestsState extends State<Interests> {
         elevation: 0.0,
         backgroundColor: Colors.white
       ),
-      body: Column(
+      body: ListView(
         children: [
             Container(
             margin: const EdgeInsets.only(top: 20),
@@ -92,106 +92,107 @@ class _InterestsState extends State<Interests> {
             ),
           ),
 
-          Expanded(
-            child: Column(
-              children: [
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 15),
-                    child: CustomTextView(
-                      text: "Selected",
-                      bold: true,
-                    ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, bottom: 15),
+                  child: CustomTextView(
+                    text: "Selected",
+                    bold: true,
                   ),
                 ),
+              ),
 
-                Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: 60.0,
-                      maxHeight: 250.0,
-                    ),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(),
-                      child: Obx(() => Wrap(
-                        spacing: 4.0,
-                        children: _selectedCategoriesController.selectedInterests.length <= 0 ?
-                          [ 
-                            Center(
-                              child: CustomTextView(text: "No Selected categories yet"),
-                            )
-                          ] :
-                         _selectedCategoriesController.selectedInterests.map(
-                          (category) => Chip(
-                              label: CustomTextView(text: category),
-                              deleteIcon: Icon(Icons.clear),
-                              onDeleted: (){
-                                _selectedCategoriesController.removeCategory(category);
-                              },
-                              backgroundColor: AppColors.PRIMARY_COLOR,
-                            )
-                          ).toList()
-                      ),)
-                    ),
+              Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: 60.0,
+                    maxHeight: 250.0,
+                  ),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(),
+                    child: Obx(() => Wrap(
+                      spacing: 4.0,
+                      children: _selectedCategoriesController.selectedInterests.length <= 0 ?
+                        [ 
+                          Center(
+                            child: CustomTextView(text: "No Selected categories yet"),
+                          )
+                        ] :
+                       _selectedCategoriesController.selectedInterests.map(
+                        (category) => Chip(
+                            label: CustomTextView(text: category),
+                            deleteIcon: Icon(Icons.clear),
+                            onDeleted: (){
+                              _selectedCategoriesController.removeCategory(category);
+                            },
+                            backgroundColor: AppColors.PRIMARY_COLOR,
+                          )
+                        ).toList()
+                    ),)
                   ),
                 ),
+              ),
 
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10, bottom: 15),
-                    child: CustomTextView(
-                      text: "Select from below list",
-                      bold: true,
-                    ),
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10, bottom: 15),
+                  child: CustomTextView(
+                    text: "Select from below list",
+                    bold: true,
                   ),
                 ),
+              ),
 
-                Expanded(
-                  child: Obx((){
-         
-                    return ListView(
-                      padding: const EdgeInsets.only(left: 35,),
-                      children: _categoriesSearchController.interests.length <= 0 ?
-                      [
-                        Center(
-                          child: EmptyResultsText(message: "No matching categories",),
-                        )
-                      ] :
-                      
-                      _categoriesSearchController.interests.map((category) {
-                        return Obx((){
-                          return Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            child: InterestCategoryItem(
-                              isSelected: _selectedCategoriesController.selectedInterests.contains(category),
-                              label: category, 
-                              onTap: (currentItem){
-                                _selectedCategoriesController.addCategory(currentItem);
-                              }
-                            ),
-                          );
-                        });
-                       }).toList()
-                    );
-                  })
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 400 
                 ),
+                child: Obx((){
+                  return ListView(
+                    padding: const EdgeInsets.only(left: 35,),
+                    children: _categoriesSearchController.interests.length <= 0 ?
+                    [
+                      Center(
+                        child: EmptyResultsText(message: "No matching categories",),
+                      )
+                    ] :
+                    
+                    _categoriesSearchController.interests.map((category) {
+                      return Obx((){
+                        return Container(
+                          margin: const EdgeInsets.only(top: 5),
+                          child: InterestCategoryItem(
+                            isSelected: _selectedCategoriesController.selectedInterests.contains(category),
+                            label: category, 
+                            onTap: (currentItem){
+                              _selectedCategoriesController.addCategory(currentItem);
+                            }
+                          ),
+                        );
+                      });
+                     }).toList()
+                  );
+                })
+              ),
 
-                Container(
-                  margin: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: FractionallySizedBox(
-                    widthFactor: 0.8,
-                    child: RoundedRaisedButton(
-                      borderRadius: 25,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      text: "Next", 
-                      onTap: () async{
-                        Navigations.goToScreen(context, CalendarPermission());
-                      }
-                    ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10, top: 10),
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: RoundedRaisedButton(
+                    borderRadius: 25,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    text: "Next", 
+                    onTap: () async{
+                      Navigations.goToScreen(context, CalendarPermission());
+                    }
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),    
         ],
       ),
