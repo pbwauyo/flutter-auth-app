@@ -1,115 +1,71 @@
-import 'package:auth_app/pages/test_invitation_signup.dart';
+import 'package:auth_app/pages/test_invitation_login.dart';
 import 'package:auth_app/utils/constants.dart';
-import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class TestInvitationLandingPage extends StatelessWidget {
-  final invitationCodeController = TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        children: [
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomTextView(
-                  text: "Have an invite code?"
-                ),
-                
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  padding: const EdgeInsets.only(left: 6, right: 6, top: 8, bottom: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.PRIMARY_COLOR.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(18)
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: CustomInputField(
-                          placeholder: "XXXX-XXXX", 
-                          controller: invitationCodeController,
-                          drawUnderlineBorder: false,
-                        )
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(18)
-                        ),
-                        child: CustomTextView(
-                          text: "PASTE",
-                          textColor: AppColors.PRIMARY_COLOR.withOpacity(0.3),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-
-                Container(
-                  margin: const EdgeInsets.only(top: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RoundedRaisedButton(
-                        bgColor: AppColors.PRIMARY_COLOR.withOpacity(0.3),
-                        text: "No invite?", 
-                        onTap: (){
-                          Navigations.goToScreen(context, TestInvitationSignUp());
-                        }
-                      ),
-
-                      RoundedRaisedButton(
-                        bgColor: AppColors.PRIMARY_COLOR.withOpacity(0.3),
-                        text: "Sign in", 
-                        onTap: (){
-
-                        }
-                      )
-                    ],
-                  ),
-                ),
-
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CustomTextView(
-                        text: "By continuing you agree to the"
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(color: Colors.black),
-                          children: [
-                            TextSpan(
-                              text: "Terms of Service",
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-                            ),
-                            TextSpan(text: " and "),
-                            TextSpan(
-                              text: "Privacy Policy",
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-                            ),
-                          ]
-                        )
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppColors.PRIMARY_COLOR, Colors.orangeAccent],
+            stops: [0.6, 1.0],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter
           )
-        ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 15),
+                child: SvgPicture.asset(
+                  AssetNames.APP_LOGO_SVG, 
+                  width: 150, 
+                  height: 80,
+                  color: Colors.white,
+                )
+              ),
+              CustomTextView(
+                textColor: Colors.white,
+                text: "Join the waiting list?",
+                bold: true,
+                fontSize: 25,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                child: CustomTextView(
+                  textColor: Colors.white,
+                  fontSize: 25,
+                  textAlign: TextAlign.center,
+                  text: "We're growing the Happr community slowly at first. You can join the waitlist and we'll let you know when an account is ready for you."
+                ),
+              ),
+
+              Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: RoundedRaisedButton(
+                  text: "Let me know",
+                  bgColor: Colors.white.withOpacity(0.3),
+                  textColor: Colors.white,
+                  fontSize: 18,
+                  onTap: (){
+                    Navigations.goToScreen(context, TestInvitationLogin());
+                  }
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

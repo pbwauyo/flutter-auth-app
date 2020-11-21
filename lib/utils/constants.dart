@@ -3,6 +3,7 @@ import 'package:auth_app/models/memory.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/congratulations.dart';
 import 'package:auth_app/pages/home.dart';
+import 'package:auth_app/pages/test_invitation_success.dart';
 import 'package:flutter/material.dart';
 
 //take picture types
@@ -90,7 +91,6 @@ class Navigations {
     );
 
     if(newScreen is Home){
-      print("NEW SCREEN IS HOME");
       routeName = "HOME";
       route = MaterialPageRoute(
         builder: (context) => newScreen,
@@ -103,7 +103,6 @@ class Navigations {
       
     }
     else if(newScreen is Congratulations){
-      print("NEW SCREEN IS CONGS");
       routeName = "CONGRATULATIONS";
       route = MaterialPageRoute(
         builder: (context) => newScreen,
@@ -112,6 +111,17 @@ class Navigations {
         )
       );
       Navigator.popUntil(context, (route) => route.settings.name == "CONGRATULATIONS");
+      Navigator.push(context, route); 
+    }
+    else if(newScreen is TestInvitationSuccess){
+      routeName = "TestInvitationSuccess";
+      route = MaterialPageRoute(
+        builder: (context) => newScreen,
+        settings: RouteSettings(
+          name: routeName
+        )
+      );
+      Navigator.popUntil(context, (route) => route.settings.name == "TestInvitationSuccess");
       Navigator.push(context, route); 
     }
     else{

@@ -4,6 +4,8 @@ import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
+import 'package:auth_app/cubit/test_login_cubit.dart';
+import 'package:auth_app/cubit/test_signup_cubit.dart';
 import 'package:auth_app/getxcontrollers/logged_in_username.dart';
 import 'package:auth_app/getxcontrollers/selected_calendar_controller.dart';
 import 'package:auth_app/pages/contacts_list.dart';
@@ -12,6 +14,7 @@ import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
+import 'package:auth_app/pages/test_invitation_landing_page.dart';
 import 'package:auth_app/providers/camera_type_provider.dart';
 import 'package:auth_app/providers/file_path_provider.dart';
 import 'package:auth_app/providers/moment_id_provider.dart';
@@ -57,6 +60,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => TAndCsCubit()),
           BlocProvider(create: (context) => SignupMethodCubit()),
           BlocProvider(create: (context) => HomeCubit()),
+          BlocProvider(create: (context) => TestSignupCubit()),
+          BlocProvider(create: (context) => TestLoginCubit()),
         ],
         child: MaterialApp(
             title: 'Happr',
@@ -111,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if(state is AuthLoggedIn){ //if theres a logged in user, goto the Home screen else show Login screen
           return Home();
         }else {
-          return LandingPage();
+          return TestInvitationLandingPage();
         }
       }
     );
