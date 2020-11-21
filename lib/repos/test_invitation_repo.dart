@@ -22,8 +22,7 @@ class TestInvitationRepo {
   }
 
   bool verifyInvitationCodeWithOutHyphene(String invitationCode){
-    // final splitCode = invitationCode.split("-");
-    if(invitationCode.length != 8){
+    if(invitationCode.length < 7){
       return false;
     }
     else if(double.tryParse(invitationCode) == null) { 
