@@ -20,7 +20,7 @@ class Tester {
       "name" : name,
       "email" : email,
       "phone" : phone,
-      "invitationCode" : invitationCode
+      "invitationCode" : ""
     };
   }
 }

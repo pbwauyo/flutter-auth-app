@@ -7,6 +7,7 @@ import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,33 +79,47 @@ class TestInvitationLogin extends StatelessWidget {
                         color: Colors.white.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(25)
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomInputField(
-                              placeholder: "XXXX-XXXX", 
-                              controller: invitationCodeController,
-                              drawUnderlineBorder: false,
-                            )
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 5),
-                            child: FlatButton(
-                              // padding: const EdgeInsets.only(),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)
+                      child: Builder(
+                        builder: (newContext) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: CustomInputField(
+                                  placeholder: "XXXXXXXX", 
+                                  controller: invitationCodeController,
+                                  drawUnderlineBorder: false,
+                                  textInputType: TextInputType.number,
+                                )
                               ),
-                              onPressed: (){
-
-                              },
-                              color: Colors.white,
-                              child: CustomTextView(
-                                text: "PASTE",
-                                textColor: Colors.orangeAccent,
-                              ),
-                            ),
-                          )
-                        ],
+                              Container(
+                                margin: const EdgeInsets.only(left: 5),
+                                child: FlatButton(
+                                  // padding: const EdgeInsets.only(),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  onPressed: () async{
+                                    final clipboardValue = (await FlutterClipboard.paste()).trim();
+                                    if(testInvitationRepo.verifyInvitationCodeWithOutHyphene(clipboardValue)){
+                                      invitationCodeController.text = clipboardValue;
+                                    }
+                                    else{
+                                      Methods.showCustomSnackbar(
+                                        context: newContext, 
+                                        message: "Invalid invitation code"
+                                      );
+                                    }       
+                                  },
+                                  color: Colors.white,
+                                  child: CustomTextView(
+                                    text: "PASTE",
+                                    textColor: Colors.orangeAccent,
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        }
                       ),
                     ),
 

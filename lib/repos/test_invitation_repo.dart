@@ -7,6 +7,7 @@ class TestInvitationRepo {
 
   CollectionReference get _testersCollectionRef => _firestore.collection("testers");
   CollectionReference get _invitationCodesCollectionRef => _firestore.collection("invitation_codes");
+  CollectionReference get _pendingTestersCollectionRef => _firestore.collection("pending_testers");
 
   bool verifyInvitationCode(String invitationCode){
     final splitCode = invitationCode.split("-");
@@ -16,6 +17,17 @@ class TestInvitationRepo {
       if(double.tryParse(splitCode[0]) == null && double.tryParse(splitCode[1]) == null){
         return false;
       }
+    }
+    return true;
+  }
+
+  bool verifyInvitationCodeWithOutHyphene(String invitationCode){
+    // final splitCode = invitationCode.split("-");
+    if(invitationCode.length != 8){
+      return false;
+    }
+    else if(double.tryParse(invitationCode) == null) { 
+      return false;
     }
     return true;
   }

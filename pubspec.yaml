@@ -60,6 +60,7 @@ dependencies:
   photofilters: ^2.0.1
   device_calendar: ^3.1.0
   mailer: ^3.2.1
+  clipboard: ^0.1.2+8
   
 dev_dependencies:
   flutter_test:
