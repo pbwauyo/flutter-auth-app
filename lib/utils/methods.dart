@@ -1,9 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:auth_app/pages/preview_recorded_video.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:math' as math;
+
+import 'package:path_provider/path_provider.dart';
 
 
 class Methods {
@@ -52,6 +57,50 @@ class Methods {
         ),
       )
     );
+  }
+
+  static Future<String> getVideoPath() async{
+    String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+    final Directory extDir = await getApplicationDocumentsDirectory();
+    final String dirPath = '${extDir.path}/Movies/happr';
+    await Directory(dirPath).create(recursive: true);
+    final String filePath = '$dirPath/${timestamp()}.mp4';
+    return filePath;
+  }
+
+  static Future<String> startVideoRecording(CameraController cameraController, String filePath) async{
+    
+    if (!cameraController.value.isInitialized) {
+      return null;
+    }
+
+    if (cameraController.value.isRecordingVideo) {
+      // A recording is already started, do nothing.
+      return null;
+    }
+
+    try {
+      await cameraController.startVideoRecording(filePath);
+    } on CameraException catch (e) {
+      return null;
+    }
+    return filePath;
+  }
+
+  static Future<void> stopVideoRecording(CameraController cameraController) async{
+    if (!cameraController.value.isRecordingVideo) {
+      return null;
+    }
+
+    try {
+      await cameraController.stopVideoRecording();
+    } on CameraException catch (e) {
+      return null;
+    }
+  }
+
+  static playVideo({@required BuildContext context, @required String videoPath}){
+    Navigations.goToScreen(context, PreviewRecordedVideo(path: videoPath));
   }
 
 }

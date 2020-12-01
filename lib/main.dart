@@ -6,8 +6,11 @@ import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/cubit/t_and_cs_cubit.dart';
 import 'package:auth_app/cubit/test_login_cubit.dart';
 import 'package:auth_app/cubit/test_signup_cubit.dart';
+import 'package:auth_app/getxcontrollers/edit_image_controller.dart';
+import 'package:auth_app/getxcontrollers/overlay_text_position_controller.dart';
 import 'package:auth_app/getxcontrollers/logged_in_username.dart';
 import 'package:auth_app/getxcontrollers/selected_calendar_controller.dart';
+import 'package:auth_app/getxcontrollers/video_controller.dart';
 import 'package:auth_app/pages/contacts_list.dart';
 import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
@@ -88,6 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final LoggedInUsernameController loggedInUsernameController = Get.put(LoggedInUsernameController());
   final CreateMomentController controller = Get.put(CreateMomentController());
   final SelectedCalendarController selectedCalendarController = Get.put(SelectedCalendarController());
+  final OverlayTextPositionController imageTextPositionController = Get.put(OverlayTextPositionController());
+  final EditImageController editImageController = Get.put(EditImageController());
+  final VideoController videoController = Get.put(VideoController());
 
   @override
   void initState() {

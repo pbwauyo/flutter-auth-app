@@ -81,37 +81,8 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                           await _cameraController.takePicture(path);
 
                           final file = File(path);
-                          final fileName = basename(path);
-                          var image = imageLib.decodeImage(file.readAsBytesSync());
-                          image = imageLib.copyResize(image, width: 600);
+                          Navigations.goToScreen(context, PreviewImage(imageFile: file));
 
-                          Map resultMap = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => PhotoFilterSelector(
-                                  appBarColor: AppColors.PRIMARY_COLOR,
-                                  title: Center(
-                                    child: CustomTextView(
-                                      text: "Filter Photo", 
-                                      fontSize: FontSizes.APP_BAR_TITLE,
-                                    ),
-                                  ),
-                                  image: image,
-                                  filters: presetFiltersList,
-                                  filename: fileName,
-                                  loader: Center(child: CircularProgressIndicator()),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            );
-                            if(resultMap != null){
-                              if(resultMap.containsKey('image_filtered')){
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
-                              }else {
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = path;
-                              }
-                            }
-                          Navigator.pop(context);
                         }catch(error){
                           print("CAMERA ERROR: $error");
                         }

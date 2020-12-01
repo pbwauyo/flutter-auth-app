@@ -26,10 +26,10 @@ import 'custom_progress_indicator.dart';
 
 class GalleryBar extends StatefulWidget {
   final String momentImageIdUpdate;
-  final bool addMemory;
-  final bool isMomentImage;
+  // final bool addMemory;
+  // final bool isMomentImage;
 
-  GalleryBar({this.momentImageIdUpdate, this.addMemory = false, this.isMomentImage = false});
+  GalleryBar({this.momentImageIdUpdate});
 
   @override
   _GalleryBarState createState() => _GalleryBarState();
@@ -41,8 +41,8 @@ class _GalleryBarState extends State<GalleryBar> {
   int _currentPage = 0;
   int _lastPage;
   List<AssetEntity> _assetEntityList = [];
-  final _momentRepo = MomentRepo();
-  final _memoryRepo = MemoryRepo();
+  // final _momentRepo = MomentRepo();
+  // final _memoryRepo = MemoryRepo();
 
   @override
   void initState() {
@@ -95,137 +95,8 @@ class _GalleryBarState extends State<GalleryBar> {
                       return GestureDetector(
                         onTap: () async{
                           final imageFile = await _assetEntityList[index].file;
-                          final fileName = basename(imageFile.path);
-                          var image = imageLib.decodeImage(imageFile.readAsBytesSync());
-                          image = imageLib.copyResize(image, width: 600);
 
-                          final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
-                          if(widget.isMomentImage){
-                            if(takePictureType == MOMENT_IMAGE_ADD){                
-                              Map resultMap = await Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                  builder: (context) => PhotoFilterSelector(
-                                    appBarColor: AppColors.PRIMARY_COLOR,
-                                    title: Center(
-                                      child: CustomTextView(
-                                        text: "Filter Photo", 
-                                        fontSize: FontSizes.APP_BAR_TITLE,
-                                      ),
-                                    ),
-                                    image: image,
-                                    filters: presetFiltersList,
-                                    filename: fileName,
-                                    loader: Center(child: CircularProgressIndicator()),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              );
-                              if(resultMap != null){
-                                if(resultMap.containsKey('image_filtered')){
-                                  Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
-                                }else {
-                                  Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
-                                }
-                              }
-                              Navigator.pop(context);
-                            }
-                            else if(takePictureType == MOMENT_IMAGE_HAPPENING_NOW){
-                              Map resultMap = await Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                  builder: (context) => PhotoFilterSelector(
-                                    appBarColor: AppColors.PRIMARY_COLOR,
-                                    title: Center(
-                                      child: CustomTextView(
-                                        text: "Filter Photo", 
-                                        fontSize: FontSizes.APP_BAR_TITLE,
-                                      ),
-                                    ),
-                                    image: image,
-                                    filters: presetFiltersList,
-                                    filename: fileName,
-                                    loader: Center(child: CircularProgressIndicator()),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              );
-                              if(resultMap != null){
-                                if(resultMap.containsKey('image_filtered')){
-                                  Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
-                                }else {
-                                  Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
-                                }
-                              }
-                              final moment = Provider.of<MomentProvider>(context, listen: false).moment;
-                              Navigator.pop(context);
-                              Navigations.goToScreen(context, MomentInProgress(moment: moment));
-                            }
-                            else{
-                              _momentRepo.updateMomentImage(widget.momentImageIdUpdate, imageFile.path);
-                              Navigator.pop(context);
-                            }
-                          }
-                          else if(widget.addMemory){
-                            final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
-                            Map resultMap = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => PhotoFilterSelector(
-                                  appBarColor: AppColors.PRIMARY_COLOR,
-                                  title: Center(
-                                    child: CustomTextView(
-                                      text: "Filter Photo", 
-                                      fontSize: FontSizes.APP_BAR_TITLE,
-                                    ),
-                                  ),
-                                  image: image,
-                                  filters: presetFiltersList,
-                                  filename: fileName,
-                                  loader: Center(child: CircularProgressIndicator()),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            );
-                            if(resultMap != null){
-                              if(resultMap.containsKey('image_filtered')){
-                                _memoryRepo.postMemory(Memory(momentId: momentId), (resultMap["image_filtered"] as File).path);
-                              }else {
-                                _memoryRepo.postMemory(Memory(momentId: momentId), imageFile.path);
-                              }
-                            }
-                          
-                            Navigator.pop(context);
-                          }
-                          else {
-                            Map resultMap = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => PhotoFilterSelector(
-                                  appBarColor: AppColors.PRIMARY_COLOR,
-                                  title: Center(
-                                    child: CustomTextView(
-                                      text: "Filter Photo", 
-                                      fontSize: FontSizes.APP_BAR_TITLE,
-                                    ),
-                                  ),
-                                  image: image,
-                                  filters: presetFiltersList,
-                                  filename: fileName,
-                                  loader: Center(child: CircularProgressIndicator()),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            );
-                            if(resultMap != null){
-                              if(resultMap.containsKey('image_filtered')){
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
-                              }else {
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = imageFile.path;
-                              }
-                            }
-                            Navigator.pop(context);
-                          }
+                          Navigations.goToScreen(context, PreviewImage(imageFile: imageFile));
                         },
                         child: Container(
                           decoration: BoxDecoration(

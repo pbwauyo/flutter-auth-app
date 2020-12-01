@@ -21,11 +21,12 @@ class CustomInputField extends StatelessWidget {
   final VoidCallback onEditingComplete;
   final IconData suffixIcon;
   final Color suffixIconColor;
+  final Color textColor;
 
   CustomInputField({this.buildContext, @required this.placeholder, @required this.controller, this.widthFactor = 0.8,
     this.prefixIcon, this.textInputType, this.obscureText = false, this.drawUnderlineBorder = false, 
     this.maxLength, this.textAlign = TextAlign.center, this.focusNode, this.nextFocusNode, this.isLast = false, this.onChanged, 
-    this.onEditingComplete, this.suffixIcon, this.suffixIconColor = AppColors.LIGHT_GREY_TEXT,});
+    this.onEditingComplete, this.suffixIcon, this.suffixIconColor = AppColors.LIGHT_GREY_TEXT, this.textColor = Colors.black});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,9 @@ class CustomInputField extends StatelessWidget {
     return Container(
       width: _screenWidth * widthFactor,
       child: TextField(
+        style: TextStyle(
+          color: textColor
+        ),
         focusNode: focusNode ?? FocusNode(),
         onChanged: (value){
           if(onChanged != null){

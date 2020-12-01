@@ -69,9 +69,7 @@ class _AddMemoryState extends State<AddMemory> {
                       angle:  90 * math.pi / 180,
                       child: GestureDetector(
                         onTap: (){
-                          Navigations.goToScreen(context, GalleryImagesGridView(
-                            addMemory: true,
-                          ));
+                          Navigations.goToScreen(context, GalleryImagesGridView());
                         },
                         child: Icon(
                           Icons.chevron_left,
@@ -80,48 +78,15 @@ class _AddMemoryState extends State<AddMemory> {
                         ),
                       )
                     ),
-                    GalleryBar(addMemory: true,),
+                    GalleryBar(),
                     GestureDetector(
                       onTap: () async{
                         try{
                           await _initialiseControllerFuture;
                           final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
                           await _cameraController.takePicture(path);
-                          final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
-
                           final file = File(path);
-                          final fileName = basename(path);
-                          var image = imageLib.decodeImage(file.readAsBytesSync());
-                          image = imageLib.copyResize(image, width: 600);
-
-                          Map resultMap = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => PhotoFilterSelector(
-                                  appBarColor: AppColors.PRIMARY_COLOR,
-                                  title: Center(
-                                    child: CustomTextView(
-                                      text: "Filter Photo", 
-                                      fontSize: FontSizes.APP_BAR_TITLE,
-                                    ),
-                                  ),
-                                  image: image,
-                                  filters: presetFiltersList,
-                                  filename: fileName,
-                                  loader: Center(child: CircularProgressIndicator()),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            );
-                            if(resultMap != null){
-                              if(resultMap.containsKey('image_filtered')){
-                                _memoryRepo.postMemory(Memory(momentId: momentId), (resultMap["image_filtered"] as File).path);
-                              }else {
-                                _memoryRepo.postMemory(Memory(momentId: momentId), path);
-                              }
-                            }
-                          
-                          Navigator.pop(context);
+                          Navigations.goToScreen(context, PreviewImage(imageFile: file));
                         }catch(error){
                           print("CAMERA ERROR: $error");
                         }

@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 
+import 'package:auth_app/getxcontrollers/video_controller.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/gallery_images_grid_view.dart';
 import 'package:auth_app/pages/moment_in_progress.dart';
@@ -11,12 +14,17 @@ import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
+import 'package:auth_app/widgets/dot.dart';
 import 'package:auth_app/widgets/error_text.dart';
 import 'package:auth_app/widgets/gallery_bar.dart';
+import 'package:auth_app/widgets/record_button_painter.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
 import 'package:path/path.dart' show basename, join;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -38,20 +46,34 @@ class ChangeMomentImage extends StatefulWidget {
   _ChangeMomentImageState createState() => _ChangeMomentImageState();
 }
 
-class _ChangeMomentImageState extends State<ChangeMomentImage> {
+class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProviderStateMixin{
   CameraController _cameraController;
   Future<void> _initialiseControllerFuture;
   final double _buttonSize = 80;
   final _momentRepo = MomentRepo();
   final List<Filter> filters = presetFiltersList;
   CameraDescription _currentDescription;
+  String _videoPath;
+  
+  double newPercentage = 0.0;
+  Timer timer;
+  AnimationController percentageAnimationController;
+  VideoController _videoController = Get.find();
 
   @override
   void initState() {
     super.initState();
+    _videoPath = "";
     _currentDescription = widget.cameras.first;
     _cameraController = CameraController(_currentDescription, ResolutionPreset.medium);
     _initialiseControllerFuture = _cameraController.initialize();
+
+    percentageAnimationController = new AnimationController(
+        vsync: this, duration: new Duration(seconds: 30));
+
+    percentageAnimationController.addListener(() {
+      // _videoController.percentage.value = percentageAnimationController.value;
+    });
   }
 
   @override
@@ -66,145 +88,181 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                 child: CameraPreview(_cameraController)
               ),
               Align(
+                alignment: Alignment.topCenter,
+                child: Obx(()=>Visibility(
+                  visible: _videoController.isRecording.value,
+                  child: Container(
+                    width: 65,
+                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5, bottom: 5),
+                    decoration: BoxDecoration(
+                      color: AppColors.PRIMARY_COLOR,
+                      borderRadius: BorderRadius.circular(8)
+                    ),
+                    margin: const EdgeInsets.only(top: 45),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Dot(
+                          color: Colors.red, 
+                          size: 10,
+                        ),
+                        Obx(()=>CustomTextView(
+                          text: "${_videoController.recordedSeconds.value.toString()}s",
+                          textColor: Colors.white,
+                        ))
+                      ],
+                    ),
+                  ),
+                ))
+              ),
+              Align(
                 alignment: Alignment.bottomCenter,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Transform.rotate(
-                      angle:  90 * math.pi / 180,
-                      child: GestureDetector(
-                        onTap: (){
-                          Navigations.goToScreen(context, GalleryImagesGridView(
-                            momentImageIdUpdate: widget.momentId,
-                            isMomentImage: true,
-                          ));
-                        },
-                        child: Icon(
-                          Icons.chevron_left,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                      )
-                    ),
-                    GalleryBar(
-                      momentImageIdUpdate: widget.momentId,
-                      isMomentImage: true,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        try{
-                          await _initialiseControllerFuture;
-                          final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
-                          await _cameraController.takePicture(path);
-
-                          final file = File(path);
-                          final fileName = basename(path);
-                          var image = imageLib.decodeImage(file.readAsBytesSync());
-                          image = imageLib.copyResize(image, width: 600);
-
-                          final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
-                          if(takePictureType == MOMENT_IMAGE_ADD){                
-                            Map resultMap = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => PhotoFilterSelector(
-                                  appBarColor: AppColors.PRIMARY_COLOR,
-                                  title: Center(
-                                    child: CustomTextView(
-                                      text: "Filter Photo", 
-                                      fontSize: FontSizes.APP_BAR_TITLE,
-                                    ),
-                                  ),
-                                  image: image,
-                                  filters: presetFiltersList,
-                                  filename: fileName,
-                                  loader: Center(child: CircularProgressIndicator()),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            );
-                            if(resultMap != null){
-                              if(resultMap.containsKey('image_filtered')){
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
-                              }else {
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = path;
-                              }
-                            }
-                            Navigator.pop(context);
-                          }
-                          else if(takePictureType == MOMENT_IMAGE_HAPPENING_NOW){
-                            Map resultMap = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) => PhotoFilterSelector(
-                                  appBarColor: AppColors.PRIMARY_COLOR,
-                                  title: Center(
-                                    child: CustomTextView(
-                                      text: "Filter Photo", 
-                                      fontSize: FontSizes.APP_BAR_TITLE,
-                                    ),
-                                  ),
-                                  image: image,
-                                  filters: presetFiltersList,
-                                  filename: fileName,
-                                  loader: Center(child: CircularProgressIndicator()),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            );
-                            if(resultMap != null){
-                              if(resultMap.containsKey('image_filtered')){
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = (resultMap["image_filtered"] as File).path;
-                              }else {
-                                Provider.of<FilePathProvider>(context, listen: false).filePath = path;
-                              }
-                            }
-                            final moment = Provider.of<MomentProvider>(context, listen: false).moment;
-                            Navigator.pop(context);
-                            Navigations.goToScreen(context, MomentInProgress(moment: moment));
-                          }
-                          else{
-                            _momentRepo.updateMomentImage(widget.momentId, path);
-                            Navigator.pop(context);
-                          }
-                        }catch(error){
-                          print("CAMERA ERROR: $error");
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    Obx(() => Visibility(
+                      visible: !_videoController.isRecording.value,
+                      maintainSize: true,
+                      maintainState: true,
+                      maintainAnimation: true,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          SizedBox(
-                            width: 32,
-                            height: 32,
+                          Transform.rotate(
+                            angle:  90 * math.pi / 180,
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigations.goToScreen(context, GalleryImagesGridView());
+                              },
+                              child: Icon(
+                                Icons.chevron_left,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                            )
                           ),
+                          GalleryBar(
+                            momentImageIdUpdate: widget.momentId,
+                          ),
+                        ],
+                      ),
+                    ),),
+                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 32,
+                          height: 32,
+                        ),
 
-                          Column(
+                        Obx((){
+                          return Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 margin: const EdgeInsets.only(bottom: 10),
-                                width: _buttonSize,
-                                height: _buttonSize,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 3, color: Colors.white),
-                                  borderRadius: BorderRadius.circular(_buttonSize/2)
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: CustomTextView(
-                                  text: "Tap for photo", 
-                                  textColor: Colors.white, 
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
+                                child: CustomPaint(
+                                  foregroundPainter: RecordButtonPainter(
+                                    lineColor: Colors.black12,
+                                    completeColor: Color(0xFFee5253),
+                                    completePercent: _videoController.percentage.value,
+                                    width: 6.0
+                                  ),
+                                  child: Center(
+                                    child: GestureDetector(
+                                      onLongPressStart: (details){
+                                        _videoController.isRecording.value = true;
+                                      },
+                                      onLongPress: () async{
+                                        String videoPath = await Methods.getVideoPath();
+                                        _videoPath = videoPath;
+                                        Methods.startVideoRecording(_cameraController, videoPath);
+                                        timer = new Timer.periodic(
+                                          Duration(seconds: 1),
+                                          (Timer t) {
+                                            _videoController.percentage.value = newPercentage;
+                                            newPercentage += 1;
+                                            _videoController.recordedSeconds.value = newPercentage.toInt();
 
-                          GestureDetector(
+                                            if (newPercentage > 30) {
+                                              _videoController.percentage.value= 0.0;
+                                              newPercentage = 0.0;
+                                              timer.cancel();
+                                              _videoController.isRecording.value = false;
+                                              Methods.stopVideoRecording(_cameraController);
+                                              Methods.playVideo(context: context, videoPath: _videoPath);
+                                            }
+                                            // print("TIMER: ${t.tick}");
+                                            percentageAnimationController.forward(from: 0.0);
+                                            print("PERCENT CONTROLLER: ${percentageAnimationController.value}");
+                                          },
+                                        );
+                                      },
+                                      onLongPressEnd: (details){
+                                        _videoController.isRecording.value = false;
+                                        _videoController.percentage.value = 0.0;
+                                        newPercentage = 0.0;
+                                        timer.cancel();
+                                        Methods.stopVideoRecording(_cameraController);
+                                        Methods.playVideo(context: context, videoPath: _videoPath);
+                                      },
+                                      onTap: () async {
+                                        try{
+                                          await _initialiseControllerFuture;
+                                          final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
+                                          await _cameraController.takePicture(path);
+
+                                          final file = File(path);
+                                          Navigations.goToScreen(context, PreviewImage(imageFile: file));
+                                          
+                                        }catch(error){
+                                          print("CAMERA ERROR: $error");
+                                        }
+                                      },
+                                      child: Container(
+                                        width: _buttonSize,
+                                        height: _buttonSize,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(width: 3, color: Colors.white),
+                                          borderRadius: BorderRadius.circular(_buttonSize/2)
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              Center(
+                                child: Obx(()=>Visibility(
+                                  maintainSize: true,
+                                  maintainState: true,
+                                  maintainAnimation: true,
+                                  visible: !_videoController.isRecording.value,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    child: CustomTextView(
+                                      text: "Tap for photo, Hold for video", 
+                                      textColor: Colors.white, 
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                )
+                              ),
+
+                            ],
+                          );
+                        }),
+
+                        Obx(()=> Visibility(
+                          visible: !_videoController.isRecording.value,
+                          maintainSize: true,
+                          maintainState: true,
+                          maintainAnimation: true,
+                          child: GestureDetector(
                             onTap: (){
                               if(_currentDescription == widget.cameras.first){
                                 setState(() {
@@ -225,9 +283,9 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
                               size: 32,
                               color: Colors.white,
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        ))
+                      ],
                     ),
                   ],
                 ),
@@ -246,6 +304,7 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> {
   @override
   void dispose() {
     _cameraController.dispose();
+    percentageAnimationController?.dispose();
     super.dispose();
   }
 
