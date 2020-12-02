@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auth_app/getxcontrollers/video_controller.dart';
 import 'package:auth_app/pages/preview_recorded_video.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/instance_manager.dart';
 import 'dart:math' as math;
 
 import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 
 class Methods {
@@ -29,9 +32,9 @@ class Methods {
     );
   }
 
-  static showCustomToast(dynamic error){
+  static showCustomToast(dynamic message){
     Fluttertoast.showToast(
-      msg: error,
+      msg: message,
       textColor: Colors.white,
       backgroundColor: Colors.green,
       toastLength: Toast.LENGTH_SHORT
@@ -99,8 +102,68 @@ class Methods {
     }
   }
 
-  static playVideo({@required BuildContext context, @required String videoPath}){
-    Navigations.goToScreen(context, PreviewRecordedVideo(path: videoPath));
+  static playVideo({@required BuildContext context}){
+    Navigations.goToScreen(context, PreviewRecordedVideo());
+  }
+
+  static encodeTextToVideoCommand({@required String videoPath, String outputPath, @required String text}){
+    final command = "-i $videoPath -vf drawtext=\"fontfile=OpenSans-Light.ttf: text=\'$text\': fontcolor=white: fontsize=24: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy $outputPath";
+    return command;
+  }
+
+  static convertToPercent(double value, double max){
+    final result = (value / max) * 100;
+    return result.toInt();
+  }
+
+  static Future<ImageProvider> generateImageProvider({@required String mediaPath}) async{
+    if(mediaPath.endsWith(".mp4")){
+      if(mediaPath.startsWith("http")){
+        final networkThumbnailPath = await VideoThumbnail.thumbnailFile(
+          video: mediaPath,
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          quality: 75,
+          maxHeight: 160
+        );
+        return NetworkImage(networkThumbnailPath);
+      }else{
+        final memoryThumbnailPath = await VideoThumbnail.thumbnailFile(
+          video: mediaPath,
+          quality: 75,
+          maxHeight: 160
+        );
+        final file = File(memoryThumbnailPath);
+        return FileImage(file);
+      }
+    }else{
+      if(mediaPath.startsWith("http")){
+        return NetworkImage(mediaPath);
+      }else{
+        return FileImage(File(mediaPath));
+      }
+    }
+  }
+
+  static Future<ImageProvider> generateNetworkImageProvider({@required String mediaUrl, String category}) async{
+    if(mediaUrl.isEmpty){
+      return AssetImage(Constants.momentImages[category]);
+    }
+    else if(mediaUrl.contains(".mp4")){
+      final networkThumbnailPath = await VideoThumbnail.thumbnailFile(
+        video: mediaUrl,
+        thumbnailPath: (await getTemporaryDirectory()).path,
+        quality: 75,
+        maxHeight: 160
+      );
+      return FileImage(File(networkThumbnailPath));
+    }else{
+      return NetworkImage(mediaUrl);
+    }
+  }
+
+  static bool isVideo(String path){
+    print("IS VIDEO PATH: $path");
+    return path.isNotEmpty && path.contains(".mp4");
   }
 
 }

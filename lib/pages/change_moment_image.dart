@@ -193,7 +193,8 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                                               timer.cancel();
                                               _videoController.isRecording.value = false;
                                               Methods.stopVideoRecording(_cameraController);
-                                              Methods.playVideo(context: context, videoPath: _videoPath);
+                                              _videoController.videoPath.value = _videoPath;
+                                              Methods.playVideo(context: context);
                                             }
                                             // print("TIMER: ${t.tick}");
                                             percentageAnimationController.forward(from: 0.0);
@@ -207,7 +208,8 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                                         newPercentage = 0.0;
                                         timer.cancel();
                                         Methods.stopVideoRecording(_cameraController);
-                                        Methods.playVideo(context: context, videoPath: _videoPath);
+                                        _videoController.videoPath.value = _videoPath;
+                                        Methods.playVideo(context: context);
                                       },
                                       onTap: () async {
                                         try{

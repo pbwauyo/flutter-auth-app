@@ -9,6 +9,7 @@ import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/comment_repo.dart';
 import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:auth_app/widgets/comment_widget.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
@@ -17,6 +18,7 @@ import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/empty_results_text.dart';
 import 'package:auth_app/widgets/memory_widget.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
+import 'package:auth_app/widgets/video_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +30,11 @@ import 'change_moment_image.dart';
 
 class MomentDetails extends StatelessWidget {
   final Moment moment;
+  final bool isVideo;
   final _memoryRepo = MemoryRepo();
   final _commentRepo = CommentRepo();
 
-  MomentDetails({@required this.moment});
+  MomentDetails({@required this.moment, this.isVideo = false});
 
   final _commentController = TextEditingController();
 
@@ -49,15 +52,19 @@ class MomentDetails extends StatelessWidget {
               Container(
                 height: 160,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                  image: DecorationImage(
-                    image: moment.imageUrl.isNotEmpty ? 
-                      NetworkImage(moment.imageUrl) :
-                      AssetImage(Constants.momentImages[moment.category]),
-                    fit: BoxFit.cover
-                  )
-                ),
+                child: !Methods.isVideo(moment.imageUrl) ? 
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                      image: DecorationImage(
+                        image: moment.imageUrl.isNotEmpty ? 
+                          NetworkImage(moment.imageUrl) :
+                          AssetImage(Constants.momentImages[moment.category]),
+                        fit: BoxFit.cover
+                      )
+                    ),
+                  ) :
+                  VideoWidget(videopath: moment.imageUrl),
               ),
 
               Align(

@@ -10,7 +10,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 
 final textColors = [
-  Colors.red, Colors.greenAccent, Colors.amber, Colors.amberAccent, 
+  Colors.white, Colors.red, Colors.greenAccent, Colors.amber, Colors.amberAccent, 
   Colors.blueAccent, Colors.yellowAccent, Colors.brown, Colors.cyan, Colors.cyanAccent, Colors.deepOrangeAccent, 
   Colors.deepPurpleAccent, Colors.limeAccent, Colors.indigoAccent, Colors.tealAccent, Colors.teal, Colors.pink
 ];

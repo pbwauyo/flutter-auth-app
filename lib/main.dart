@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auth_app/cubit/auth_cubit.dart';
 import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/cubit/login_cubit.dart';
@@ -29,8 +31,11 @@ import 'package:auth_app/utils/pref_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:get/instance_manager.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'getxcontrollers/create_moment_controller.dart';
@@ -95,6 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final EditImageController editImageController = Get.put(EditImageController());
   final VideoController videoController = Get.put(VideoController());
 
+  FlutterFFmpegConfig _fFmpegConfig;
+
   @override
   void initState() {
     super.initState();
@@ -108,10 +115,9 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
 
-    // Future.delayed(Duration.zero, () async{
-      
-
-    // });
+    _fFmpegConfig = new FlutterFFmpegConfig();
+    _setFfMpegFontConfig();
+    
   }
 
   @override
@@ -126,5 +132,21 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     );
+  }
+
+  _setFfMpegFontConfig() async{
+    var tempDir = await getTemporaryDirectory();
+    final fontDir = await Directory("${tempDir.path}/happr/fonts").create(recursive: true);
+    if(!await fontDir.exists()){
+      final assetFontByteData = await rootBundle.load("assets/fonts/OpenSans-Light.ttf");
+      final buffer = assetFontByteData.buffer;
+
+      await File("${fontDir.path}/OpenSans-Light.ttf").writeAsBytes(
+        buffer.asInt8List(assetFontByteData.offsetInBytes, assetFontByteData.lengthInBytes) //copy asset font to folder
+      );
+
+    }
+    _fFmpegConfig.setFontDirectory("${fontDir.path}", null);
+    
   }
 }

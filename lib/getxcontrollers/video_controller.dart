@@ -7,4 +7,6 @@ class VideoController extends GetxController {
   var textColor = Colors.white.obs;
   var isRecording = false.obs;
   var recordedSeconds = 0.obs;
+  var isFiltering = false.obs;
+  var videoPath = "".obs;
 }

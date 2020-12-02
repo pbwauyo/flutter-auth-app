@@ -7,6 +7,7 @@ import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/comment_repo.dart';
 import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:auth_app/widgets/artifact_slider.dart';
 import 'package:auth_app/widgets/comment_slider.dart';
@@ -17,6 +18,7 @@ import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/empty_results_text.dart';
 import 'package:auth_app/widgets/memory_widget.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
+import 'package:auth_app/widgets/video_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -51,14 +53,18 @@ class _MemoryDetailsState extends State<MemoryDetails> {
             children: [
               Container(
                 height: 160,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                  image: DecorationImage(
-                    image:NetworkImage(widget.memory.image),
-                    fit: BoxFit.cover
-                  )
-                ),
+                width: double.infinity,    
+                child: !Methods.isVideo(widget.memory.image) ?  
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                      image: DecorationImage(
+                        image:NetworkImage(widget.memory.image),
+                        fit: BoxFit.cover
+                      )
+                    ),
+                  ) :
+                  VideoWidget(videopath: widget.memory.image),
               ),
 
               Container(

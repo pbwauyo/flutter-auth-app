@@ -11,6 +11,7 @@ import 'package:auth_app/providers/moment_type_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/calendar_dropdown.dart';
 import 'package:auth_app/widgets/contact_avatar.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
@@ -121,18 +122,35 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                           )
                         ),
                       ) : 
-                      Container(
-                        height: 160,
-                        margin: const EdgeInsets.only(top: 10, bottom: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          image: DecorationImage(
-                            image: imagePath.startsWith("http") ?
-                              NetworkImage(imagePath) :
-                              FileImage(File(imagePath)),
-                            fit: BoxFit.cover
-                          )
-                        ),
+                      FutureBuilder<ImageProvider>(
+                        future: Methods.generateImageProvider(mediaPath: imagePath),
+                        builder: (context, snapshot) {
+                          if(snapshot.hasData){
+                            final imageProvider = snapshot.data;
+                            return Container(
+                              height: 160,
+                              margin: const EdgeInsets.only(top: 10, bottom: 15),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover
+                                )
+                              ),
+                            );
+
+                          }else if(snapshot.hasError){
+                            return Center(
+                              child: ErrorText(error: "${snapshot.error}"),
+                            );
+
+                          }else{
+                            return Center(
+                              child: CustomProgressIndicator(),
+                            );
+                            
+                          }
+                        }
                       );
                   }
                 ),

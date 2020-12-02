@@ -7,8 +7,7 @@ class EditImageController extends GetxController {
   var selectedColorFilter = 11.obs;
 
   resetImageText(){
-    text.
-    value = "";
+    text.value = "";
   }
 
   setColorFilter(int newValue){

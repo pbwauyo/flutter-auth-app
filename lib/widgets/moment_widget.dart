@@ -12,6 +12,7 @@ import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
+import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+
+import 'error_text.dart';
 
 class MomentWidget extends StatefulWidget {
   final Moment moment;
@@ -92,14 +95,29 @@ class _MomentWidgetState extends State<MomentWidget> {
             Container(
               height: 160,
               width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                image: DecorationImage(
-                  image: widget.moment.imageUrl.isNotEmpty ? 
-                    NetworkImage(widget.moment.imageUrl) :
-                    AssetImage(Constants.momentImages[widget.moment.category]),
-                  fit: BoxFit.cover
-                )
+              child: FutureBuilder<ImageProvider>(
+                future: Methods.generateNetworkImageProvider(mediaUrl: widget.moment.imageUrl, category: widget.moment.category),
+                builder: (context, snapshot) {
+                  if(snapshot.hasData){
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                        image: DecorationImage(
+                          image: snapshot.data,
+                          fit: BoxFit.cover
+                        )
+                      ),
+                    );
+                  }else if(snapshot.hasError){
+                    return Center(
+                      child: ErrorText(error: "${snapshot.error}"),
+                    );
+                  }
+                  return Center(
+                    child: CustomProgressIndicator(),
+                  );
+                  
+                }
               ),
             ),
 
