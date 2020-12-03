@@ -16,6 +16,7 @@ import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/text_image_filter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
@@ -31,8 +32,9 @@ import 'package:path/path.dart' show basename, join;
 import 'edit_overlay_text.dart';
 import 'moment_in_progress.dart';
 
-final filterColorsList = [null, Colors.black54, Colors.pink, Colors.white, Colors.amber];
-final filterNames = [null, 'Black', 'Pink', 'White', 'Amber'];
+final filterColorsList = [null, Colors.black, Colors.black54, Colors.pink, Colors.white, Colors.amber];
+final filterNames = [null, 'Black', 'Light', 'Pink', 'White', 'Amber'];
+const TAG = "PREVIEW_SCREEN";
 
 class PreviewRecordedVideo extends StatefulWidget {
 
@@ -84,9 +86,9 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
      !_controller.value.initialized ? spinkit :
      Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,11 +135,10 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
               Obx(() => Stack(
                 children: [
                   Container(
-                    child: AspectRatio(
-                      aspectRatio: 3/2,
-                      child: Container(
-                        child: VideoPlayerPackage.VideoPlayer(_controller),
-                      ),
+                    height: _controller.value.size.height,
+                    width: _controller.value.size.width,
+                    child: Container(
+                      child: VideoPlayerPackage.VideoPlayer(_controller),
                     ),
                   ),
                   Positioned(
@@ -145,6 +146,7 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                     left: _overlayTextPositionController.left.value,
                     child: GestureDetector(
                       onPanUpdate: (details) {
+                        // print("$TAG DELTA Y: ${details.delta.dy} DELTA X: ${details.delta.dx}");
                         _overlayTextPositionController.top.value += details.delta.dy;
                         _overlayTextPositionController.left.value += details.delta.dx;
                       },
@@ -200,40 +202,43 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                                   TapiocaBall.filterFromColor(color)
                                 ];
 
-                                // if(_editImageController.text.value.isNotEmpty){
-                                //   final videoHeight = _controller.value.size.height;
-                                //   final videoWidth = _controller.value.size.width;
-                                //   print("VIDEO HEIGHT: $videoHeight, VIDEO WIDTH: $videoWidth");
-                                //   final textXPosition = _overlayTextPositionController.top.value;
-                                //   final textYPosition = _overlayTextPositionController.left.value;
-                                //   print("TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
-
-                                //   final text = _editImageController.text.value;
-                                //   final x = Methods.convertToPercent(textXPosition, videoWidth);
-                                //   final y = Methods.convertToPercent(textYPosition, videoHeight);
-                                //   print("X: $x Y: $y");
-
-                                //   final size = 35;
-                                //   final textColor = _editImageController.textColor.value;
-                                //   tapiocaBalls.add(TapiocaBall.textOverlay(text, x, y, size, textColor));
-                                // }
-
                                 var tempDir = await getTemporaryDirectory();
-                                final outputPath = '${tempDir.path}/edited_video.mp4';
+                                var outputPath = '${tempDir.path}/edited_video.mp4';
+                                
                                 final cup = Cup(Content(videoController.videoPath.value), tapiocaBalls);
                                 await cup.suckUp(outputPath);
+                                // videoPath = outputPath;
 
-                                // if(_editImageController.text.value.isNotEmpty){
-                                //   // Methods.showCustomToast("STARTING TEXT");
+                                // if(_editImageController.text.value.isNotEmpty){     
+                                //   final videoHeight = _controller.value.size.height;
+                                //   final videoWidth = _controller.value.size.width;
+                                //   final textXPosition = _overlayTextPositionController.top.value;
+                                //   final textYPosition = _overlayTextPositionController.left.value;
+                                //   print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
+                                //   print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
 
-                                //   final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
-                                //       videoPath: videoPath, 
-                                //       text: _editImageController.text.value,
-                                //       outputPath: outputPath
-                                //     )
-                                //   );
-                                  // print("RESULT: $result");
-                                //   Methods.showCustomToast("$result");
+                                //   // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
+                                //   // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
+                                //   // print("$TAG X: $x Y: $y");ffffff00
+
+                                //   try{
+                                //     final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
+                                //     print("$TAG TEXT COLOR VALUE: ${Methods.colorToHexString(_editImageController.textColor.value)}");
+                                //     final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
+                                //         videoPath: videoPath, 
+                                //         text: _editImageController.text.value,
+                                //         outputPath: newOutputPath,
+                                //         top: textXPosition.toInt().toString(),
+                                //         left: textYPosition.toInt().toString(),
+                                //         fontColor: Methods.colorToHexString(_editImageController.textColor.value)
+                                //       )
+                                //     );
+                                //     outputPath = newOutputPath;
+                                //     print("$TAG RESULT: $result");
+                                //     Methods.showCustomToast("$result");
+                                //   }catch(err){
+                                //     print("$TAG FFMPEG ERROR: $err");
+                                //   }   
                                 // }
                                 
                                 videoController.isFiltering.value = false;
@@ -248,7 +253,7 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                                 });
                               }
                             }catch(err){
-                              print("VIDEO FILTERING ERROR: $err");
+                              print("$TAG VIDEO FILTERING ERROR: $err");
                               Methods.showGeneralErrorToast("$err");
                               videoController.isFiltering.value = false;
                             }
@@ -283,33 +288,64 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                         });
 
                       }else if(takePictureType == MOMENT_IMAGE_ADD){
-                        if(_editImageController.text.value.isNotEmpty){
+                        // if(_editImageController.text.value.isNotEmpty){
+                        //   final videoHeight = _controller.value.size.height;
+                        //   final videoWidth = _controller.value.size.width;
+                        //   print("$TAG VIDEO HEIGHT: $videoHeight, VIDEO WIDTH: $videoWidth");
+                        //   final textXPosition = _overlayTextPositionController.top.value;
+                        //   final textYPosition = _overlayTextPositionController.left.value;
+                        //   print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
+
+                        //   final text = _editImageController.text.value;
+                        //   final x = Methods.convertToPercent(textXPosition, videoWidth);
+                        //   final y = Methods.convertToPercent(textYPosition, videoHeight);
+                        //   print("$TAG X: $x Y: $y");
+
+                        //   final size = 35;
+                        //   final textColor = _editImageController.textColor.value;
+                        //   _tapiocaBalls.add(TapiocaBall.textOverlay(text, x, y, size, textColor));
+                        // }
+
+                        // if(_tapiocaBalls.isNotEmpty){
+                        //   var tempDir = await getTemporaryDirectory();
+                        //   final outputPath = '${tempDir.path}/edited_video.mp4';
+                        //   videoPath = outputPath;
+                        //   final cup = Cup(Content(videoController.videoPath.value), _tapiocaBalls);
+                        //   await cup.suckUp(outputPath);
+                        // }
+
+                        if(_editImageController.text.value.isNotEmpty){  
+                          var tempDir = await getTemporaryDirectory();   
                           final videoHeight = _controller.value.size.height;
                           final videoWidth = _controller.value.size.width;
-                          print("VIDEO HEIGHT: $videoHeight, VIDEO WIDTH: $videoWidth");
                           final textXPosition = _overlayTextPositionController.top.value;
                           final textYPosition = _overlayTextPositionController.left.value;
-                          print("TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
+                          print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
+                          print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
 
-                          final text = _editImageController.text.value;
-                          final x = Methods.convertToPercent(textXPosition, videoWidth);
-                          final y = Methods.convertToPercent(textYPosition, videoHeight);
-                          print("X: $x Y: $y");
+                          // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
+                          // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
+                          // print("$TAG X: $x Y: $y");ffffff00
 
-                          final size = 35;
-                          final textColor = _editImageController.textColor.value;
-                          _tapiocaBalls.add(TapiocaBall.textOverlay(text, x, y, size, textColor));
+                          try{
+                            final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
+                            print("$TAG TEXT COLOR VALUE: ${Methods.colorToHexString(_editImageController.textColor.value)}");
+                            final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
+                                videoPath: videoPath, 
+                                text: _editImageController.text.value,
+                                outputPath: newOutputPath,
+                                top: textXPosition.toInt().toString(),
+                                left: textYPosition.toInt().toString(),
+                                fontColor: Methods.colorToHexString(_editImageController.textColor.value)
+                              )
+                            );
+                            videoPath = newOutputPath;
+                            print("$TAG RESULT: $result");
+                            Methods.showCustomToast("$result");
+                          }catch(err){
+                            print("$TAG FFMPEG ERROR: $err");
+                          }   
                         }
-
-                        if(_tapiocaBalls.isNotEmpty){
-                          var tempDir = await getTemporaryDirectory();
-                          final outputPath = '${tempDir.path}/edited_video.mp4';
-                          videoPath = outputPath;
-                          final cup = Cup(Content(videoController.videoPath.value), _tapiocaBalls);
-                          await cup.suckUp(outputPath);
-                        }
-                        print("VIDEO PATH: $videoPath");
-                        Methods.generateImageProvider(mediaPath: videoPath);
 
                         Provider.of<FilePathProvider>(context, listen: false).filePath = videoPath;
 
@@ -360,9 +396,26 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
   }
 
   void getVideo() async {
+    // final outputPath = await Methods.getVideoPath();
+    // final result = await fFmpeg.execute(
+    //   Methods.scaleVideoCommand(
+    //     videoPath: videoPath, 
+    //     outputPath: outputPath,
+    //     width: MediaQuery.of(context).size.width.toString(), 
+    //     height: VIDEO_HEIGHT.toString()
+    //   )
+    // );
+    // print("$TAG SCALE RESULT: $result");
+    // if(result == 0){
+    //   fileInfo = File(outputPath);
+    //   videoPath = outputPath;
+    // }else{
+    //   fileInfo = File(videoPath);
+    // }
     fileInfo = File(videoPath);
+    
     _controller = VideoPlayerPackage.VideoPlayerController.file(fileInfo)
-      ..initialize().then((_) {
+      ..initialize().then((_) async{
         setState(() {
           _controller.play();
           _controller.setLooping(true);

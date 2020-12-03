@@ -136,14 +136,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _setFfMpegFontConfig() async{
     var tempDir = await getTemporaryDirectory();
-    final fontDir = await Directory("${tempDir.path}/happr/fonts").create(recursive: true);
-    if(!await fontDir.exists()){
-      final assetFontByteData = await rootBundle.load("assets/fonts/OpenSans-Light.ttf");
-      final buffer = assetFontByteData.buffer;
+    final fontDirPath = "${tempDir.path}/fonts";
+    final fontDir =  Directory(fontDirPath);
 
-      await File("${fontDir.path}/OpenSans-Light.ttf").writeAsBytes(
-        buffer.asInt8List(assetFontByteData.offsetInBytes, assetFontByteData.lengthInBytes) //copy asset font to folder
-      );
+    if(!await fontDir.exists()){
+      try{
+        await Directory(fontDirPath).create(recursive: true);
+        final assetFontByteData = await rootBundle.load("assets/fonts/OpenSans-Light.ttf");
+        final buffer = assetFontByteData.buffer;
+
+        await File("${fontDir.path}/OpenSans-Light.ttf").writeAsBytes(
+          buffer.asInt8List(assetFontByteData.offsetInBytes, assetFontByteData.lengthInBytes) //copy asset font to folder
+        );
+      }catch(error){
+        print("FONT SAVE ERROR: $error");
+      }
 
     }
     _fFmpegConfig.setFontDirectory("${fontDir.path}", null);

@@ -106,14 +106,26 @@ class Methods {
     Navigations.goToScreen(context, PreviewRecordedVideo());
   }
 
-  static encodeTextToVideoCommand({@required String videoPath, String outputPath, @required String text}){
-    final command = "-i $videoPath -vf drawtext=\"fontfile=OpenSans-Light.ttf: text=\'$text\': fontcolor=white: fontsize=24: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy $outputPath";
+  static encodeTextToVideoCommand({@required String videoPath, String outputPath, @required String text, String fontSize = "35", String fontColor="white", String top, String left}){
+    final command = "-i $videoPath -vf drawtext=\"fontfile=OpenSans-Light.ttf: text=\'$text\': fontcolor=$fontColor: fontsize=$fontSize: box=1: boxcolor=black@0.5: boxborderw=5: x=$left: y=$top\" -codec:a copy $outputPath";
     return command;
   }
 
-  static convertToPercent(double value, double max){
-    final result = (value / max) * 100;
+  static String scaleVideoCommand({@required String videoPath, String outputPath, @required String width, @required String height }){
+    final command = "-i $videoPath -vf scale=-1:$height $outputPath";
+    return command;
+  }
+
+  static convertToPercent(double value, double max, {double percentage}){
+    final result = (value / max) * percentage;
     return result.toInt();
+  }
+
+  static String colorToHexString(Color color){
+    final hexString = "${color.value.toRadixString(16).padLeft(6, '0')}";
+    final firstPart = hexString.substring(0,2);
+    final lastPart = hexString.substring(2);
+    return "#$lastPart$firstPart";
   }
 
   static Future<ImageProvider> generateImageProvider({@required String mediaPath}) async{

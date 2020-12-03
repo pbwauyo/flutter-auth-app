@@ -20,6 +20,8 @@ const MOMENT_TYPE_HAPPENING_NOW = "MOMENT_TYPE_HAPPENING_NOW";
 const ARTIFACT_TYPE_MEMORY = "MEMORY";
 const ARTIFACT_TYPE_MOMENT = "MOMENT";
 
+const double VIDEO_HEIGHT = 250;
+
 class AssetNames {
   static const _BASE_ASSET_DIR = "assets/images";
 
