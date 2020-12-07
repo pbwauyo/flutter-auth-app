@@ -4,6 +4,7 @@ import 'package:auth_app/widgets/circle_profile_image.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/error_text.dart';
+import 'package:auth_app/widgets/video_widget.dart';
 import 'package:flutter/material.dart';
 
 class MemoryWidget extends StatelessWidget{
@@ -27,31 +28,44 @@ class MemoryWidget extends StatelessWidget{
             child: Container(
               height: height,
               width: width,
-              child: FutureBuilder<ImageProvider>(
-                future: Methods.generateNetworkImageProvider(mediaUrl: memory.image),
-                builder: (context, snapshot) {
-                  if(snapshot == null){
-                    return Center(
-                      child: CustomProgressIndicator(),
-                    );
-                  }else if(snapshot.hasError){
-                    return Center(
-                      child: ErrorText(error: "${snapshot.error}"),
-                    );
-                  }
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                        image: snapshot.data,
-                        fit: BoxFit.cover
-                      )
-                    ),
-                  );
-                }
-              ),
+              child: !Methods.isVideo(memory.image) ? 
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    image: DecorationImage(
+                      image: NetworkImage(memory.image),
+                      fit: BoxFit.cover
+                    )
+                  ),
+                ) :
+                VideoWidget(videopath: memory.image)
             ),
           ),
+
+          //  FutureBuilder<ImageProvider>(
+          //   future: Methods.generateNetworkImageProvider(mediaUrl: memory.image),
+          //   builder: (context, snapshot) {
+          //     if(snapshot.hasData){
+          //       return Container(
+          //         decoration: BoxDecoration(
+          //           borderRadius: BorderRadius.circular(10.0),
+          //           image: DecorationImage(
+          //             image: snapshot.data,
+          //             fit: BoxFit.cover
+          //           )
+          //         ),
+          //       );
+          //     }else if(snapshot.hasError){
+          //       return Center(
+          //         child: ErrorText(error: "${snapshot.error}"),
+          //       );
+          //     }
+              
+          //     return Center(
+          //       child: CustomProgressIndicator(),
+          //     );
+          //   }
+          // ),
 
           Positioned(
             right: 8,

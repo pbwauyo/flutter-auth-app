@@ -134,9 +134,10 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
               
               Obx(() => Stack(
                 children: [
-                  Container(
-                    height: _controller.value.size.height,
-                    width: _controller.value.size.width,
+                  AspectRatio(
+                    aspectRatio: 4/3,
+                    // height: _controller.value.size.height,
+                    // width: _controller.value.size.width,
                     child: Container(
                       child: VideoPlayerPackage.VideoPlayer(_controller),
                     ),
@@ -156,14 +157,17 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                           screen: EditOverlayText()
                         );
                       },
-                      child: Obx((){
-                        return CustomTextView(
-                          text: _editImageController.text.value,
-                          fontSize: 18,
-                          bold: true,
-                          textColor: _editImageController.textColor.value,
-                        );
-                      }),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+                        child: Obx((){
+                          return CustomTextView(
+                            text: _editImageController.text.value,
+                            fontSize: 18,
+                            bold: true,
+                            textColor: _editImageController.textColor.value,
+                          );
+                        }),
+                      ),
                     )
                   )
                 ],
@@ -207,39 +211,38 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                                 
                                 final cup = Cup(Content(videoController.videoPath.value), tapiocaBalls);
                                 await cup.suckUp(outputPath);
-                                // videoPath = outputPath;
+                                videoPath = outputPath;
 
-                                // if(_editImageController.text.value.isNotEmpty){     
-                                //   final videoHeight = _controller.value.size.height;
-                                //   final videoWidth = _controller.value.size.width;
-                                //   final textXPosition = _overlayTextPositionController.top.value;
-                                //   final textYPosition = _overlayTextPositionController.left.value;
-                                //   print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
-                                //   print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
+                                if(_editImageController.text.value.isNotEmpty){     
+                                  final videoHeight = _controller.value.size.height;
+                                  final videoWidth = _controller.value.size.width;
+                                  final textXPosition = _overlayTextPositionController.top.value;
+                                  final textYPosition = _overlayTextPositionController.left.value;
+                                  print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
+                                  print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
 
-                                //   // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
-                                //   // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
-                                //   // print("$TAG X: $x Y: $y");ffffff00
+                                  // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
+                                  // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
+                                  // print("$TAG X: $x Y: $y");ffffff00
 
-                                //   try{
-                                //     final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
-                                //     print("$TAG TEXT COLOR VALUE: ${Methods.colorToHexString(_editImageController.textColor.value)}");
-                                //     final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
-                                //         videoPath: videoPath, 
-                                //         text: _editImageController.text.value,
-                                //         outputPath: newOutputPath,
-                                //         top: textXPosition.toInt().toString(),
-                                //         left: textYPosition.toInt().toString(),
-                                //         fontColor: Methods.colorToHexString(_editImageController.textColor.value)
-                                //       )
-                                //     );
-                                //     outputPath = newOutputPath;
-                                //     print("$TAG RESULT: $result");
-                                //     Methods.showCustomToast("$result");
-                                //   }catch(err){
-                                //     print("$TAG FFMPEG ERROR: $err");
-                                //   }   
-                                // }
+                                  try{
+                                    final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
+                                    final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
+                                        videoPath: videoPath, 
+                                        text: _editImageController.text.value,
+                                        outputPath: newOutputPath,
+                                        top: textXPosition.toInt().toString(),
+                                        left: textYPosition.toInt().toString(),
+                                        fontColor: Methods.colorToHexString(_editImageController.textColor.value)
+                                      )
+                                    );
+                                    outputPath = newOutputPath;
+                                    print("$TAG RESULT: $result");
+                                    Methods.showCustomToast("$result");
+                                  }catch(err){
+                                    print("$TAG FFMPEG ERROR: $err");
+                                  }   
+                                }
                                 
                                 videoController.isFiltering.value = false;
                                 setState(() {
@@ -280,56 +283,25 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                       final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
                       int count = 0;
 
-                      if(takePictureType == MOMENT_IMAGE_EDIT){ 
-                        final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
-                        _momentRepo.updateMomentImage(momentId, videoPath);
-                        Navigator.popUntil(context, (route) {
-                            return count++ == 2;
-                        });
+                      var tempDir = await getTemporaryDirectory();   
+                      final videoHeight = _controller.value.size.height;
+                      final videoWidth = _controller.value.size.width;
+                      final textXPosition = _overlayTextPositionController.top.value;
+                      final textYPosition = _overlayTextPositionController.left.value;
+                      print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
+                      print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
+                      final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
 
-                      }else if(takePictureType == MOMENT_IMAGE_ADD){
-                        // if(_editImageController.text.value.isNotEmpty){
-                        //   final videoHeight = _controller.value.size.height;
-                        //   final videoWidth = _controller.value.size.width;
-                        //   print("$TAG VIDEO HEIGHT: $videoHeight, VIDEO WIDTH: $videoWidth");
-                        //   final textXPosition = _overlayTextPositionController.top.value;
-                        //   final textYPosition = _overlayTextPositionController.left.value;
-                        //   print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
-
-                        //   final text = _editImageController.text.value;
-                        //   final x = Methods.convertToPercent(textXPosition, videoWidth);
-                        //   final y = Methods.convertToPercent(textYPosition, videoHeight);
-                        //   print("$TAG X: $x Y: $y");
-
-                        //   final size = 35;
-                        //   final textColor = _editImageController.textColor.value;
-                        //   _tapiocaBalls.add(TapiocaBall.textOverlay(text, x, y, size, textColor));
-                        // }
-
-                        // if(_tapiocaBalls.isNotEmpty){
-                        //   var tempDir = await getTemporaryDirectory();
-                        //   final outputPath = '${tempDir.path}/edited_video.mp4';
-                        //   videoPath = outputPath;
-                        //   final cup = Cup(Content(videoController.videoPath.value), _tapiocaBalls);
-                        //   await cup.suckUp(outputPath);
-                        // }
+                      if(takePictureType == MOMENT_IMAGE_ADD){
 
                         if(_editImageController.text.value.isNotEmpty){  
-                          var tempDir = await getTemporaryDirectory();   
-                          final videoHeight = _controller.value.size.height;
-                          final videoWidth = _controller.value.size.width;
-                          final textXPosition = _overlayTextPositionController.top.value;
-                          final textYPosition = _overlayTextPositionController.left.value;
-                          print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
-                          print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
 
                           // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
                           // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
                           // print("$TAG X: $x Y: $y");ffffff00
 
                           try{
-                            final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
-                            print("$TAG TEXT COLOR VALUE: ${Methods.colorToHexString(_editImageController.textColor.value)}");
+                            
                             final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
                                 videoPath: videoPath, 
                                 text: _editImageController.text.value,
@@ -341,10 +313,10 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                             );
                             videoPath = newOutputPath;
                             print("$TAG RESULT: $result");
-                            Methods.showCustomToast("$result");
+                            // Methods.showCustomToast("$result");
                           }catch(err){
                             print("$TAG FFMPEG ERROR: $err");
-                          }   
+                          }
                         }
 
                         Provider.of<FilePathProvider>(context, listen: false).filePath = videoPath;
@@ -364,6 +336,23 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
 
                       }else if(takePictureType == MEMORY_IMAGE_ADD){
                         final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
+                         try{
+                          final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
+                              videoPath: videoPath, 
+                              text: _editImageController.text.value,
+                              outputPath: newOutputPath,
+                              top: textXPosition.toInt().toString(),
+                              left: textYPosition.toInt().toString(),
+                              fontColor: Methods.colorToHexString(_editImageController.textColor.value)
+                            )
+                          );
+                          videoPath = newOutputPath;
+                          print("$TAG RESULT: $result");
+                          // Methods.showCustomToast("$result");
+                        }catch(err){
+                          print("$TAG FFMPEG ERROR: $err");
+                        }
+
                         _memoryRepo.postMemory(Memory(momentId: momentId), videoPath);
                         Navigator.popUntil(context, (route) {
                             return count++ == 2;

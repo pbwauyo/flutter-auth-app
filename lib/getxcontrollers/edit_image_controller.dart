@@ -5,6 +5,8 @@ class EditImageController extends GetxController {
   var text = "".obs;
   var textColor = Colors.white.obs;
   var selectedColorFilter = 11.obs;
+  var hasFocus = true.obs;
+  // var backgroundColorIndex = 0.obs;
 
   resetImageText(){
     text.value = "";

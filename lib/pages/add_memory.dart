@@ -31,6 +31,8 @@ import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import 'package:image/image.dart' as imageLib;
 
+import 'edit_overlay_text.dart';
+
 class AddMemory extends StatefulWidget {
   final List<CameraDescription> cameras;
 
@@ -86,31 +88,61 @@ class _AddMemoryState extends State<AddMemory> with TickerProviderStateMixin{
 
               Align(
                 alignment: Alignment.topCenter,
-                child: Obx(()=>Visibility(
-                  visible: _videoController.isRecording.value,
-                  child: Container(
-                    width: 65,
-                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5, bottom: 5),
-                    decoration: BoxDecoration(
-                      color: AppColors.PRIMARY_COLOR,
-                      borderRadius: BorderRadius.circular(8)
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 32,
+                      height: 32,
                     ),
-                    margin: const EdgeInsets.only(top: 45),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Dot(
-                          color: Colors.red, 
-                          size: 10,
+
+                    Obx(() => Visibility(
+                      maintainAnimation: true,
+                      maintainSize: true,
+                      maintainState: true,
+                      visible: _videoController.isRecording.value,
+                      child: Container(
+                        width: 65,
+                        padding: const EdgeInsets.only(left: 8, right: 8, top: 5, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.PRIMARY_COLOR,
+                          borderRadius: BorderRadius.circular(8)
                         ),
-                        Obx(()=>CustomTextView(
-                          text: "${_videoController.recordedSeconds.value.toString()}s",
-                          textColor: Colors.white,
-                        ))
-                      ],
+                        margin: const EdgeInsets.only(top: 45),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Dot(
+                              color: Colors.red, 
+                              size: 10,
+                            ),
+                            Obx(()=>CustomTextView(
+                              text: "${_videoController.recordedSeconds.value.toString()}s",
+                              textColor: Colors.white,
+                            ))
+                          ],
+                        ),
+                      ),
+                    ),),
+
+                    GestureDetector(
+                      onTap: (){
+                        Navigations.showTransparentDialog(
+                          context: context, 
+                          screen: EditOverlayText(showPaint: true,)
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 16, top: 25),
+                        child: Icon(Icons.text_fields, 
+                          size: 32,
+                          color: Colors.white
+                        )
+                      ),
                     ),
-                  ),
-                ))
+                  ],
+                ),
               ),
 
               Align(
