@@ -15,9 +15,11 @@ import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/repos/user_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/image_painter.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_image_filter.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
+import 'package:auth_app/widgets/dot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +46,12 @@ final filterNamesMap = {
   9 : "Soft",
   10 : "Oslo"
 };
+
+final paintColors = [
+  Colors.white, Colors.red, Colors.greenAccent, Colors.amber, Colors.amberAccent, 
+  Colors.blueAccent, Colors.yellowAccent, Colors.brown, Colors.cyan, Colors.cyanAccent, Colors.deepOrangeAccent, 
+  Colors.deepPurpleAccent, Colors.limeAccent, Colors.indigoAccent, Colors.tealAccent, Colors.teal, Colors.pink
+];
 
 final colorsMap = {
   11 : null,
@@ -110,11 +118,14 @@ class _PreviewImageState extends State<PreviewImage> {
 
   final OverlayTextPositionController _overlayTextPositionController = Get.find();
   final EditImageController _editImageController = Get.find();
+  final GlobalKey _imagePainterKey = new GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _overlayTextPositionController.resetPosition();
+    _editImageController.clearPaintPointsList();
+    _editImageController.resetShouldPaint();
   }
 
   @override
@@ -129,52 +140,94 @@ class _PreviewImageState extends State<PreviewImage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Obx(() => Visibility(
+                    visible: _editImageController.shouldPaint.value,
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: Container(
+                      height: 32,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      alignment: Alignment.center,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: textColors.map(
+                          (color) => Center(
+                            child: Dot(
+                              size: 30,
+                              color: color,
+                              onTap: (){
+                                _editImageController.paintColor.value = color;
+                              },
+                            ),
+                          )
+                        ).toList()
+                      ),
+                    ),
+                  ),
+                ),
+
                 Obx((){
                   return RepaintBoundary(
                     key: _globalKey,
-                    child: Stack(
-                      children: [
-                        Container(
-                          child: AspectRatio(
-                            aspectRatio: 3/2,
-                            child: Obx((){
-                              return Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: FileImage(widget.imageFile),
-                                    fit: BoxFit.cover,
-                                    colorFilter: _updateImageColorFilter(_editImageController.selectedColorFilter.value)
-                                  )
-                                ),
-                              );
-                            }),
-                          ),
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        if(_editImageController.shouldPaint.value){
+                          _editImageController.updatePainPointsList(details.localPosition);
+                          _imagePainterKey.currentContext.findRenderObject().markNeedsPaint();
+                        }
+                      },
+                      child: CustomPaint(
+                        key: _imagePainterKey,
+                        foregroundPainter: ImagePainter(
+                          color: _editImageController.paintColor.value
                         ),
-                        Positioned(
-                          top: _overlayTextPositionController.top.value,
-                          left: _overlayTextPositionController.left.value,
-                          child: GestureDetector(
-                            onPanUpdate: (details) {
-                              _overlayTextPositionController.top.value += details.delta.dy;
-                              _overlayTextPositionController.left.value += details.delta.dx;
-                            },
-                            onTap: (){
-                              Navigations.showTransparentDialog(
-                                context: context, 
-                                screen: EditOverlayText()
-                              );
-                            },
-                            child: Obx((){
-                              return CustomTextView(
-                                text: _editImageController.text.value,
-                                fontSize: 18,
-                                bold: true,
-                                textColor: _editImageController.textColor.value,
-                              );
-                            }),
-                          )
-                        )
-                      ],
+                        child: Stack(
+                          children: [
+                            Container(
+                              child: AspectRatio(
+                                aspectRatio: 3/2,
+                                child: Obx((){
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: FileImage(widget.imageFile),
+                                        fit: BoxFit.cover,
+                                        colorFilter: _updateImageColorFilter(_editImageController.selectedColorFilter.value)
+                                      )
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                            Positioned(
+                              top: _overlayTextPositionController.top.value,
+                              left: _overlayTextPositionController.left.value,
+                              child: GestureDetector(
+                                onPanUpdate: (details) {
+                                  _overlayTextPositionController.top.value += details.delta.dy;
+                                  _overlayTextPositionController.left.value += details.delta.dx;
+                                },
+                                onTap: (){
+                                  Navigations.showTransparentDialog(
+                                    context: context, 
+                                    screen: EditOverlayText()
+                                  );
+                                },
+                                child: Obx((){
+                                  return CustomTextView(
+                                    text: _editImageController.text.value,
+                                    fontSize: 18,
+                                    bold: true,
+                                    textColor: _editImageController.textColor.value,
+                                  );
+                                }),
+                              )
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 }),
@@ -243,22 +296,38 @@ class _PreviewImageState extends State<PreviewImage> {
 
           Align(
             alignment: Alignment.topRight,
-            child: GestureDetector(
-              onTap: (){
-                Navigations.showTransparentDialog(
-                  context: context, 
-                  screen: EditOverlayText()
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.only(right: 16, top: 25),
-                child: CustomTextView(
-                  text: "Aa",
-                  textColor: Colors.white,
-                  bold: true,
-                  fontSize: 20,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    _editImageController.resetShouldPaint();
+                    Navigations.showTransparentDialog(
+                      context: context, 
+                      screen: EditOverlayText()
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 16, top: 25),
+                    child: CustomTextView(
+                      text: "Aa",
+                      textColor: Colors.white,
+                      bold: true,
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
-              ),
+
+                GestureDetector(
+                  onTap: (){
+                    _editImageController.toggleShouldPaint();
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 16, top: 25),
+                    child: Icon(Icons.edit, color: Colors.white, size: 24)
+                  ),
+                )
+              ],
             ),
           ),
 
