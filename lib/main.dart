@@ -16,6 +16,8 @@ import 'package:auth_app/getxcontrollers/video_controller.dart';
 import 'package:auth_app/pages/contacts_list.dart';
 import 'package:auth_app/pages/contacts_permission.dart';
 import 'package:auth_app/pages/home.dart';
+import 'package:auth_app/pages/interests.dart';
+import 'package:auth_app/pages/interests_v2.dart';
 import 'package:auth_app/pages/landing_page.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/pages/splash.dart';
@@ -38,6 +40,7 @@ import 'package:get/instance_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'getxcontrollers/categories_controller.dart';
 import 'getxcontrollers/create_moment_controller.dart';
 
 void main() async{
@@ -99,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final OverlayTextPositionController imageTextPositionController = Get.put(OverlayTextPositionController());
   final EditImageController editImageController = Get.put(EditImageController());
   final VideoController videoController = Get.put(VideoController());
+  final CategoriesController _categoriesController = Get.put(CategoriesController());
 
   FlutterFFmpegConfig _fFmpegConfig;
 
@@ -122,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // return InterestsV2();
     
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state){

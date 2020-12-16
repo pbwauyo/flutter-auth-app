@@ -5,8 +5,9 @@ class HapprContact {
   double rating;
   String phone;
   String ownerUsername;
+  String image;
 
-  HapprContact({this.id, this.displayName, this.initials, this.rating, this.phone, this.ownerUsername});
+  HapprContact({this.id, this.displayName, this.initials, this.rating, this.phone, this.ownerUsername, this.image});
 
   factory HapprContact.fromMap(Map<String, dynamic> map){
     return HapprContact(
@@ -15,7 +16,8 @@ class HapprContact {
       initials: map["initials"],
       rating: map["rating"],
       phone: map["phone"],
-      ownerUsername: map["ownerUsername"]
+      ownerUsername: map["ownerUsername"],
+      image: map['image']
     );
   }
 
@@ -26,7 +28,8 @@ class HapprContact {
       "initials" : initials,
       "rating" : rating ?? 0.0,
       "phone" : phone ?? "",
-      "ownerUsername" : ownerUsername
+      "ownerUsername" : ownerUsername,
+      "image" : image ?? ""
     };
   }
 }

@@ -1,4 +1,5 @@
 import 'package:auth_app/cubit/home_cubit.dart';
+import 'package:auth_app/models/app_user.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/add_moment_details.dart';
 import 'package:auth_app/pages/create_happy_moment.dart';
@@ -8,9 +9,12 @@ import 'package:auth_app/pages/location_permission.dart';
 import 'package:auth_app/pages/memory_details.dart';
 import 'package:auth_app/pages/moment_details.dart';
 import 'package:auth_app/pages/pick_category.dart';
+import 'package:auth_app/pages/profile_page.dart';
 import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/repos/moment_repo.dart';
+import 'package:auth_app/repos/user_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/pref_manager.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/error_text.dart';
@@ -27,6 +31,8 @@ import 'package:provider/provider.dart';
 class Home extends StatelessWidget {
   final _momentRepo = MomentRepo();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+    final _userRepo = UserRepo();
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +93,39 @@ class Home extends StatelessWidget {
           elevation: 0.0,
           backgroundColor: Colors.white,
           actions: [
-            Container()
+            FutureBuilder<String>(
+              future: PrefManager.getLoginUsername(),
+              builder: (context, usernameSnapshot) {
+                if(usernameSnapshot.hasData){
+                  return StreamBuilder<DocumentSnapshot>(
+                    stream: _userRepo.getUserDetailsAsStream(username: usernameSnapshot.data),
+                    builder: (context, snapshot){
+                      if(snapshot.hasData){
+                        final user = AppUser.fromMap(snapshot.data.data());
+                        return GestureDetector(
+                          onTap: (){
+                            Navigations.goToScreen(context, ProfilePage(username: user.username,));
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundImage: user.photoUrl.isNotEmpty ? 
+                                NetworkImage(user.photoUrl) :
+                                AssetImage(AssetNames.PEOPLE_LARGE),
+                            ),
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  );
+                }
+                return Container();
+              },
+            )
           ],
+          
         ),
         endDrawer: CustomNavigationDrawer(),
         

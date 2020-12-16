@@ -48,7 +48,7 @@ class _PhoneSignupState extends State<PhoneSignup> {
 
   final _authRepo = AuthRepo();
 
-  String _dialCode = "+92";
+  String _dialCode = "+1";
 
   @override
   void initState() {

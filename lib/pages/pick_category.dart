@@ -31,8 +31,7 @@ class PickCategory extends StatefulWidget {
 
 class _PickCategoryState extends State<PickCategory> {
   final _searchTextController = TextEditingController();
-
-  final CategoriesController _categoriesController = Get.put(CategoriesController());
+  final CategoriesController _categoriesController = Get.find();
   final CreateMomentController createMomentController = Get.find();
 
   Timer _debounce;
@@ -99,21 +98,21 @@ class _PickCategoryState extends State<PickCategory> {
           ),
         ),
 
-        Center(
-          child: Container(
-            width: screenWidth * 0.6,
-            margin: const EdgeInsets.only(bottom: 35),
-            child: RoundedRaisedButton(
-              text: "Select for me", 
-              onTap: (){
+        // Center(
+        //   child: Container(
+        //     width: screenWidth * 0.6,
+        //     margin: const EdgeInsets.only(bottom: 35),
+        //     child: RoundedRaisedButton(
+        //       text: "Select for me", 
+        //       onTap: (){
 
-              },
-              textColor: AppColors.PRIMARY_COLOR,
-              borderColor: AppColors.PRIMARY_COLOR,
-              bgColor: Colors.white,
-            ),
-          ),
-        )
+        //       },
+        //       textColor: AppColors.PRIMARY_COLOR,
+        //       borderColor: AppColors.PRIMARY_COLOR,
+        //       bgColor: Colors.white,
+        //     ),
+        //   ),
+        // )
       ],
     );
   }

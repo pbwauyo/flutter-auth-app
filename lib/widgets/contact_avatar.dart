@@ -15,8 +15,9 @@ final List<Color> colors = [
 class ContactAvatar extends StatelessWidget {
   final String initials;
   final double size;
+  final double fontSize;
 
-  ContactAvatar({this.initials, this.size = 80});
+  ContactAvatar({this.initials, this.size = 80, this.fontSize = 14});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class ContactAvatar extends StatelessWidget {
         child: CustomTextView(
           text: initials,
           textColor: Colors.white,
+          fontSize: fontSize,
         ),
       ),
     );

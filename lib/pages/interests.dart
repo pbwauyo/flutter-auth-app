@@ -55,12 +55,14 @@ class _InterestsState extends State<Interests> {
       ),
       body: ListView(
         children: [
-            Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: CustomTextView(
-              text: "Things I like!",
-              fontSize: 18,
-              bold: true,
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: CustomTextView(
+                text: "Things I like!",
+                fontSize: 18,
+                bold: true,
+              ),
             ),
           ),
 

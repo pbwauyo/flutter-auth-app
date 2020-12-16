@@ -27,7 +27,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
   final _phoneTxtController  = TextEditingController();
 
   final _authRepo = AuthRepo();
-  String _dialCode = "+92";
+  String _dialCode = "+1";
 
   @override
   Widget build(BuildContext context) {

@@ -13,6 +13,7 @@ import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
+import 'package:auth_app/repos/user_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_image_filter.dart';
@@ -104,6 +105,8 @@ class _PreviewImageState extends State<PreviewImage> {
   final _memoryRepo = MemoryRepo();
 
   final _globalKey = GlobalKey();
+
+  final _userRepo = UserRepo();
 
   final OverlayTextPositionController _overlayTextPositionController = Get.find();
   final EditImageController _editImageController = Get.find();
@@ -311,6 +314,11 @@ class _PreviewImageState extends State<PreviewImage> {
                     }else if(takePictureType == MEMORY_IMAGE_ADD){
                       final momentId = Provider.of<MomentIdProvider>(context, listen: false).momentid;
                       _memoryRepo.postMemory(Memory(momentId: momentId), widget.imageFile.path);
+                      Navigator.popUntil(context, (route) {
+                          return count++ == 2;
+                      });
+                    }else if(takePictureType == CHANGE_PROFILE_PIC){
+                      _userRepo.updateProfilePic(imagePath: widget.imageFile.path);
                       Navigator.popUntil(context, (route) {
                           return count++ == 2;
                       });

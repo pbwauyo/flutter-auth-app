@@ -325,9 +325,18 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                 spacing: 3.0,
                 runSpacing: 2.0,
                 children: _happrContactsController.contacts.map(
-                  (contact) => ContactAvatar(
-                    initials: contact.initials,
-                    size: 25,
+                  (contact) => ListTile(
+                    leading: ContactAvatar(
+                      initials: contact.initials,
+                      size: 25,
+                    ),
+                    title: IconButton(
+                      icon: Icon(Icons.clear),
+                      color: Colors.red,
+                      onPressed: (){
+                        _happrContactsController.contacts.remove(contact);
+                      }
+                    ),
                   )
                 ).toList(),
               );

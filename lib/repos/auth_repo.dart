@@ -222,7 +222,7 @@ class AuthRepo {
     };
   }
 
-  Future<void> verifyUserPhoneNumber(String phoneNumber, BuildContext context, {bool isLogin=false}) async{
+  Future<void> verifyUserPhoneNumber(String phoneNumber, BuildContext context, {bool isLogin=false, bool isUpdate = false}) async{
     await _firebaseAuth.verifyPhoneNumber(
       phoneNumber: phoneNumber, 
       verificationCompleted: (PhoneAuthCredential authCredential){}, 
@@ -230,7 +230,7 @@ class AuthRepo {
       codeSent: (String verificationId, int resendToken){
         Navigations.goToScreen(
           context, 
-          CodeVerification(verificationId: verificationId, isLogin: isLogin, phoneNumber: phoneNumber)
+          CodeVerification(verificationId: verificationId, isLogin: isLogin, phoneNumber: phoneNumber, isUpdate: isUpdate,)
         );
       }, 
       codeAutoRetrievalTimeout: (String verificationId){}

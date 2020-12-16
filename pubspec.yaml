@@ -67,6 +67,7 @@ dependencies:
   flutter_ffmpeg: ^0.3.0
   tapioca: ^1.0.1
   video_thumbnail: ^0.2.4
+  image_stack: ^1.1.0
   
 dev_dependencies:
   flutter_test:

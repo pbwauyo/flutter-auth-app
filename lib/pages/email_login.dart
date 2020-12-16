@@ -1,6 +1,7 @@
 import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/getxcontrollers/logged_in_username.dart';
 import 'package:auth_app/pages/email_signup.dart';
+import 'package:auth_app/pages/forgot_password.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/phone_login.dart';
 import 'package:auth_app/repos/auth_repo.dart';
@@ -161,15 +162,20 @@ class _EmailLoginState extends State<EmailLogin> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomTextView(
-                                text: "Forgot password?",
-                                showUnderline: true,
+                              GestureDetector(
+                                onTap: (){
+                                  Navigations.goToScreen(context, ForgotPassword());
+                                },
+                                child: CustomTextView(
+                                  text: "Forgot password?",
+                                  showUnderline: true,
+                                ),
                               ),
 
-                              CustomTextView(
-                                text: "Not a happr yet?",
-                                showUnderline: true,
-                              )
+                              // CustomTextView(
+                              //   text: "Not a happr yet?",
+                              //   showUnderline: true,
+                              // )
                             ],
                           )
                         ),

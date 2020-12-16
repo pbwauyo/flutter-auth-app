@@ -1,5 +1,6 @@
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/pages/interests.dart';
+import 'package:auth_app/pages/interests_v2.dart';
 import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/contact_rating_widget.dart';
@@ -116,7 +117,7 @@ class _ContactsListState extends State<ContactsList> {
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   text: "Next", 
                   onTap: () async{
-                    Navigations.goToScreen(context, Interests());
+                    Navigations.goToScreen(context, InterestsV2());
                   }
                 ),
               ),

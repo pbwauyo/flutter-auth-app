@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 
 class CategoriesController extends GetxController{
   final categories = <Category>[].obs;
+  final allCategories = <Category>[].obs;
 
   @override
   onInit(){
     categories.addAll(Constants.categories);
+    allCategories.addAll(Constants.categories);
   }
 
   updateCategoriesList(String query){
