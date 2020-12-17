@@ -22,21 +22,36 @@ class FriendsWidget extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: contacts.map(
-                (contact) => Padding(
-                  padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
-                  child: ListTile(
-                    leading: ContactAvatar(
-                      initials: contact.initials,
-                      size: 30,
-                    ),
-                    title: CustomTextView(
-                      fontSize: 13,
-                      text: contact.displayName
-                    ),
-                  )
-                )
-              ).toList(),
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 8),
+                    child: Icon(Icons.clear, color: Colors.black),
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: contacts.map(
+                    (contact) => Padding(
+                      padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
+                      child: ListTile(
+                        leading: ContactAvatar(
+                          initials: contact.initials,
+                          size: 30,
+                        ),
+                        title: CustomTextView(
+                          fontSize: 13,
+                          text: contact.displayName
+                        ),
+                      )
+                    )
+                  ).toList(),
+                ),
+              ],
             );
           }
         );
@@ -45,21 +60,10 @@ class FriendsWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: getContactsSublist().map(
           (contact) => 
-          Center(
-            child: Container(
-              width: size + 10,
-              height: size + 10,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular((size+10)/2)
-              ),
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 4),
-              child: ContactAvatar(
-                size: size,
-                initials: contact.initials,
-                fontSize: 10,
-              ),
-            ),
+          ContactAvatar(
+            size: size,
+            initials: getInitials(contact.displayName),
+            fontSize: 10,
           )
         ).toList()
       ),
@@ -72,5 +76,12 @@ class FriendsWidget extends StatelessWidget {
     }else{
       return contacts;
     }
+  }
+
+  String getInitials(String name){
+    final nameList = name.split(" ");
+    final StringBuffer buffer = StringBuffer();
+    nameList.forEach((name) => buffer.write(name.characters.first));
+    return buffer.toString();
   }
 }

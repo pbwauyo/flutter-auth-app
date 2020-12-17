@@ -126,6 +126,7 @@ class _PreviewImageState extends State<PreviewImage> {
     _overlayTextPositionController.resetPosition();
     _editImageController.clearPaintPointsList();
     _editImageController.resetShouldPaint();
+    _editImageController.resetEmoji();
   }
 
   @override
@@ -200,6 +201,28 @@ class _PreviewImageState extends State<PreviewImage> {
                                   );
                                 }),
                               ),
+                            ),
+                            Positioned(
+                              top: _editImageController.emojiTopPosition.value,
+                              left: _editImageController.emojiLeftPosition.value,
+                              child: _editImageController.selectedEmoji.value.isEmpty ? 
+                                Container() :
+                                GestureDetector(
+                                  onPanUpdate: (details){
+                                    _editImageController.emojiTopPosition.value += details.delta.dy;
+                                    _editImageController.emojiLeftPosition.value += details.delta.dx;
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(_editImageController.selectedEmoji.value),
+                                        fit: BoxFit.contain
+                                      )
+                                    ),
+                                  ),
+                                )
                             ),
                             Positioned(
                               top: _overlayTextPositionController.top.value,
@@ -309,12 +332,7 @@ class _PreviewImageState extends State<PreviewImage> {
                   },
                   child: Container(
                     margin: const EdgeInsets.only(right: 16, top: 25),
-                    child: CustomTextView(
-                      text: "Aa",
-                      textColor: Colors.white,
-                      bold: true,
-                      fontSize: 20,
-                    ),
+                    child: Icon(Icons.title, color: Colors.white, size: 24,),
                   ),
                 ),
 
@@ -325,6 +343,45 @@ class _PreviewImageState extends State<PreviewImage> {
                   child: Container(
                     margin: const EdgeInsets.only(right: 16, top: 25),
                     child: Icon(Icons.edit, color: Colors.white, size: 24)
+                  ),
+                ),
+
+                GestureDetector(
+                  onTap: (){
+                    showModalBottomSheet(
+                      context: context, 
+                      builder: (context){
+                        return GridView.builder(
+                          padding: const EdgeInsets.only(top: 10),
+                          itemCount: Constants.emojiList.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0
+                          ), 
+                          itemBuilder: (cont, index){
+                            return GestureDetector(
+                              onTap: (){
+                                _editImageController.selectedEmoji.value = Constants.emojiList[index];
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.contain,
+                                    image: AssetImage(Constants.emojiList[index])
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        );
+                      }
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 16, top: 25),
+                    child: Icon(Icons.emoji_emotions_outlined, color: Colors.white, size: 24)
                   ),
                 )
               ],

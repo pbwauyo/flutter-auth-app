@@ -95,10 +95,10 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 32,
-                      height: 32,
-                    ),
+                    // SizedBox(
+                    //   width: 32,
+                    //   height: 32,
+                    // ),
 
                     Obx(() => Visibility(
                       maintainState: true,
@@ -129,21 +129,21 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                       ),
                     ),),
 
-                    GestureDetector(
-                      onTap: (){
-                        Navigations.showTransparentDialog(
-                          context: context, 
-                          screen: EditOverlayText(showPaint: true,)
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 16, top: 25),
-                        child: Icon(Icons.text_fields, 
-                          size: 32,
-                          color: Colors.white
-                        )
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: (){
+                    //     Navigations.showTransparentDialog(
+                    //       context: context, 
+                    //       screen: EditOverlayText(showPaint: true,)
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     margin: const EdgeInsets.only(right: 16, top: 25),
+                    //     child: Icon(Icons.text_fields, 
+                    //       size: 32,
+                    //       color: Colors.white
+                    //     )
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

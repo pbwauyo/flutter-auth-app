@@ -12,9 +12,11 @@ import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/memory_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/image_painter.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
+import 'package:auth_app/widgets/dot.dart';
 import 'package:auth_app/widgets/text_image_filter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +51,8 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
 
   final _memoryRepo = MemoryRepo();
 
+  final GlobalKey _imagePainterKey = new GlobalKey();
+
   final VideoController videoController = Get.find();
   final EditImageController _editImageController = Get.find();
   final OverlayTextPositionController _overlayTextPositionController = Get.find();
@@ -77,6 +81,9 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
     fFmpeg = new FlutterFFmpeg();
     _overlayTextPositionController.resetPosition();
     _editImageController.resetImageText();
+    _editImageController.clearPaintPointsList();
+    _editImageController.resetShouldPaint();
+    _editImageController.resetEmoji();
     
   }
   
@@ -107,167 +114,286 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                 ),
               ),
 
-              GestureDetector(
-                onTap: (){
-                  Navigations.showTransparentDialog(
-                    context: context, 
-                    screen: EditOverlayText()
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 16, top: 25),
-                  child: CustomTextView(
-                    text: "Aa",
-                    textColor: Colors.white,
-                    bold: true,
-                    fontSize: 20,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      _editImageController.resetShouldPaint();
+                      Navigations.showTransparentDialog(
+                        context: context, 
+                        screen: EditOverlayText()
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16, top: 25),
+                      child: Icon(Icons.title, color: Colors.white, size: 24,),
+                    ),
                   ),
-                ),
+
+                  GestureDetector(
+                    onTap: (){
+                      _editImageController.toggleShouldPaint();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16, top: 25),
+                      child: Icon(Icons.edit, color: Colors.white, size: 24)
+                    ),
+                  ),
+
+                  GestureDetector(
+                    onTap: (){
+                      showModalBottomSheet(
+                        context: context, 
+                        builder: (context){
+                          return GridView.builder(
+                            padding: const EdgeInsets.only(top: 10),
+                            itemCount: Constants.emojiList.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 10.0,
+                              mainAxisSpacing: 10.0
+                            ), 
+                            itemBuilder: (cont, index){
+                              return GestureDetector(
+                                onTap: (){
+                                  _editImageController.resetShouldPaint();
+                                  _editImageController.selectedEmoji.value = Constants.emojiList[index];
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: AssetImage(Constants.emojiList[index])
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          );
+                        }
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16, top: 25),
+                      child: Icon(Icons.emoji_emotions_outlined, color: Colors.white, size: 24)
+                    ),
+                  )
+                ],
               ),
             ],
           ),
 
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
-              Obx(() => Stack(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 4/3,
-                    // height: _controller.value.size.height,
-                    // width: _controller.value.size.width,
+          Container(
+            margin: const EdgeInsets.only(top: 25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Obx(() => Visibility(
+                    visible: _editImageController.shouldPaint.value,
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
                     child: Container(
-                      child: VideoPlayerPackage.VideoPlayer(_controller),
+                      height: 32,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      alignment: Alignment.center,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: textColors.map(
+                          (color) => Center(
+                            child: Dot(
+                              size: 30,
+                              color: color,
+                              onTap: (){
+                                _editImageController.paintColor.value = color;
+                              },
+                            ),
+                          )
+                        ).toList()
+                      ),
                     ),
                   ),
-                  Positioned(
-                    top: _overlayTextPositionController.top.value,
-                    left: _overlayTextPositionController.left.value,
-                    child: GestureDetector(
-                      onPanUpdate: (details) {
-                        // print("$TAG DELTA Y: ${details.delta.dy} DELTA X: ${details.delta.dx}");
-                        _overlayTextPositionController.top.value += details.delta.dy;
-                        _overlayTextPositionController.left.value += details.delta.dx;
-                      },
-                      onTap: (){
-                        Navigations.showTransparentDialog(
-                          context: context, 
-                          screen: EditOverlayText()
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
-                        child: Obx((){
-                          return CustomTextView(
-                            text: _editImageController.text.value,
-                            fontSize: 18,
-                            bold: true,
-                            textColor: _editImageController.textColor.value,
-                          );
-                        }),
-                      ),
-                    )
-                  )
-                ],
-              ),),
-
-              Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 5, left: 16),
-                child: CustomTextView(
-                  text: "Filters",
-                  textColor: Colors.white,
-                  fontSize: 18,
-                  bold: true,
                 ),
-              ),
-
-              Container(
-                height: 90,
-                margin: const EdgeInsets.only(top: 8),
-                child: ListView(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  scrollDirection: Axis.horizontal,
-                  children: filterColorsList.map(
-                    (color) => Center(
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 6),
-                        child: TextImageFilter(
-                          size: 80,
-                          text: color == null ? "No Filter" : filterNames[filterColorsList.indexOf(color)], 
-                          onTap: () async{
-                            _selectedColor = color;
-                            try{
-                              if(color != null){
-                                videoController.isFiltering.value = true;
-
-                                final tapiocaBalls = [
-                                  TapiocaBall.filterFromColor(color)
-                                ];
-
-                                var tempDir = await getTemporaryDirectory();
-                                var outputPath = '${tempDir.path}/edited_video.mp4';
-                                
-                                final cup = Cup(Content(videoController.videoPath.value), tapiocaBalls);
-                                await cup.suckUp(outputPath);
-                                videoPath = outputPath;
-
-                                if(_editImageController.text.value.isNotEmpty){     
-                                  final videoHeight = _controller.value.size.height;
-                                  final videoWidth = _controller.value.size.width;
-                                  final textXPosition = _overlayTextPositionController.top.value;
-                                  final textYPosition = _overlayTextPositionController.left.value;
-                                  print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
-                                  print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
-
-                                  // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
-                                  // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
-                                  // print("$TAG X: $x Y: $y");ffffff00
-
-                                  try{
-                                    final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
-                                    final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
-                                        videoPath: videoPath, 
-                                        text: _editImageController.text.value,
-                                        outputPath: newOutputPath,
-                                        top: textXPosition.toInt().toString(),
-                                        left: textYPosition.toInt().toString(),
-                                        fontColor: Methods.colorToHexString(_editImageController.textColor.value)
-                                      )
-                                    );
-                                    outputPath = newOutputPath;
-                                    print("$TAG RESULT: $result");
-                                    Methods.showCustomToast("$result");
-                                  }catch(err){
-                                    print("$TAG FFMPEG ERROR: $err");
-                                  }   
-                                }
-                                
-                                videoController.isFiltering.value = false;
-                                setState(() {
-                                  videoPath = outputPath;
-                                  getVideo();
-                                });
-                              }else{
-                                setState(() {
-                                  videoPath = originalVideoPath;
-                                  getVideo();
-                                });
-                              }
-                            }catch(err){
-                              print("$TAG VIDEO FILTERING ERROR: $err");
-                              Methods.showGeneralErrorToast("$err");
-                              videoController.isFiltering.value = false;
-                            }
-                          }
+                
+                Obx(() => GestureDetector(
+                  onPanUpdate: (details) {
+                    if(_editImageController.shouldPaint.value){
+                      _editImageController.updatePainPointsList(details.localPosition);
+                      _imagePainterKey.currentContext.findRenderObject().markNeedsPaint();
+                    }
+                  },
+                  child: CustomPaint(
+                    key: _imagePainterKey,
+                    foregroundPainter: ImagePainter(
+                      color: _editImageController.paintColor.value
+                    ),
+                    child: Stack(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 4/3,
+                          // height: _controller.value.size.height,
+                          // width: _controller.value.size.width,
+                          child: Container(
+                            child: VideoPlayerPackage.VideoPlayer(_controller),
+                          ),
                         ),
-                      ),
-                    )
-                  ).toList()
+                        Positioned(
+                          top: _editImageController.emojiTopPosition.value,
+                          left: _editImageController.emojiLeftPosition.value,
+                          child: _editImageController.selectedEmoji.value.isEmpty ? 
+                            Container() :
+                            GestureDetector(
+                              onPanUpdate: (details){
+                                _editImageController.emojiTopPosition.value += details.delta.dy;
+                                _editImageController.emojiLeftPosition.value += details.delta.dx;
+                              },
+                              child: Container(
+                                height: 80,
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(_editImageController.selectedEmoji.value),
+                                    fit: BoxFit.contain
+                                  )
+                                ),
+                              ),
+                            )
+                        ),
+                        Positioned(
+                          top: _overlayTextPositionController.top.value,
+                          left: _overlayTextPositionController.left.value,
+                          child: GestureDetector(
+                            onPanUpdate: (details) {
+                              // print("$TAG DELTA Y: ${details.delta.dy} DELTA X: ${details.delta.dx}");
+                              _overlayTextPositionController.top.value += details.delta.dy;
+                              _overlayTextPositionController.left.value += details.delta.dx;
+                            },
+                            onTap: (){
+                              Navigations.showTransparentDialog(
+                                context: context, 
+                                screen: EditOverlayText()
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+                              child: Obx((){
+                                return CustomTextView(
+                                  text: _editImageController.text.value,
+                                  fontSize: 18,
+                                  bold: true,
+                                  textColor: _editImageController.textColor.value,
+                                );
+                              }),
+                            ),
+                          )
+                        )
+                      ],
+                    ),
+                  ),
+                ),),
+
+                Container(
+                  margin: const EdgeInsets.only(top: 20, bottom: 5, left: 16),
+                  child: CustomTextView(
+                    text: "Filters",
+                    textColor: Colors.white,
+                    fontSize: 18,
+                    bold: true,
+                  ),
                 ),
-              )
-            ],
+
+                Container(
+                  height: 90,
+                  margin: const EdgeInsets.only(top: 8),
+                  child: ListView(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    scrollDirection: Axis.horizontal,
+                    children: filterColorsList.map(
+                      (color) => Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 6),
+                          child: TextImageFilter(
+                            size: 80,
+                            text: color == null ? "No Filter" : filterNames[filterColorsList.indexOf(color)], 
+                            onTap: () async{
+                              _selectedColor = color;
+                              try{
+                                if(color != null){
+                                  videoController.isFiltering.value = true;
+
+                                  final tapiocaBalls = [
+                                    TapiocaBall.filterFromColor(color)
+                                  ];
+
+                                  var tempDir = await getTemporaryDirectory();
+                                  var outputPath = '${tempDir.path}/edited_video.mp4';
+                                  
+                                  final cup = Cup(Content(videoController.videoPath.value), tapiocaBalls);
+                                  await cup.suckUp(outputPath);
+                                  videoPath = outputPath;
+
+                                  if(_editImageController.text.value.isNotEmpty){     
+                                    final videoHeight = _controller.value.size.height;
+                                    final videoWidth = _controller.value.size.width;
+                                    final textXPosition = _overlayTextPositionController.top.value;
+                                    final textYPosition = _overlayTextPositionController.left.value;
+                                    print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
+                                    print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
+
+                                    // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
+                                    // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
+                                    // print("$TAG X: $x Y: $y");ffffff00
+
+                                    try{
+                                      final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
+                                      final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
+                                          videoPath: videoPath, 
+                                          text: _editImageController.text.value,
+                                          outputPath: newOutputPath,
+                                          top: textXPosition.toInt().toString(),
+                                          left: textYPosition.toInt().toString(),
+                                          fontColor: Methods.colorToHexString(_editImageController.textColor.value)
+                                        )
+                                      );
+                                      outputPath = newOutputPath;
+                                      print("$TAG RESULT: $result");
+                                      Methods.showCustomToast("$result");
+                                    }catch(err){
+                                      print("$TAG FFMPEG ERROR: $err");
+                                    }   
+                                  }
+                                  
+                                  videoController.isFiltering.value = false;
+                                  setState(() {
+                                    videoPath = outputPath;
+                                    getVideo();
+                                  });
+                                }else{
+                                  setState(() {
+                                    videoPath = originalVideoPath;
+                                    getVideo();
+                                  });
+                                }
+                              }catch(err){
+                                print("$TAG VIDEO FILTERING ERROR: $err");
+                                Methods.showGeneralErrorToast("$err");
+                                videoController.isFiltering.value = false;
+                              }
+                            }
+                          ),
+                        ),
+                      )
+                    ).toList()
+                  ),
+                )
+              ],
+            ),
           ),
 
           Row(

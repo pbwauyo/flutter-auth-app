@@ -6,6 +6,7 @@ import 'package:auth_app/pages/preview_recorded_video.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/instance_manager.dart';
 import 'dart:math' as math;
@@ -176,6 +177,18 @@ class Methods {
   static bool isVideo(String path){
     print("IS VIDEO PATH: $path");
     return path.isNotEmpty && path.contains(".mp4");
+  }
+
+  static Future<File> fileFromAsset(String assetPath) async{
+    final tempDir = await getTemporaryDirectory();
+    final assetDirPath = "$tempDir/happr_assets";
+    await Directory(assetDirPath).create(recursive: true);
+    final byteData = await rootBundle.load(assetPath);
+    final buffer = byteData.buffer;
+    final generatedFile = await File("$assetDirPath/$assetPath").writeAsBytes(
+      buffer.asInt8List(byteData.offsetInBytes, byteData.lengthInBytes)
+    );
+    return generatedFile;
   }
 
 }

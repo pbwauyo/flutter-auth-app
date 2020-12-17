@@ -189,7 +189,7 @@ class _MomentWidgetState extends State<MomentWidget> {
                     children: [
                       Icon(Icons.person),
                       FriendsWidget(
-                        contacts: widget.moment.attendees.map((attendee) => HapprContact.fromMap(attendee)).toList()
+                        contacts: widget.moment.attendees.map((attendee) => HapprContact.fromMap(attendee.cast<String, dynamic>())).toList()
                       )
                     ],
                   ),
@@ -208,26 +208,41 @@ class _MomentWidgetState extends State<MomentWidget> {
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: widget.moment.attendees.map((attendee) => HapprContact.fromMap(attendee)).toList().map(
-                                      (contact) => GestureDetector(
+                                    children: [
+                                      GestureDetector(
                                         onTap: (){
-                                          Methods.showCustomSnackbar(context: context, message: "Moment shared successfully");
+                                          Navigator.pop(context);
                                         },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
-                                          child: ListTile(
-                                            leading: ContactAvatar(
-                                              initials: contact.initials,
-                                              size: 30,
-                                            ),
-                                            title: CustomTextView(
-                                              fontSize: 13,
-                                              text: contact.displayName
+                                        child: Container(
+                                          margin: const EdgeInsets.only(top: 10, bottom: 8),
+                                          child: Icon(Icons.clear, color: Colors.black),
+                                        ),
+                                      ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: widget.moment.attendees.map((attendee) => HapprContact.fromMap(attendee)).toList().map(
+                                          (contact) => GestureDetector(
+                                            onTap: (){
+                                              Methods.showCustomSnackbar(context: context, message: "Moment shared successfully");
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
+                                              child: ListTile(
+                                                leading: ContactAvatar(
+                                                  initials: contact.initials,
+                                                  size: 30,
+                                                ),
+                                                title: CustomTextView(
+                                                  fontSize: 13,
+                                                  text: contact.displayName
+                                                ),
+                                              )
                                             ),
                                           )
-                                        ),
-                                      )
-                                    ).toList(),
+                                        ).toList(),
+                                      ),
+                                    ],
                                   );
                                 }
                               );
@@ -293,7 +308,7 @@ class _MomentWidgetState extends State<MomentWidget> {
     );
   }
 
-   void _storePosition(TapDownDetails details) {
+  void _storePosition(TapDownDetails details) {
     _tapPosition = details.globalPosition;
   }
 }

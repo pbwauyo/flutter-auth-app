@@ -9,6 +9,9 @@ class EditImageController extends GetxController {
   var paintPoints = <Offset>[].obs;
   var shouldPaint = false.obs;
   var paintColor = Colors.white.obs;
+  var emojiTopPosition = 20.0.obs;
+  var emojiLeftPosition = 20.0.obs;
+  var selectedEmoji = "".obs;
   // var backgroundColorIndex = 0.obs;
 
   updatePainPointsList(Offset offset){
@@ -29,6 +32,15 @@ class EditImageController extends GetxController {
 
   resetImageText(){
     text.value = "";
+  }
+
+  resetEmojiPosition(){
+    emojiTopPosition.value = 20.0;
+    emojiLeftPosition.value = 20.0;
+  }
+
+  resetEmoji(){
+    selectedEmoji.value = "";
   }
 
   setColorFilter(int newValue){

@@ -71,6 +71,24 @@ class AssetNames {
   static const String PIZZA = "$_BASE_ASSET_DIR/pizza.jpg";
   static const String CHICKEN = "$_BASE_ASSET_DIR/chicken.jpg";
   static const String COLOR_PALLETE_SVG = "$_BASE_ASSET_DIR/color_pallete_svg.svg";
+
+  static const String FLIRTY_SMILEY_EMOJI = "$_BASE_ASSET_DIR/flirty_smiley_emoji.png";
+  static const String THUMB_DOUBLE_EMOJI = "$_BASE_ASSET_DIR/thumb_double_emoji.png";
+  static const String SMILEY_KISS_EMOJI = "$_BASE_ASSET_DIR/smiley_kiss_emoji.png";
+  static const String SMILEY = "$_BASE_ASSET_DIR/smiley.png";
+  static const String THOUGHT_WORLD_EMOJI = "$_BASE_ASSET_DIR/thought_world_emoji.png";
+  static const String FIRE_EMOJI = "$_BASE_ASSET_DIR/fire_emoji.png";
+  static const String SMILEY_IMAGE = "$_BASE_ASSET_DIR/smiley_image.png";
+  static const String LOUDLY_CRYING_EMOJI = "$_BASE_ASSET_DIR/loudly_crying_emoji.png";
+  static const String TONGUE_OUT_EMOJI = "$_BASE_ASSET_DIR/tongue_out_emoji.png";
+  static const String HONDA_UP_AMAZE_EMOJI = "$_BASE_ASSET_DIR/honda_up_amaze.png";
+  static const String FEARFUL_EMOJI = "$_BASE_ASSET_DIR/fearful_emoji.png";
+  static const String CRYING_EMOJI = "$_BASE_ASSET_DIR/crying_emoji.png";
+  static const String ANGEL_BLUSHING_EMOJI = "$_BASE_ASSET_DIR/angel_blushing_emoji.png";
+  static const String TEARS_OF_JOY_EMOJI = "$_BASE_ASSET_DIR/tears_of_joy_emoji.png";
+  static const String SUNGLASSES_COOL_EMOJI = "$_BASE_ASSET_DIR/sunglasses_cool_emoji.png";
+  static const String WINK_EMOJI = "$_BASE_ASSET_DIR/wink_emoji.png";
+  static const String HEARTS_EYES_EMOJI = "$_BASE_ASSET_DIR/hearts_eyes_emoji.png";
 }
 
 class AppColors {
@@ -326,6 +344,13 @@ class Constants {
     2.0 : Colors.blue,
     3.0 : AppColors.PRIMARY_COLOR
   };
+
+  static final emojiList = [
+    AssetNames.FIRE_EMOJI, AssetNames.SMILEY,
+    AssetNames.LOUDLY_CRYING_EMOJI, AssetNames.TONGUE_OUT_EMOJI, AssetNames.HONDA_UP_AMAZE_EMOJI,
+    AssetNames.FEARFUL_EMOJI, AssetNames.CRYING_EMOJI, AssetNames.ANGEL_BLUSHING_EMOJI, AssetNames.TEARS_OF_JOY_EMOJI,
+    AssetNames.SUNGLASSES_COOL_EMOJI, AssetNames.WINK_EMOJI, AssetNames.HEARTS_EYES_EMOJI
+  ];
 
 }
 

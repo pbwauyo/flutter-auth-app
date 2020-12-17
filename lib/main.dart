@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if(!await fontDir.exists()){
       try{
-        await Directory(fontDirPath).create(recursive: true);
+        await fontDir.create(recursive: true);
         final assetFontByteData = await rootBundle.load("assets/fonts/OpenSans-Light.ttf");
         final buffer = assetFontByteData.buffer;
 

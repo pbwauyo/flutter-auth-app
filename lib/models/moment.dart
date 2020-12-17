@@ -3,7 +3,7 @@ class Moment {
   String creator;
   String title;
   String location;
-  List<Map<String, String>> attendees;
+  List<Map<String, dynamic>> attendees;
   String startDateTime;
   String endDateTime;
   DateTime realStartDateTime;
@@ -18,13 +18,14 @@ class Moment {
   this.notes, this.imageUrl, this.category, this.momentCalenderId, this.realStartDateTime, this.realEndDateTime, this.calendarId});
 
   factory Moment.fromMap(Map<String, dynamic> map){
+    // print('ATTENDEES: ${map["attendees"]}');
     
     return Moment(
       id: map["id"],
       creator: map["creator"],
       title: map["title"],
       location: map["location"],
-      attendees: List<dynamic>.from(map["attendees"]).cast<Map<String, String>>(),
+      attendees: List<Map<String, dynamic>>.from(map["attendees"]),
       startDateTime: map["dateTime"],
       endDateTime: map["endDateTime"],
       notes: map["notes"],
