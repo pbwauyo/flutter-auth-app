@@ -418,6 +418,21 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                       print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
                       final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
 
+                      if(_editImageController.selectedEmoji.value.isNotEmpty){  //add emoji
+                        final emojiPath = _editImageController.selectedEmoji.value;
+                        final emojiXPosition = _editImageController.emojiTopPosition.value.toInt();
+                        final emojiYPosition = _editImageController.emojiLeftPosition.value.toInt();
+                        final intList = await Methods.int8ListFromAsset(emojiPath);
+                        _tapiocaBalls.add(TapiocaBall.imageOverlay(intList, emojiXPosition, emojiYPosition));
+
+                        var tempDir = await getTemporaryDirectory();
+                        var emojiVideoOutputPath = '${tempDir.path}/${Timestamp.now().nanoseconds}.mp4';
+                        
+                        final cup = Cup(Content(videoPath), _tapiocaBalls);
+                        await cup.suckUp(emojiVideoOutputPath);
+                        videoPath = emojiVideoOutputPath;
+                      }
+
                       if(takePictureType == MOMENT_IMAGE_ADD){
 
                         if(_editImageController.text.value.isNotEmpty){  
@@ -427,7 +442,6 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                           // print("$TAG X: $x Y: $y");ffffff00
 
                           try{
-                            
                             final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
                                 videoPath: videoPath, 
                                 text: _editImageController.text.value,

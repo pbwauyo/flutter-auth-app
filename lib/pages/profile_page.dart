@@ -273,8 +273,8 @@ class ProfilePage extends StatelessWidget {
                                               return;
                                             }
 
-                                            if(!validator.password(password)){
-                                              Methods.showCustomSnackbar(context: newContext, message: "Password is invalid");
+                                            if(!validator.mediumPassword(password)){
+                                              Methods.showCustomSnackbar(context: newContext, message: "Password should be at least 6 characters");
                                               return;
                                             }
 

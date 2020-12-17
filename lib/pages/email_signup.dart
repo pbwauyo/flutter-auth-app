@@ -275,10 +275,10 @@ class _EmailSignupState extends State<EmailSignup> {
                                   final name = _nameTxtController.text.trim();
 
                                   if(email.isNotEmpty && password.isNotEmpty && name.isNotEmpty){
-                                    if(!validator.password(password)){
+                                    if(!validator.mediumPassword(password)){
                                       Methods.showCustomSnackbar(
                                         context: context, 
-                                        message: "Password should have at least one UPPERCASE, one lowercase, one digit and one special character"
+                                        message: "Password should have at least six characters"
                                       );
                                       return;
                                     }
