@@ -57,6 +57,8 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
   final EditImageController _editImageController = Get.find();
   final OverlayTextPositionController _overlayTextPositionController = Get.find();
 
+  ImagePainter _imagePainter;
+
   FlutterFFmpeg fFmpeg;
   VideoPlayerPackage.VideoPlayerController _controller;
   File fileInfo;
@@ -230,7 +232,7 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                   },
                   child: CustomPaint(
                     key: _imagePainterKey,
-                    foregroundPainter: ImagePainter(
+                    foregroundPainter: _imagePainter = ImagePainter(
                       color: _editImageController.paintColor.value
                     ),
                     child: Stack(
@@ -336,38 +338,6 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                                   
                                   final cup = Cup(Content(videoController.videoPath.value), tapiocaBalls);
                                   await cup.suckUp(outputPath);
-                                  videoPath = outputPath;
-
-                                  if(_editImageController.text.value.isNotEmpty){     
-                                    final videoHeight = _controller.value.size.height;
-                                    final videoWidth = _controller.value.size.width;
-                                    final textXPosition = _overlayTextPositionController.top.value;
-                                    final textYPosition = _overlayTextPositionController.left.value;
-                                    print("$TAG VIDEO HEIGHT: $videoHeight VIDEO WIDTH: $videoWidth");
-                                    print("$TAG TEXT Y POSITION: $textYPosition TEXT X POSITION: $textXPosition");
-
-                                    // final x = Methods.convertToPercent(textXPosition, videoWidth, percentage: videoWidth);
-                                    // final y = Methods.convertToPercent(textYPosition, videoHeight, percentage: VIDEO_HEIGHT);
-                                    // print("$TAG X: $x Y: $y");ffffff00
-
-                                    try{
-                                      final newOutputPath = "${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
-                                      final result = await fFmpeg.execute(Methods.encodeTextToVideoCommand(
-                                          videoPath: videoPath, 
-                                          text: _editImageController.text.value,
-                                          outputPath: newOutputPath,
-                                          top: textXPosition.toInt().toString(),
-                                          left: textYPosition.toInt().toString(),
-                                          fontColor: Methods.colorToHexString(_editImageController.textColor.value)
-                                        )
-                                      );
-                                      outputPath = newOutputPath;
-                                      print("$TAG RESULT: $result");
-                                      Methods.showCustomToast("$result");
-                                    }catch(err){
-                                      print("$TAG FFMPEG ERROR: $err");
-                                    }   
-                                  }
                                   
                                   videoController.isFiltering.value = false;
                                   setState(() {
@@ -423,14 +393,20 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                         final emojiXPosition = _editImageController.emojiTopPosition.value.toInt();
                         final emojiYPosition = _editImageController.emojiLeftPosition.value.toInt();
                         final intList = await Methods.int8ListFromAsset(emojiPath);
-                        _tapiocaBalls.add(TapiocaBall.imageOverlay(intList, emojiXPosition, emojiYPosition));
+                        _tapiocaBalls.add(TapiocaBall.imageOverlay(intList, emojiXPosition, emojiYPosition));                       
+                      }
 
+                      if(_editImageController.paintPoints.length > 0){
+                        final recordedPaintsBytes = await _imagePainter.recordedPainter;
+                        _tapiocaBalls.add(TapiocaBall.imageOverlay(recordedPaintsBytes, 50, 50));
+                      }
+
+                      if(_tapiocaBalls.length > 0){
                         var tempDir = await getTemporaryDirectory();
-                        var emojiVideoOutputPath = '${tempDir.path}/${Timestamp.now().nanoseconds}.mp4';
-                        
+                        var editedVideoOutputPath = '${tempDir.path}/${Timestamp.now().nanoseconds}.mp4';
                         final cup = Cup(Content(videoPath), _tapiocaBalls);
-                        await cup.suckUp(emojiVideoOutputPath);
-                        videoPath = emojiVideoOutputPath;
+                        await cup.suckUp(editedVideoOutputPath);
+                        videoPath = editedVideoOutputPath;
                       }
 
                       if(takePictureType == MOMENT_IMAGE_ADD){
