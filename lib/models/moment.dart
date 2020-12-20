@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Moment {
   String id;
   String creator;
@@ -13,9 +15,10 @@ class Moment {
   String category;
   String momentCalenderId;
   String calendarId;
+  String timestamp;
 
   Moment({this.id, this.creator, this.title, this.location, this.attendees, this.startDateTime, this.endDateTime, 
-  this.notes, this.imageUrl, this.category, this.momentCalenderId, this.realStartDateTime, this.realEndDateTime, this.calendarId});
+  this.notes, this.imageUrl, this.category, this.momentCalenderId, this.realStartDateTime, this.realEndDateTime, this.calendarId, this.timestamp});
 
   factory Moment.fromMap(Map<String, dynamic> map){
     // print('ATTENDEES: ${map["attendees"]}');
@@ -54,7 +57,8 @@ class Moment {
       "momentCalenderId" : momentCalenderId ?? "",
       "calendarId" : calendarId ?? "",
       "realStartDateTime" : realStartDateTime.toString(),
-      "realEndDateTime" : realEndDateTime.toString()
+      "realEndDateTime" : realEndDateTime.toString(),
+      "timestamp" : Timestamp.now().nanoseconds.toString()
     };
   }
 }

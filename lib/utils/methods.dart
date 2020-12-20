@@ -6,8 +6,10 @@ import 'package:auth_app/getxcontrollers/video_controller.dart';
 import 'package:auth_app/pages/preview_recorded_video.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/instance_manager.dart';
 import 'dart:math' as math;
@@ -204,6 +206,17 @@ class Methods {
       buffer.asInt8List(byteData.offsetInBytes, byteData.lengthInBytes)
     );
     return generatedFile.readAsBytesSync();
+  }
+
+  static showLocalNotification({String title = "Happr Notification", @required String body, FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin}) async{
+    final _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin ?? FlutterLocalNotificationsPlugin();
+    final _androidNotificationDetails = AndroidNotificationDetails("12", "Default", "This will handle all the Happr notifications",
+      priority: Priority.max,
+      importance: Importance.max,
+    );
+    final _iOSNotificationDetails  = IOSNotificationDetails(subtitle: body);
+    final notificationDetails = NotificationDetails(android: _androidNotificationDetails, iOS: _iOSNotificationDetails);
+    await  _flutterLocalNotificationsPlugin.show(Timestamp.now().nanoseconds, title, body, notificationDetails);
   }
 
   // static String 

@@ -19,6 +19,7 @@ import 'package:auth_app/widgets/friends_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +40,16 @@ class _MomentWidgetState extends State<MomentWidget> {
   final _momentRepo = MomentRepo();
   final CreateMomentController _createMomentController = Get.find();
   final SelectedCalendarController _selectedCalendarController = Get.find();
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   var _tapPosition;
+  
+  @override
+  void initState() {
+    super.initState();
+
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +233,9 @@ class _MomentWidgetState extends State<MomentWidget> {
                                         children: widget.moment.attendees.map((attendee) => HapprContact.fromMap(attendee)).toList().map(
                                           (contact) => GestureDetector(
                                             onTap: (){
+                                              Methods.showLocalNotification(body: "Moment shared successfully", 
+                                                flutterLocalNotificationsPlugin: _flutterLocalNotificationsPlugin
+                                              );
                                               Methods.showCustomSnackbar(context: context, message: "Moment shared successfully");
                                             },
                                             child: Padding(

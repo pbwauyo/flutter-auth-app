@@ -36,7 +36,7 @@ class LandingPage extends StatelessWidget {
               
               Center(
                 child: CustomTextView(
-                  text: "Responsibly Connected",
+                  text: "Live Consciously",
                   fontSize: 18,
                   textColor: Colors.black,
                 ),
@@ -75,6 +75,7 @@ class LandingPage extends StatelessWidget {
                     text: "Already have an account? Log in",
                     textColor: Colors.black, 
                     bgColor: Colors.white,
+                    borderColor: Colors.black,
                     onTap: (){
                       Navigations.goToScreen(context, EmailLogin());
                     }
@@ -115,7 +116,7 @@ class LandingPage extends StatelessWidget {
                               );
                             } 
                           },
-                          child: SvgPicture.asset(AssetNames.FACEBOOK_LOGO_SVG,
+                          child: SvgPicture.asset(AssetNames.FACEBOOK_LOGO_NEW_SVG,
                             width: 32,
                             height: 32,
                             color: Color(0xFF1461AD),
@@ -139,7 +140,7 @@ class LandingPage extends StatelessWidget {
                           },
                           child: Container(
                             margin: const EdgeInsets.only(left: 15, right: 15),
-                            child: SvgPicture.asset(AssetNames.TWITTER_LOGO_SVG,
+                            child: SvgPicture.asset(AssetNames.TWITTER_LOGO_NEW_SVG,
                               width: 32,
                               height: 32,
                               color:  Color(0xFF0080E3),
@@ -162,7 +163,7 @@ class LandingPage extends StatelessWidget {
                               );
                             } 
                           },
-                          child: SvgPicture.asset(AssetNames.GOOGLE_LOGO_SVG,
+                          child: SvgPicture.asset(AssetNames.GOOGLE_LOGO_NEW_SVG,
                             width: 32,
                             height: 32,
                             color:  Color(0xFFD54545),

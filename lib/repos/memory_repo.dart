@@ -11,11 +11,11 @@ class MemoryRepo {
   CollectionReference get  _memoriesCollectionRef => _firestore.collection("memories");
 
   Stream<QuerySnapshot> getMomentMemoriesAsStream({@required String momentId}){
-    return _memoriesCollectionRef.where("momentId", isEqualTo: momentId).snapshots();
+    return _memoriesCollectionRef.where("momentId", isEqualTo: momentId).orderBy("timestamp", descending: true).snapshots();
   }
 
   Stream<QuerySnapshot> getAllMemoriesAsStream(){
-    return _memoriesCollectionRef.snapshots();
+    return _memoriesCollectionRef.orderBy("timestamp", descending: true).snapshots();
   }
 
   Future<void> updateMemoryRating({@required String memoryId, @required double newRating}) async{

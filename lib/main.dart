@@ -29,6 +29,7 @@ import 'package:auth_app/providers/moment_provider.dart';
 import 'package:auth_app/providers/moment_type_provider.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,6 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/instance_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -103,12 +105,15 @@ class _MyHomePageState extends State<MyHomePage> {
   final EditImageController editImageController = Get.put(EditImageController());
   final VideoController videoController = Get.put(VideoController());
   final CategoriesController _categoriesController = Get.put(CategoriesController());
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   FlutterFFmpegConfig _fFmpegConfig;
 
   @override
   void initState() {
     super.initState();
+
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async{ 
       final loggedIn = context.bloc<AuthCubit>().checkLoggedInUser();
@@ -121,7 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _fFmpegConfig = new FlutterFFmpegConfig();
     _setFfMpegFontConfig();
-    
+    _initialiseLocalNotificationsPlugin();
+    Methods.showLocalNotification(body: "Welcome back to Happr", flutterLocalNotificationsPlugin: _flutterLocalNotificationsPlugin);
   }
 
   @override
@@ -159,6 +165,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
     }
     _fFmpegConfig.setFontDirectory("${fontDir.path}", null);
-    
+  }
+
+  _initialiseLocalNotificationsPlugin(){
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
+      onDidReceiveLocalNotification: _onDidReceiveLocalNotification
+    );
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, 
+      iOS: initializationSettingsIOS
+    );
+    _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future _onDidReceiveLocalNotification(int id, String title, String body, String payload){ //for iOS
+
   }
 }

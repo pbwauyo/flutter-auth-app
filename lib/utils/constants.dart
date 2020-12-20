@@ -29,6 +29,10 @@ class AssetNames {
   static const String FACEBOOK_LOGO_SVG = "$_BASE_ASSET_DIR/facebook_logo.svg";
   static const String TWITTER_LOGO_SVG = "$_BASE_ASSET_DIR/twitter_logo.svg";
   static const String GOOGLE_LOGO_SVG = "$_BASE_ASSET_DIR/google_logo.svg";
+  static const String FACEBOOK_LOGO_NEW_SVG = "$_BASE_ASSET_DIR/facebook_logo_new.svg";
+  static const String TWITTER_LOGO_NEW_SVG = "$_BASE_ASSET_DIR/twitter_logo_new.svg";
+  static const String GOOGLE_LOGO_NEW_SVG = "$_BASE_ASSET_DIR/google_logo_new.svg";
+
   static const String APP_LOGO_SVG = "$_BASE_ASSET_DIR/happr_logo.svg";
   static const String PERSON_SVG = "$_BASE_ASSET_DIR/person.svg";
   static const String PERSON_PNG = "$_BASE_ASSET_DIR/person.png";
@@ -340,9 +344,10 @@ class Constants {
   };
 
   static final Map<double, Color> SLIDER_LABEL_COLORS = {
+    0.0 : Colors.grey,
     1.0 : Colors.green,
     2.0 : Colors.blue,
-    3.0 : AppColors.PRIMARY_COLOR
+    3.0 : Colors.yellow
   };
 
   static final emojiList = [

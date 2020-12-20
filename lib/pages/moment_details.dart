@@ -1,5 +1,6 @@
 import 'package:auth_app/cubit/home_cubit.dart';
 import 'package:auth_app/models/comment.dart';
+import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/models/memory.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/pages/add_memory.dart';
@@ -12,10 +13,12 @@ import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:auth_app/widgets/comment_widget.dart';
+import 'package:auth_app/widgets/contact_avatar.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/empty_results_text.dart';
+import 'package:auth_app/widgets/friends_widget.dart';
 import 'package:auth_app/widgets/memory_widget.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:auth_app/widgets/video_widget.dart';
@@ -131,30 +134,71 @@ class MomentDetails extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.person),
-                        Container(
-                          width: 75,
-                          height: 35,
-                          margin: const EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(AssetNames.STACKED_IMAGES),
-                              fit: BoxFit.contain
-                            )
-                          ),
+                        FriendsWidget(
+                          contacts: moment.attendees.map((attendee) => HapprContact.fromMap(attendee.cast<String, dynamic>())).toList()
                         )
                       ],
                     ),
 
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      alignment: Alignment.center,
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.PRIMARY_COLOR,
-                        borderRadius: BorderRadius.circular(20)
+                    GestureDetector(
+                      onTap: (){
+                        showModalBottomSheet(
+                          context: context, 
+                          builder: (context){
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 10, bottom: 8),
+                                    child: Icon(Icons.clear, color: Colors.black),
+                                  ),
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: moment.attendees.map((attendee) => HapprContact.fromMap(attendee)).toList().map(
+                                    (contact) => GestureDetector(
+                                      onTap: (){
+                                        Methods.showLocalNotification(body: "Moment shared successfully");
+                                        Methods.showCustomSnackbar(context: context, message: "Moment shared successfully");
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
+                                        child: ListTile(
+                                          leading: ContactAvatar(
+                                            initials: contact.initials,
+                                            size: 30,
+                                          ),
+                                          title: CustomTextView(
+                                            fontSize: 13,
+                                            text: contact.displayName
+                                          ),
+                                        )
+                                      ),
+                                    )
+                                  ).toList(),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.PRIMARY_COLOR,
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: Icon(Icons.share,),
                       ),
-                      child: Icon(Icons.share,),
                     ),
                   ],
                 ),

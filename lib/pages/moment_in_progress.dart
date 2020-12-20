@@ -5,6 +5,7 @@ import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/models/moment.dart';
 import 'package:auth_app/repos/happr_contact_repo.dart';
 import 'package:auth_app/repos/moment_repo.dart';
+import 'package:auth_app/utils/methods.dart';
 import 'package:auth_app/utils/pref_manager.dart';
 import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
@@ -13,6 +14,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MomentInProgress extends StatefulWidget {
@@ -27,10 +29,12 @@ class MomentInProgress extends StatefulWidget {
 class _MomentInProgressState extends State<MomentInProgress> {
   final _momentRepo = MomentRepo();
   final _happrContactsRepo = HapprContactRepo();
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
     super.initState();
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     Future.delayed(Duration.zero, () async{
       await _saveMoment();
     });
@@ -72,6 +76,7 @@ class _MomentInProgressState extends State<MomentInProgress> {
     try{
       
       await _momentRepo.saveMoment(context, widget.moment);
+      Methods.showLocalNotification(body: "Moment created successfully", flutterLocalNotificationsPlugin: _flutterLocalNotificationsPlugin);
       _homeCubit.goToInitial();
       Navigator.pop(context);
     }catch(error){

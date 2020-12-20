@@ -31,7 +31,7 @@ class RoundedRaisedButton extends StatelessWidget {
       color: bgColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
-        side: BorderSide(color: AppColors.PRIMARY_COLOR)
+        side: BorderSide(color: borderColor)
       ),
       disabledColor: AppColors.PRIMARY_COLOR,
       disabledElevation: elevation,

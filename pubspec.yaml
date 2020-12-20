@@ -68,6 +68,8 @@ dependencies:
   tapioca: ^1.0.1
   video_thumbnail: ^0.2.4
   image_stack: ^1.1.0
+  url_launcher: ^5.7.10
+  flutter_local_notifications: ^3.0.2
   
 dev_dependencies:
   flutter_test:

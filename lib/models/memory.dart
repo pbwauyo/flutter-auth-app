@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Memory {
   String id;
   String title;
@@ -5,8 +7,9 @@ class Memory {
   String ownerImage;
   double rating;
   String momentId;
+  String timestamp;
 
-  Memory({this.id, this.title, this.image, this.ownerImage, this.rating, this.momentId});
+  Memory({this.id, this.title, this.image, this.ownerImage, this.rating, this.momentId, this.timestamp});
 
   factory Memory.fromMap(Map<String, dynamic> map){
     return Memory(
@@ -15,7 +18,8 @@ class Memory {
       image: map["image"],
       ownerImage: map["ownerImage"],
       rating: map["rating"],
-      momentId: map["momentId"]
+      momentId: map["momentId"],
+      timestamp: map["timestamp"]
     );
   }
 
@@ -26,7 +30,8 @@ class Memory {
       "image" : image ?? "",
       "ownerImage" : ownerImage ?? "",
       "rating" : rating ?? 0.0,
-      "momentId" : momentId
+      "momentId" : momentId,
+      "timestamp" : Timestamp.now().nanoseconds.toString()
     };
   }
 }

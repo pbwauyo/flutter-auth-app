@@ -90,7 +90,7 @@ class MomentRepo {
   }
 
   Stream<QuerySnapshot> getMomentsAsStream(){
-    return _allMomentsCollectionRef.where("creator", isEqualTo: _loggedInUsernameController.loggedInUserEmail).snapshots();
+    return _allMomentsCollectionRef.where("creator", isEqualTo: _loggedInUsernameController.loggedInUserEmail).orderBy("timestamp", descending: true).snapshots();
   }
 
   Future<void> updateMomentImage(String momentId, String filePath,) async{

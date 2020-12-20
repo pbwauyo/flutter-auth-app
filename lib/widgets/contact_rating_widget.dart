@@ -53,7 +53,8 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
           width: 150,
           child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
-              valueIndicatorColor: Constants.SLIDER_LABEL_COLORS[_sliderValue]
+              valueIndicatorColor: Constants.SLIDER_LABEL_COLORS[_sliderValue],
+              thumbColor: Constants.SLIDER_LABEL_COLORS[_sliderValue],
             ),
             child: Slider(
               min: 0.0,
