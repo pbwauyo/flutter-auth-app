@@ -32,6 +32,9 @@ class AssetNames {
   static const String FACEBOOK_LOGO_NEW_SVG = "$_BASE_ASSET_DIR/facebook_logo_new.svg";
   static const String TWITTER_LOGO_NEW_SVG = "$_BASE_ASSET_DIR/twitter_logo_new.svg";
   static const String GOOGLE_LOGO_NEW_SVG = "$_BASE_ASSET_DIR/google_logo_new.svg";
+  static const String FACEBOOK_LOGO_NEW_PNG = "$_BASE_ASSET_DIR/facebook_logo_new_png.png";
+  static const String TWITTER_LOGO_NEW_PNG = "$_BASE_ASSET_DIR/twitter_logo_new_png.png";
+  static const String GOOGLE_LOGO_NEW_PNG = "$_BASE_ASSET_DIR/google_logo_new_png.png";
 
   static const String APP_LOGO_SVG = "$_BASE_ASSET_DIR/happr_logo.svg";
   static const String PERSON_SVG = "$_BASE_ASSET_DIR/person.svg";
