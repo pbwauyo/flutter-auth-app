@@ -81,20 +81,12 @@ class MemoryWidget extends StatelessWidget{
               child: FutureBuilder<String>(
                 future: PrefManager.getLoginUsername(),
                 builder: (context, usernameSnapshot) {
+                  final username = usernameSnapshot.data;
                   if(usernameSnapshot.hasData){
-                    return StreamBuilder<DocumentSnapshot>(
-                      stream: _userRepo.getUserDetailsAsStream(username: usernameSnapshot.data),
-                      builder: (context, snapshot){
-                        if(snapshot.hasData){
-                          final user = AppUser.fromMap(snapshot.data.data());
-                          return CircleProfileImage(
-                            username: user.photoUrl,
-                            size: 30,
-                            showBorder: true,
-                          );
-                        }
-                        return Container();
-                      },
+                    return CircleProfileImage(
+                      username: username,
+                      size: 30,
+                      showBorder: true,
                     );
                   }
                   return Container();

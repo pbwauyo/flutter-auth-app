@@ -376,6 +376,7 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                   CustomProgressIndicator(): 
                   GestureDetector(
                     onTap: () async{
+                      videoController.isFiltering.value = true;
                       final takePictureType = Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType;
                       int count = 0;
 
@@ -438,6 +439,7 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                         Provider.of<FilePathProvider>(context, listen: false).filePath = videoPath;
 
                         int count = 0;
+                        videoController.isFiltering.value = false;
                         Navigator.popUntil(context, (route) {
                             return count++ == 2;
                         });
@@ -445,6 +447,7 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                       }else if(takePictureType == MOMENT_IMAGE_HAPPENING_NOW){
                         Provider.of<FilePathProvider>(context, listen: false).filePath = videoPath;
                         final moment = Provider.of<MomentProvider>(context, listen: false).moment;
+                        videoController.isFiltering.value = false;
                         Navigator.popUntil(context, (route) {
                             return count++ == 2;
                         });
@@ -469,7 +472,8 @@ class _PreviewRecordedVideoState extends State<PreviewRecordedVideo> {
                           print("$TAG FFMPEG ERROR: $err");
                         }
 
-                        _memoryRepo.postMemory(Memory(momentId: momentId), videoPath);
+                        await _memoryRepo.postMemory(Memory(momentId: momentId), videoPath);
+                        videoController.isFiltering.value = false;
                         Navigator.popUntil(context, (route) {
                             return count++ == 2;
                         });

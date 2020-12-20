@@ -40,7 +40,7 @@ class FriendsWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 6, right: 6, top: 5, ),
                       child: ListTile(
                         leading: ContactAvatar(
-                          initials: contact.initials,
+                          initials: getInitials(contact.displayName),
                           size: 30,
                         ),
                         title: CustomTextView(

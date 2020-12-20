@@ -219,6 +219,13 @@ class Methods {
     await  _flutterLocalNotificationsPlugin.show(Timestamp.now().nanoseconds, title, body, notificationDetails);
   }
 
+  static String getInitials(String name){
+    final nameList = name.split(" ");
+    final StringBuffer buffer = StringBuffer();
+    nameList.forEach((name) => buffer.write(name.characters.first));
+    return buffer.toString();
+  }
+
   // static String 
 
 }

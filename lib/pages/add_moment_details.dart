@@ -329,17 +329,31 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                     spacing: 3.0,
                     runSpacing: 2.0,
                     children: _happrContactsController.contacts.map(
-                      (contact) => ListTile(
-                        leading: ContactAvatar(
-                          initials: contact.initials,
-                          size: 25,
+                      (contact) => Container(
+                        padding: const EdgeInsets.only(left: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          border: Border.all(color: Colors.black, width: 1.5),
                         ),
-                        title: IconButton(
-                          icon: Icon(Icons.clear),
-                          color: Colors.red,
-                          onPressed: (){
-                            _happrContactsController.contacts.remove(contact);
-                          }
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ContactAvatar(
+                              initials: contact.initials,
+                              size: 30,
+                            ),
+                            Container(
+                              // margin: const EdgeInsets.only(right: 3),
+                              child: IconButton(
+                                padding: EdgeInsets.all(0.0),
+                                icon: Icon(Icons.clear),
+                                color: Colors.red,
+                                onPressed: (){
+                                  _happrContactsController.contacts.remove(contact);
+                                }
+                              ),
+                            ),
+                          ],
                         ),
                       )
                     ).toList(),
