@@ -81,11 +81,9 @@ class _MemoryDetailsState extends State<MemoryDetails> {
                       ),
                     ),
 
-                    Expanded(
-                      child: ArtifactSlider(
-                        artifactId: widget.memory.id,
-                        initialValue: widget.memory.rating,
-                      )
+                    ArtifactSlider(
+                      artifactId: widget.memory.id,
+                      initialValue: widget.memory.rating,
                     ),
 
                     Expanded(

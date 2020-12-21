@@ -49,33 +49,55 @@ class _ContactRatingWidgetState extends State<ContactRatingWidget> {
           ),
         ),
         
-        Container(
-          width: 150,
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              valueIndicatorColor: Constants.SLIDER_LABEL_COLORS[_sliderValue],
-              thumbColor: Constants.SLIDER_LABEL_COLORS[_sliderValue],
+        Stack(
+          children: [
+            Positioned(
+              top: 23.0,
+              left: 15,
+              child: Container(
+                width: 120,
+                height: 4.0,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.grey, Colors.green, Colors.blue, Colors.yellow],
+                    stops: [0.1, 0.4, 0.6, 0.8]
+                  ),
+                  borderRadius: BorderRadius.circular(8.0)
+                ),
+              ),
             ),
-            child: Slider(
-              min: 0.0,
-              max: 3.0,
-              label: Constants.SLIDER_LABELS[_sliderValue],
-              
-              divisions: 3,
-              value: _sliderValue, 
-              onChanged: (newValue){
-                setState(() {
-                  _sliderValue = newValue;
-                });
-              },
-              onChangeEnd: (newValue){
-                _happrContactRepo.setHapprContactRating(
-                  happrContact: widget.happrContact, 
-                  rating: newValue
-                );
-              },
+
+            Container(
+              width: 150,
+              child: SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  valueIndicatorColor: Constants.SLIDER_LABEL_COLORS[_sliderValue],
+                  thumbColor: Constants.SLIDER_LABEL_COLORS[_sliderValue],
+                  activeTrackColor: Colors.transparent,
+                  inactiveTrackColor: Colors.transparent
+                ),
+                child: Slider(
+                  min: 0.0,
+                  max: 3.0,
+                  label: Constants.SLIDER_LABELS[_sliderValue],
+                  divisions: 3,
+                  value: _sliderValue, 
+                  onChanged: (newValue){
+                    setState(() {
+                      _sliderValue = newValue;
+                    });
+                  },
+                  onChangeEnd: (newValue){
+                    _happrContactRepo.setHapprContactRating(
+                      happrContact: widget.happrContact, 
+                      rating: newValue
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+
+          ],
         )
       ],
     );
