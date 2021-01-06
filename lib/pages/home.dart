@@ -31,8 +31,7 @@ import 'package:provider/provider.dart';
 class Home extends StatelessWidget {
   final _momentRepo = MomentRepo();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-    final _userRepo = UserRepo();
-
+  final _userRepo = UserRepo();
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +88,14 @@ class Home extends StatelessWidget {
             ),
           ),
           centerTitle: true,
-          title: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
+          title: GestureDetector(
+            onTap: (){
+              if(!(homeCubit.state is HomeInitial)){
+                homeCubit.goToInitial();
+              }
+            },
+            child: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,)
+          ),
           elevation: 0.0,
           backgroundColor: Colors.white,
           actions: [
@@ -161,12 +167,19 @@ class Home extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(left: 10, right: 40),
-                            child: SvgPicture.asset(
-                              AssetNames.HOME_SVG, 
-                              width: 32, 
-                              height: 32,
+                          GestureDetector(
+                            onTap: (){
+                              if(!(homeCubit.state is HomeInitial)){
+                                homeCubit.goToInitial();
+                              }
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 10, right: 40),
+                              child: SvgPicture.asset(
+                                AssetNames.HOME_SVG, 
+                                width: 32, 
+                                height: 32,
+                              ),
                             ),
                           ),
 

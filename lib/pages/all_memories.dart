@@ -23,7 +23,12 @@ class AllMemories extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
+        title: GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
+        ),
         elevation: 0.0,
         backgroundColor: Colors.white
       ),

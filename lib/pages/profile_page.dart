@@ -1,4 +1,5 @@
 import 'package:auth_app/models/app_user.dart';
+import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/providers/take_picture_type_provider.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/repos/user_repo.dart';
@@ -39,7 +40,14 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: SvgPicture.asset(AssetNames.APP_LOGO_SVG, width: 100, height: 35,),
+        title: GestureDetector(
+          onTap: (){
+            Navigations.goToScreen(context, Home());
+          },
+          child: SvgPicture.asset(
+            AssetNames.APP_LOGO_SVG, width: 100, height: 35,
+          ),
+        ),
         elevation: 0.0,
         backgroundColor: Colors.white,
         leading: GestureDetector(
