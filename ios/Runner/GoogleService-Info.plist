@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>302866764913-11eh15uhocgitr6ndb663eto5c7udg5p.apps.googleusercontent.com</string>
+	<string>180015747384-t8q88cbbfda1hdj1p4jia5catqgihtsq.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.302866764913-11eh15uhocgitr6ndb663eto5c7udg5p</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>302866764913-jr8as4uo168s5pq38kfupb1lfh9m1bns.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.180015747384-t8q88cbbfda1hdj1p4jia5catqgihtsq</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBP0Z3iTHZHf5k89djd8t2TjWOaEcTy88k</string>
+	<string>AIzaSyCLzVvJ_6syQ7iDqV-sqqO66DYBM0bvSg8</string>
 	<key>GCM_SENDER_ID</key>
-	<string>302866764913</string>
+	<string>180015747384</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.happr.ios</string>
 	<key>PROJECT_ID</key>
-	<string>signin-c790a</string>
+	<string>happr-cdf47</string>
 	<key>STORAGE_BUCKET</key>
-	<string>signin-c790a.appspot.com</string>
+	<string>happr-cdf47.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:302866764913:ios:7d2efa979886c9c8c337d0</string>
-	<key>DATABASE_URL</key>
-	<string>https://signin-c790a.firebaseio.com</string>
+	<string>1:180015747384:ios:76e5e030c37feda42971cd</string>
 </dict>
 </plist>
