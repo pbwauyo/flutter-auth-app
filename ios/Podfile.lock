@@ -305,9 +305,9 @@ PODS:
     - FBSDKCoreKit/Swift
     - FBSDKLoginKit/Swift
     - Flutter
-  - flutter_ffmpeg/audio-lts (0.3.0):
+  - flutter_ffmpeg/video (0.3.0):
     - Flutter
-    - mobile-ffmpeg-audio (= 4.4.LTS)
+    - mobile-ffmpeg-video (= 4.4)
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_twitter_login (0.0.1):
@@ -388,7 +388,7 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
-  - mobile-ffmpeg-audio (4.4.LTS)
+  - mobile-ffmpeg-video (4.4)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
     - nanopb/encode (= 1.30906.0)
@@ -427,7 +427,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
-  - flutter_ffmpeg/audio-lts (from `.symlinks/plugins/flutter_ffmpeg/ios`)
+  - flutter_ffmpeg/video (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_twitter_login (from `.symlinks/plugins/flutter_twitter_login/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -466,7 +466,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - leveldb-library
     - libwebp
-    - mobile-ffmpeg-audio
+    - mobile-ffmpeg-video
     - nanopb
     - PromisesObjC
     - Toast
@@ -563,7 +563,7 @@ SPEC CHECKSUMS:
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
-  mobile-ffmpeg-audio: 1e0a053f8a6de57114e50ff48b3a85ff1c60f902
+  mobile-ffmpeg-video: 106a02633f3771f558b4cadd3e8bbfe6b756c61b
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
@@ -578,6 +578,6 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
 
-PODFILE CHECKSUM: 086079978007c0c1d09743bc5d00838eab3d63e9
+PODFILE CHECKSUM: ad9d1d1514734eb2ef78b3d5083061d947ceaf02
 
 COCOAPODS: 1.10.0
