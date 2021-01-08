@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>180015747384-t8q88cbbfda1hdj1p4jia5catqgihtsq.apps.googleusercontent.com</string>
+	<string>180015747384-3rma33ut6r42vqt794645ephurn073sp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.180015747384-t8q88cbbfda1hdj1p4jia5catqgihtsq</string>
+	<string>com.googleusercontent.apps.180015747384-3rma33ut6r42vqt794645ephurn073sp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>180015747384-f2bss9gc510ta7d3di53tip5chdv79s6.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCLzVvJ_6syQ7iDqV-sqqO66DYBM0bvSg8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.happr.ios</string>
+	<string>com.happrinc.happr</string>
 	<key>PROJECT_ID</key>
 	<string>happr-cdf47</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:180015747384:ios:76e5e030c37feda42971cd</string>
+	<string>1:180015747384:ios:75a8b0b2882a07de2971cd</string>
 </dict>
 </plist>

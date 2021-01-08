@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:180015747384:android:19f955cbca1c42842971cd",
+        "mobilesdk_app_id": "1:180015747384:android:aa9bf3972d2bc9be2971cd",
         "android_client_info": {
-          "package_name": "com.example.auth_app"
+          "package_name": "com.happrinc.happrandroid"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "180015747384-or3thibeca9h94hu5kkdjvbsfumqtkr4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.happrinc.happrandroid",
+            "certificate_hash": "e544d237dd316376120e1bbbd7a70eedea93b59f"
+          }
+        },
         {
           "client_id": "180015747384-118k9hbdl9m3cifpadj7nd0ldvoi8llq.apps.googleusercontent.com",
           "client_type": 3
@@ -31,10 +39,11 @@
               "client_type": 3
             },
             {
-              "client_id": "180015747384-t8q88cbbfda1hdj1p4jia5catqgihtsq.apps.googleusercontent.com",
+              "client_id": "180015747384-3rma33ut6r42vqt794645ephurn073sp.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.happr.ios"
+                "bundle_id": "com.happrinc.happr",
+                "app_store_id": "1547668710"
               }
             }
           ]
