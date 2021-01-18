@@ -23,10 +23,12 @@ import 'package:auth_app/widgets/ring.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'dart:io' show Platform, exit;
 
 class Home extends StatelessWidget {
   final _momentRepo = MomentRepo();
@@ -65,7 +67,12 @@ class Home extends StatelessWidget {
           leading: GestureDetector(
             onTap: (){
               if(homeCubit.state is HomeInitial){
-                Navigator.pop(context);
+                // Navigator.of(context).pop();
+                if(Platform.isAndroid){
+                  SystemNavigator.pop();
+                }else{
+                  exit(0);
+                }
               }
               else if(homeCubit.state is HomeMemoryDetails){
                 final moment = Provider.of<MomentProvider>(context, listen: false).moment;
