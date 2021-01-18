@@ -191,10 +191,17 @@ class LandingPage extends StatelessWidget {
                                   }
                                 },
                                 child: Container(
-                                  margin: const EdgeInsets.only(left: 4),
+                                  width: 42,
+                                  height: 42,
+                                  alignment: Alignment.center,
+                                  margin: const EdgeInsets.only(left: 15),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.LIGHT_GREY_SHADE2,
+                                    borderRadius: BorderRadius.circular(42/2),
+                                  ),
                                   child: ImageContainer(
                                     assetImage: AssetNames.APPLE_LOGO_NEW_PNG,
-                                    size: 42,
+                                    size: 24,
                                   ),
                                 )
                               );

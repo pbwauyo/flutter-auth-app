@@ -87,11 +87,9 @@ class Methods {
   }
 
   static Future<String> getVideoPath() async{
-    String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
-    final Directory extDir = await getApplicationDocumentsDirectory();
-    final String dirPath = '${extDir.path}/Movies/happr';
-    await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${timestamp()}.mp4';
+    // final Directory extDir = await getApplicationDocumentsDirectory();
+    final tempDir = await getTemporaryDirectory();   
+    final String filePath = "happrvideo_${tempDir.path}/${Timestamp.now().nanoseconds}.mp4";
     return filePath;
   }
 

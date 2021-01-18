@@ -403,6 +403,8 @@ PODS:
   - PromisesObjC (1.2.11)
   - shared_preferences (0.0.1):
     - Flutter
+  - sign_in_with_apple (0.0.1):
+    - Flutter
   - tapioca (0.0.1):
     - Flutter
   - Toast (4.0.0)
@@ -439,6 +441,7 @@ DEPENDENCIES:
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - tapioca (from `.symlinks/plugins/tapioca/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
@@ -516,6 +519,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/photo_manager/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  sign_in_with_apple:
+    :path: ".symlinks/plugins/sign_in_with_apple/ios"
   tapioca:
     :path: ".symlinks/plugins/tapioca/ios"
   url_launcher:
@@ -570,6 +575,7 @@ SPEC CHECKSUMS:
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  sign_in_with_apple: 34f3f5456a45fd7ac5fb42905e2ad31dae061b4a
   tapioca: 59e9fc89671d49e2cefe6cd59c3efe678e589e89
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TwitterCore: 8cbc9ad34d91c63a0035ea05bfbfc0d7ca72a28c

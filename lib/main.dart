@@ -120,7 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
       if(loggedIn){
         final username = await PrefManager.getLoginUsername();
         print("USERNAME: $username");
-        loggedInUsernameController.loggedInUserEmail = username;
+        if(username == null){
+          await FirebaseAuth.instance.signOut();
+          context.bloc<AuthCubit>().checkLoggedInUser();
+        }else{
+          loggedInUsernameController.loggedInUserEmail = username;
+        }
+        
       }
     });
 

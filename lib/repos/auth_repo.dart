@@ -47,6 +47,7 @@ class AuthRepo {
   }
 
   bool isUserLoggedIn(){
+    print("CRRENT USER: ${_firebaseAuth.currentUser}");
     return _firebaseAuth.currentUser != null;
   }
 
@@ -247,8 +248,11 @@ class AuthRepo {
 
     final Map<String, String> profile = {
       "email" : appleCredential.email,
-      "name" : appleCredential.givenName ?? "" + appleCredential.familyName ?? "",
+      "name" : "${appleCredential.givenName ?? ""} ${appleCredential.familyName ?? ""}",
     };
+    
+    print("CREDENTIAL STATUS: ${appleCredential.state}");
+    print("APPLE PROFILE: $profile");
 
     await PrefManager.saveLoginType("APPLE");
     await PrefManager.saveLoginUsername(profile["email"]);
