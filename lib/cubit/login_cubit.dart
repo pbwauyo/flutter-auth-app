@@ -78,4 +78,17 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
+  Future<Map<String, String>> startAppleLogin(BuildContext context) async{
+    try{
+      emit(LoginInProgress());
+      final profile = await _authRepo.getProfileFromApple(context);
+      emit(LoginSuccess());
+      emit(LoginInitial());
+      return profile;
+    }catch(error){
+      emit(LoginError(error));
+      return null;
+    }
+  }
+
 }

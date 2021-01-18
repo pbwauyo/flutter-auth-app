@@ -18,6 +18,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:twitter_api/twitter_api.dart';
 
 
@@ -72,6 +73,11 @@ class AuthRepo {
         await GoogleSignIn().signOut();
         await _firebaseAuth.signOut();
         break;
+
+      case "APPLE":
+      // await 
+      await _firebaseAuth.signOut();
+      break;
 
       default:
         await _firebaseAuth.signOut();
@@ -220,6 +226,34 @@ class AuthRepo {
       "name" : profile["name"],
       "email" : profile["email"],
     };
+  }
+
+  Future<Map<String, String>> getProfileFromApple(BuildContext context) async{
+    // To prevent replay attacks with the credential returned from Apple, we
+    // include a nonce in the credential request. When signing in in with
+    // Firebase, the nonce in the id token returned by Apple, is expected to
+    // match the sha256 hash of `rawNonce`.
+    final rawNonce = Methods.generateNonce();
+    final nonce = Methods.sha256ofString(rawNonce);
+
+    // Request credential for the currently signed in Apple account.
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      nonce: nonce,
+    );
+
+    final Map<String, String> profile = {
+      "email" : appleCredential.email,
+      "name" : appleCredential.givenName ?? "" + appleCredential.familyName ?? "",
+    };
+
+    await PrefManager.saveLoginType("APPLE");
+    await PrefManager.saveLoginUsername(profile["email"]);
+
+    return profile;
   }
 
   Future<void> verifyUserPhoneNumber(String phoneNumber, BuildContext context, {bool isLogin=false, bool isUpdate = false}) async{

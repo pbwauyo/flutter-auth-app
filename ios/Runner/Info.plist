@@ -36,6 +36,8 @@
 	<string>245293766898454</string>
 	<key>FacebookDisplayName</key>
 	<string>Happr</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -51,10 +53,16 @@
 	<string>Happr needs to use the camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app requires contacts access to function properly.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location might be required to use some features in the app</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Happr needs to use the Mic</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Happr needs to access your photos</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

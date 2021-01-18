@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:auth_app/getxcontrollers/video_controller.dart';
@@ -7,6 +8,7 @@ import 'package:auth_app/pages/preview_recorded_video.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -51,6 +53,23 @@ class Methods {
 
     List<int> values = new List<int>.generate(32, (i) => rnd.nextInt(256));
      return base64UrlEncode(values).replaceAll(new RegExp('[=/+]'), '');
+  }
+
+  /// Generates a cryptographically secure random nonce, to be included in a
+  /// credential request.
+  static String generateNonce([int length = 32]) {
+    final charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+   static String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   static showCustomSnackbar({@required BuildContext context, 

@@ -13,6 +13,8 @@ import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'dart:io' show Platform;
 
 class LandingPage extends StatelessWidget {
   
@@ -163,11 +165,44 @@ class LandingPage extends StatelessWidget {
                               );
                             } 
                           },
-                          child:ImageContainer(
+                          child: ImageContainer(
                             assetImage: AssetNames.GOOGLE_LOGO_NEW_PNG,
                             size: 42,
                           )
                         ),
+
+                        FutureBuilder<bool>(
+                          future: SignInWithApple.isAvailable(),
+                          builder: (context, snapshot){
+                            if(Platform.isIOS && snapshot.hasData && snapshot.data == true){
+                              return GestureDetector(
+                                onTap: () async{
+                                  try{
+                                    final profile = await _loginCubit.startAppleLogin(context);
+                                    Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
+                                    context.bloc<SignupMethodCubit>().emitEmailSignUp();
+                                  }catch(error){
+                                    print("APPLE LOGIN ERROR: $error");
+                                    Scaffold.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("$error")
+                                      )
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 4),
+                                  child: ImageContainer(
+                                    assetImage: AssetNames.APPLE_LOGO_NEW_PNG,
+                                    size: 42,
+                                  ),
+                                )
+                              );
+                            }
+                            return Container();
+                          }
+                        ),
+
                       ],
                     ),
                   );

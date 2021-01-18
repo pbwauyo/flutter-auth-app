@@ -166,14 +166,21 @@ class _AddMomentDetailsState extends State<AddMomentDetails> {
                     child: GestureDetector(
                       onTap: () async{
                         final cameras = await availableCameras();
-                        final permissionRequestStatus = await Permission.photos.request(); //this will help in showing the gallery images
-                        if(permissionRequestStatus == PermissionStatus.granted){
-                          Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MOMENT_IMAGE_ADD;
-                          Navigations.goToScreen(
-                            context, 
-                            ChangeMomentImage(cameras: cameras),
-                          );
+                        final photoPermission = Permission.photos;
+
+                        if(!await photoPermission.isGranted){
+                          final permissionRequestStatus = await photoPermission.request();  //this will help in showing the gallery images
+                          if(!(permissionRequestStatus == PermissionStatus.granted)){
+                            return;
+                          }
                         }
+
+                        Provider.of<TakePictureTypeProvider>(context, listen: false).takePictureType = MOMENT_IMAGE_ADD;
+                        Navigations.goToScreen(
+                          context, 
+                          ChangeMomentImage(cameras: cameras),
+                        );
+                        
                       },
                       child: Container(
                         padding: const EdgeInsets.all(5),
