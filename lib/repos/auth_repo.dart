@@ -209,13 +209,13 @@ class AuthRepo {
 
    Future<Map<String, String>> getProfileFromFacebook(BuildContext context) async{
     // Trigger the sign-in flow
-    final LoginResult result = await FacebookAuth.instance.login(); 
+    final AccessToken accessToken = await FacebookAuth.instance.login(); 
 
-    if(result.status != 200){
+    if(accessToken == null){
       throw("Failed to Login. Please try again");
     }
 
-    final token = result.accessToken.token;
+    final token = accessToken.token;
     final graphResponse = await http.get(
                 'https://graph.facebook.com/v2.12/me?fields=name,email,id&access_token=$token');
     final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();

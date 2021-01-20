@@ -59,6 +59,8 @@
 	<string>Happr needs to use the Mic</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Happr needs to access your photos</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Happr needs access to edit your photos</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -82,5 +84,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

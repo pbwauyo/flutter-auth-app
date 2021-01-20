@@ -15,10 +15,8 @@ import 'package:path/path.dart' show basename, join;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:photofilters/photofilters.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
-import 'package:image/image.dart' as imageLib;
 
 class ChangeProfilePic extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -77,10 +75,10 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                       onTap: () async{
                         try{
                           await _initialiseControllerFuture;
-                          final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
-                          await _cameraController.takePicture(path);
+                          // final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
+                          final takenPictureFile = await _cameraController.takePicture();
 
-                          final file = File(path);
+                          final file = File(takenPictureFile.path);
                           Navigations.goToScreen(context, PreviewImage(imageFile: file));
 
                         }catch(error){

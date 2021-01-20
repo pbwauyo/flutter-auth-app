@@ -22,8 +22,8 @@ class UserRepo {
     final userId = FirebaseAuth.instance.currentUser.uid;
     final file = File(filePath);
     final storageReference = FirebaseStorage.instance.ref().child("$folderName/$userId/${basename(filePath)}");
-    final uploadTask = storageReference.putFile(file);
-    await uploadTask.onComplete;
+    await storageReference.putFile(file);
+  
     final downloadUrl = await storageReference.getDownloadURL();
     return downloadUrl.toString();
   }

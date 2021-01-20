@@ -93,7 +93,7 @@ class Methods {
     return filePath;
   }
 
-  static Future<String> startVideoRecording(CameraController cameraController, String filePath) async{
+  static Future<void> startVideoRecording(CameraController cameraController) async{
     
     if (!cameraController.value.isInitialized) {
       return null;
@@ -105,20 +105,20 @@ class Methods {
     }
 
     try {
-      await cameraController.startVideoRecording(filePath);
+      await cameraController.startVideoRecording();
     } on CameraException catch (e) {
-      return null;
+      throw ("CAMERA RECORDING EXCEPTION: $e");
     }
-    return filePath;
   }
 
-  static Future<void> stopVideoRecording(CameraController cameraController) async{
+  static Future<String> stopVideoRecording(CameraController cameraController) async{
     if (!cameraController.value.isRecordingVideo) {
       return null;
     }
 
     try {
-      await cameraController.stopVideoRecording();
+      final recordedVideoFile = await cameraController.stopVideoRecording();
+      return recordedVideoFile.path;
     } on CameraException catch (e) {
       return null;
     }

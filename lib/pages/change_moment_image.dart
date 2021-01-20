@@ -29,11 +29,8 @@ import 'package:path/path.dart' show basename, join;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:photofilters/filters/filters.dart';
-import 'package:photofilters/filters/preset_filters.dart';
-import 'package:photofilters/photofilters.dart';
+
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' as imageLib;
 import 'dart:math' as math;
 
 import 'edit_overlay_text.dart';
@@ -53,7 +50,6 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
   Future<void> _initialiseControllerFuture;
   final double _buttonSize = 80;
   final _momentRepo = MomentRepo();
-  final List<Filter> filters = presetFiltersList;
   CameraDescription _currentDescription;
   String _videoPath;
   
@@ -209,12 +205,10 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                                         _videoController.isRecording.value = true;
                                       },
                                       onLongPress: () async{
-                                        String videoPath = await Methods.getVideoPath();
-                                        _videoPath = videoPath;
-                                        Methods.startVideoRecording(_cameraController, videoPath);
+                                        Methods.startVideoRecording(_cameraController);
                                         timer = new Timer.periodic(
                                           Duration(seconds: 1),
-                                          (Timer t) {
+                                          (Timer t) async{
                                             _videoController.percentage.value = newPercentage;
                                             newPercentage += 1;
                                             _videoController.recordedSeconds.value = newPercentage.toInt();
@@ -224,7 +218,8 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                                               newPercentage = 0.0;
                                               timer.cancel();
                                               _videoController.isRecording.value = false;
-                                              Methods.stopVideoRecording(_cameraController);
+                                              final recordedVideoPath = await Methods.stopVideoRecording(_cameraController);
+                                              _videoPath = recordedVideoPath;
                                               _videoController.videoPath.value = _videoPath;
                                               Methods.playVideo(context: context);
                                             }
@@ -234,22 +229,22 @@ class _ChangeMomentImageState extends State<ChangeMomentImage> with TickerProvid
                                           },
                                         );
                                       },
-                                      onLongPressEnd: (details){
+                                      onLongPressEnd: (details) async{
                                         _videoController.isRecording.value = false;
                                         _videoController.percentage.value = 0.0;
                                         newPercentage = 0.0;
                                         timer.cancel();
-                                        Methods.stopVideoRecording(_cameraController);
+                                        final recordedVideoPath = await Methods.stopVideoRecording(_cameraController);
+                                        _videoPath = recordedVideoPath;
                                         _videoController.videoPath.value = _videoPath;
                                         Methods.playVideo(context: context);
                                       },
                                       onTap: () async {
                                         try{
                                           await _initialiseControllerFuture;
-                                          final path = join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
-                                          await _cameraController.takePicture(path);
+                                          final takenPictureFile = await _cameraController.takePicture();
 
-                                          final file = File(path);
+                                          final file = File(takenPictureFile.path);
                                           Navigations.goToScreen(context, PreviewImage(imageFile: file));
                                           
                                         }catch(error){
