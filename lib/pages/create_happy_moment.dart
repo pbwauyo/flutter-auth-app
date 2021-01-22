@@ -42,7 +42,7 @@ class CreateHappyMoment extends StatelessWidget {
                   child: CustomCard(
                     image: AssetNames.CUSTOM_MOMENT, 
                     title: "Custom HappyMoment", 
-                    body: "Lorem ipsum dolor sit amet, conse",
+                    body: "",
                     onTap: (){
                       homeCubit.goToPickCategoryScreen();
                     },
@@ -56,7 +56,7 @@ class CreateHappyMoment extends StatelessWidget {
                   child: CustomCard(
                     image: AssetNames.ONE_CLICK_MOMENT, 
                     title: "1-Click HappyMoment", 
-                    body: "Lorem ipsum dolor sit amet, conse",
+                    body: "",
                     onTap: (){
                       final randomMoment = Constants.randomMoments[randomInt];
                       Provider.of<MomentTypeProvider>(context, listen: false).momentType = MOMENT_TYPE_ONE_CLICK;
@@ -79,7 +79,7 @@ class CreateHappyMoment extends StatelessWidget {
                 child: CustomCard(
                   image: AssetNames.HAPPENING_NOW, 
                   title: "Happening Now", 
-                  body: "Lorem ipsum dolor sit amet, conse",
+                  body: "",
                   onTap: () async{
                     final cameraPermissions = Permission.camera;
                     final photosPermissions = Permission.photos;
@@ -106,7 +106,7 @@ class CreateHappyMoment extends StatelessWidget {
                 child: CustomCard(
                   image: AssetNames.QR_CODE, 
                   title: "Add throughQR Code", 
-                  body: "Lorem ipsum dolor sit amet, conse"
+                  body: ""
                 ),
               ),
             ],

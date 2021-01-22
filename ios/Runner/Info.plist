@@ -47,20 +47,25 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Happr needs to access your Calendar</string>
+	<string>This allows us to be able to add moments to your Calendar when creating your happy moments.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Happr needs to use the camera</string>
+	<string>This allows us to record videos and take photos of your happy moments, memories and your profile picture.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>This app requires contacts access to function properly.</string>
+	<string>This allows us to access your contacts so that you can be able to rate them according to how happy they make you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location might be required to use some features in the app</string>
+	<string>Your location might be required to use some features in the app.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Happr needs to use the Mic</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Happr needs to access your photos</string>
+	<string>This allows us to record videos of your happy moments and memories that have sound.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Happr needs access to edit your photos</string>
+	<string>This allows us to be able to store your newly edited photos of your happy moments and memories.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This allows us to access your photos so that you can choose from them when editing photos of your happy moments and memories</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -84,10 +89,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 </dict>
 </plist>
