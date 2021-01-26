@@ -1,13 +1,10 @@
 import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/getxcontrollers/logged_in_username.dart';
-import 'package:auth_app/pages/email_signup.dart';
 import 'package:auth_app/pages/forgot_password.dart';
 import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/phone_login.dart';
-import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/utils/methods.dart';
-import 'package:auth_app/utils/validators.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/ring.dart';

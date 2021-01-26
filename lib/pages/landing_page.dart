@@ -3,9 +3,11 @@ import 'package:auth_app/cubit/login_cubit.dart';
 import 'package:auth_app/cubit/signup_method_cubit.dart';
 import 'package:auth_app/pages/email_login.dart';
 import 'package:auth_app/pages/email_signup.dart';
+import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/pages/login.dart';
 import 'package:auth_app/repos/auth_repo.dart';
 import 'package:auth_app/utils/constants.dart';
+import 'package:auth_app/widgets/custom_progress_indicator.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/image_container.dart';
 import 'package:auth_app/widgets/ring.dart';
@@ -16,8 +18,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'dart:io' show Platform;
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
   
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+
+  bool _isSocialLoggingIn;
+  final _authRepo = AuthRepo(); 
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isSocialLoggingIn = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final _loginCubit = context.bloc<LoginCubit>();
@@ -46,52 +64,24 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(
-                height: 150,
-              ),
-
               Center(
-                child: FractionallySizedBox(
-                  widthFactor: 0.8,
-                  child: RoundedRaisedButton(
-                    borderRadius: 25,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical:15),
-                    text: "Sign up",
-                    textColor: Colors.black, 
-                    onTap: (){
-                      Navigations.goToScreen(context, EmailSignup(), routeName: "EMAIL_SIGNUP");
-                      context.bloc<SignupMethodCubit>().emitEmailSignUp();
-                    }
-                  ),
-                ),
-              ),
-
-               SizedBox(
-                height: 30,
-              ),
-
-              Center(
-                child: FractionallySizedBox(
-                  widthFactor: 0.8,
-                  child: RoundedRaisedButton(
-                    borderRadius: 25,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    text: "Already have an account? Log in",
-                    textColor: Colors.black, 
-                    bgColor: Colors.white,
-                    borderColor: Colors.black,
-                    onTap: (){
-                      Navigations.goToScreen(context, EmailLogin());
-                    }
+                child: Container(
+                  margin: const EdgeInsets.only(top: 40, bottom: 40),
+                  child: Visibility(
+                    visible: _isSocialLoggingIn,
+                    maintainAnimation: true,
+                    maintainSize: true,
+                    maintainState: true,
+                    child: CustomProgressIndicator()
                   ),
                 ),
               ),
 
               Center(
                 child: Container(
-                  margin: const EdgeInsets.only(top: 30),
+                  margin: const EdgeInsets.only(top: 30, bottom: 15),
                   child: CustomTextView(
-                    text: "Or sign up with your social account.",
+                    text: "Login with your social account.",
                     fontSize: 18,
                     textColor: Colors.black,
                   ),
@@ -107,10 +97,14 @@ class LandingPage extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () async{
+                            setState(() {
+                              _isSocialLoggingIn = true;
+                            });
+
                             try{
                               final profile = await _loginCubit.startFacebookLogin(context);
-                              Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
-                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
+                              await _authRepo.createUserFromSocialAccount(profile: profile, isLogin: true);
+                              Navigations.goToScreen(context, Home(),);
                             }catch(error){
                               print("FACEBOOK LOGIN ERROR: $error");
                               Scaffold.of(context).showSnackBar(
@@ -118,7 +112,11 @@ class LandingPage extends StatelessWidget {
                                   content: Text("$error")
                                 )
                               );
-                            } 
+                              setState(() {
+                                _isSocialLoggingIn = false;
+                              });
+                            }
+                            
                           },
                           child: ImageContainer(
                             assetImage: AssetNames.FACEBOOK_LOGO_NEW_PNG,
@@ -128,10 +126,14 @@ class LandingPage extends StatelessWidget {
 
                         GestureDetector(
                           onTap: () async{
+                            setState(() {
+                              _isSocialLoggingIn = true;
+                            });
+
                             try{
                               final profile = await _loginCubit.startTwitterLogin(context);
-                              Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
-                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
+                              await _authRepo.createUserFromSocialAccount(profile: profile, isLogin: true);
+                              Navigations.goToScreen(context, Home(),);
                             }catch(error){
                               print("TWIITER LOGIN ERROR: $error");
                               Scaffold.of(context).showSnackBar(
@@ -139,7 +141,11 @@ class LandingPage extends StatelessWidget {
                                   content: Text("$error")
                                 )
                               );
-                            }    
+
+                              setState(() {
+                                _isSocialLoggingIn = false;
+                              }); 
+                            }
                           },
                           child: Container(
                             margin: const EdgeInsets.only(left: 15, right: 15),
@@ -152,10 +158,14 @@ class LandingPage extends StatelessWidget {
 
                         GestureDetector(
                           onTap: () async{
+                            setState(() {
+                              _isSocialLoggingIn = true;
+                            }); 
+
                             try{
                               final profile = await _loginCubit.startGoogleLogin(context);
-                              Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
-                              context.bloc<SignupMethodCubit>().emitEmailSignUp();
+                              await _authRepo.createUserFromSocialAccount(profile: profile, isLogin: true);
+                              Navigations.goToScreen(context, Home(),);
                             }catch(error){
                               print("GOOGLE LOGIN ERROR: $error");
                               Scaffold.of(context).showSnackBar(
@@ -163,7 +173,12 @@ class LandingPage extends StatelessWidget {
                                   content: Text("$error")
                                 )
                               );
+
+                              setState(() {
+                                _isSocialLoggingIn = false;
+                              }); 
                             } 
+
                           },
                           child: ImageContainer(
                             assetImage: AssetNames.GOOGLE_LOGO_NEW_PNG,
@@ -177,10 +192,14 @@ class LandingPage extends StatelessWidget {
                             if(Platform.isIOS && snapshot.hasData && snapshot.data == true){
                               return GestureDetector(
                                 onTap: () async{
+                                  setState(() {
+                                    _isSocialLoggingIn = true;
+                                  });
+
                                   try{
                                     final profile = await _loginCubit.startAppleLogin(context);
-                                    Navigations.goToScreen(context, EmailSignup(profile: profile,), routeName: "EMAIL_SIGNUP");
-                                    context.bloc<SignupMethodCubit>().emitEmailSignUp();
+                                    await _authRepo.createUserFromSocialAccount(profile: profile, isLogin: true);
+                                    Navigations.goToScreen(context, Home(),);
                                   }catch(error){
                                     print("APPLE LOGIN ERROR: $error");
                                     Scaffold.of(context).showSnackBar(
@@ -188,7 +207,12 @@ class LandingPage extends StatelessWidget {
                                         content: Text("$error")
                                       )
                                     );
+
+                                    setState(() {
+                                      _isSocialLoggingIn = true;
+                                    }); 
                                   }
+
                                 },
                                 child: Container(
                                   width: 42,
@@ -215,6 +239,55 @@ class LandingPage extends StatelessWidget {
                   );
                 }
               ),
+
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 30, bottom: 15),
+                  child: CustomTextView(
+                    text: "OR",
+                    fontSize: 20,
+                    bold: true,
+                  ),
+                ),
+              ),
+
+              Center(
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: RoundedRaisedButton(
+                    borderRadius: 25,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    text: "Login with Email",
+                    textColor: Colors.black, 
+                    bgColor: Colors.white,
+                    borderColor: Colors.black,
+                    onTap: (){
+                      Navigations.goToScreen(context, EmailLogin());
+                    }
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: 30,
+              ),
+
+              Center(
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: RoundedRaisedButton(
+                    borderRadius: 25,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical:15),
+                    text: "Don't have an account yet? Sign up",
+                    textColor: Colors.black, 
+                    onTap: (){
+                      Navigations.goToScreen(context, EmailSignup(), routeName: "EMAIL_SIGNUP");
+                      context.bloc<SignupMethodCubit>().emitEmailSignUp();
+                    }
+                  ),
+                ),
+              ),
+
             ],
           ),
 

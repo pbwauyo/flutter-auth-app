@@ -94,6 +94,30 @@ class AuthRepo {
     return await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
 
+  Future<void> createUserFromSocialAccount({@required Map<String, String> profile, @required bool isLogin}) async{
+    final doc = await _firestore.collection("users").doc(profile["email"]).get();
+
+    if(isLogin){
+      if(!doc.exists){
+        FirebaseAuth.instance.signOut();
+        throw("No matching profile. Please create account first");
+      }
+    }else{
+      if(!doc.exists){
+        final appUser = AppUser(
+          username: profile["email"],
+          name: profile["name"],
+          photoUrl: profile["photoUrl"]
+        );
+        await _saveUserDetailsToFirestoreV2(appUser: appUser);
+      }
+    }
+
+    await PrefManager.saveLoginUsername(profile["email"]);
+    loggedInUsernameController.loggedInUserEmail = profile["email"];
+    
+  }
+
   //sign up with email and password
   Future<void> signUpWithFirebase(BuildContext context, AppUser appUser, String password) async{
     await _firebaseAuth.createUserWithEmailAndPassword(email: appUser.username, password: password);
@@ -107,9 +131,15 @@ class AuthRepo {
     if(photoPath.trim().length > 0 && !photoPath.trim().startsWith("http")){
       final downloadUrl = await _userRepo.uploadFile(filePath: photoPath, folderName: "profile_images");
       appUser.photoUrl = downloadUrl;
+    }else if(photoPath.trim().startsWith("http")){
+      appUser.photoUrl = photoPath.trim();
     }
     await _firestore.collection("users").doc(appUser.username).set(appUser.toMap());
     Provider.of<FilePathProvider>(context, listen: false).filePath = "";
+  }
+
+  Future<void> _saveUserDetailsToFirestoreV2({@required AppUser appUser}) async{
+    await _firestore.collection("users").doc(appUser.username).set(appUser.toMap());
   }
 
   Future<void> signUpWIthPhone(BuildContext context, {@required String verificationId, @required String smsCode}) async{
@@ -152,14 +182,13 @@ class AuthRepo {
         throw("Google signin cancelled");
       }
 
-      Provider.of<FilePathProvider>(context, listen: false).filePath = googleUser.photoUrl;
-
       final Map<String, String> profile = {
         "email" : googleUser.email,
         "name" : googleUser.displayName,
+        "photoUrl" : googleUser.photoUrl ?? ""
       };
+
       await PrefManager.saveLoginType("GOOGLE");
-      await PrefManager.saveLoginUsername(profile["email"]);
       return profile;
     }catch(error){
       print("GOOGEL SIGNIN ERROR: $error");
@@ -220,13 +249,12 @@ class AuthRepo {
       final decodedResponse = Map<String, dynamic>.from(json.decode(res.body));
 
       await PrefManager.saveLoginType("TWITTER");
-      await PrefManager.saveLoginUsername(decodedResponse["email"]);
       final photoUrl = decodedResponse["profile_image_url_https"].toString().replaceFirst("_normal", "");
-      Provider.of<FilePathProvider>(context, listen: false).filePath = photoUrl;
 
       return {
         "name" : decodedResponse["name"],
         "email" : decodedResponse["email"],
+        "photoUrl" : photoUrl,
       };
     }catch(error){
       print("TWITTER LOGIN ERROR: $error");
@@ -249,12 +277,14 @@ class AuthRepo {
                   'https://graph.facebook.com/v2.12/me?fields=name,email,id&access_token=$token');
       final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();
       await PrefManager.saveLoginType("FACEBOOK");
-      await PrefManager.saveLoginUsername(profile["email"]);
-      Provider.of<FilePathProvider>(context, listen: false).filePath = "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token";
+      final photoUrl = "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token";
+
+      print("FACEBOOK PROFILE: $profile");
       
       return {
         "name" : profile["name"],
         "email" : profile["email"],
+        "photoUrl" : photoUrl,
       };
     }catch(error){
       print("FACEBOOK LOGIN ERROR: $error");
@@ -282,13 +312,13 @@ class AuthRepo {
     final Map<String, String> profile = {
       "email" : appleCredential.email,
       "name" : "${appleCredential.givenName ?? ""} ${appleCredential.familyName ?? ""}",
+      "photoUrl" : "",
     };
     
     print("CREDENTIAL STATUS: ${appleCredential.state}");
     print("APPLE PROFILE: $profile");
 
     await PrefManager.saveLoginType("APPLE");
-    await PrefManager.saveLoginUsername(profile["email"]);
 
     return profile;
   }

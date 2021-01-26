@@ -21,7 +21,7 @@ class LoginCubit extends Cubit<LoginState> {
       return _authRepo.getCurrentUserDetails();
     }catch(error){
       emit(LoginError(error));
-      return null;
+      throw(error);
     }
   }
 
@@ -35,7 +35,7 @@ class LoginCubit extends Cubit<LoginState> {
       return _authRepo.getCurrentUserDetails();
     }catch(error){
       emit(LoginError(error));
-      return null;
+      throw(error);
     }
   }
 
@@ -48,7 +48,7 @@ class LoginCubit extends Cubit<LoginState> {
       return profile;
     }catch(error){
       emit(LoginError(error));
-      return null;
+      throw(error);
     }
   }
 
@@ -61,7 +61,7 @@ class LoginCubit extends Cubit<LoginState> {
       return profile;
     }catch(error){
       emit(LoginError(error));
-      return null;
+      throw(error);
     }
   }
 
@@ -74,7 +74,7 @@ class LoginCubit extends Cubit<LoginState> {
       return profile;
     }catch(error){
       emit(LoginError(error));
-      return null;
+      throw(error);
     }
   }
 
@@ -87,7 +87,7 @@ class LoginCubit extends Cubit<LoginState> {
       return profile;
     }catch(error){
       emit(LoginError(error));
-      return null;
+      throw(error);
     }
   }
 
