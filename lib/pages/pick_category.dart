@@ -49,12 +49,14 @@ class _PickCategoryState extends State<PickCategory> {
     return Column(
       children: [
 
-        Container(
-          margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-          child: CustomTextView(
-            text: "Pick a category or ask happr for assistance.",
-            textAlign: TextAlign.center,
-            fontSize: 20,
+        Center(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+            child: CustomTextView(
+              text: "Pick a category or ask happr for assistance.",
+              textAlign: TextAlign.center,
+              fontSize: 20,
+            ),
           ),
         ),
 

@@ -144,89 +144,122 @@ class AuthRepo {
 
   Future<Map<String, String>> getProfileFromGoogle(BuildContext context) async{
 
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn()
-    .catchError((error){
-      print('GOOGLE SIGN IN ERROR');
-      throw("Failed to Login. Please try again");
-    });
+    try{
+      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+      
+      if(googleUser == null){
+        print("GOOGLE USER NULL");
+        throw("Google signin cancelled");
+      }
 
-    Provider.of<FilePathProvider>(context, listen: false).filePath = googleUser.photoUrl;
+      Provider.of<FilePathProvider>(context, listen: false).filePath = googleUser.photoUrl;
 
-    final Map<String, String> profile = {
-      "email" : googleUser.email,
-      "name" : googleUser.displayName,
-    };
-    await PrefManager.saveLoginType("GOOGLE");
-    await PrefManager.saveLoginUsername(profile["email"]);
-    return profile;
+      final Map<String, String> profile = {
+        "email" : googleUser.email,
+        "name" : googleUser.displayName,
+      };
+      await PrefManager.saveLoginType("GOOGLE");
+      await PrefManager.saveLoginUsername(profile["email"]);
+      return profile;
+    }catch(error){
+      print("GOOGEL SIGNIN ERROR: $error");
+      throw("Error while signing in with Google");
+    }
+    
   }
 
   Future<Map<String, String>> getProfileFromTwitter(BuildContext context) async{
-    // Trigger the sign-in flow
-    final TwitterLoginResult loginResult = await _twitterLogin.authorize();
 
-    if(loginResult.status == TwitterLoginStatus.error){
-      throw("Failed to Login. Please try again");
+    try{
+      // Trigger the sign-in flow
+      print("Before Twitter Login");
+      final TwitterLoginResult loginResult = await _twitterLogin.authorize();
+      print("After Twitter Login");
+
+      if(loginResult.status == TwitterLoginStatus.error){
+        throw("Failed to Login. Please try again");
+      }
+
+      switch (loginResult.status) {
+        case TwitterLoginStatus.loggedIn:
+          print("Twitter logged in succesfully");
+          break;
+        case TwitterLoginStatus.cancelledByUser:
+          throw("Twitter login cancelled");
+          break;
+        case TwitterLoginStatus.error:
+          throw("Failed to Login. Please try again");
+          break;
+      }
+
+      // Get the Logged In session
+      final TwitterSession twitterSession = loginResult.session;
+
+      final _twitterOauth = twitterApi(
+        consumerKey: "a8VunpkaJEI8h6lkHt2fudB3c",
+        consumerSecret: "jLQ9qnm5ViNu7x03wMbsqt19qurrlGk2sWxNa7p62JGNWnqEl5",
+        token: twitterSession.token,
+        tokenSecret: twitterSession.secret
+      );
+
+      Future twitterRequest = _twitterOauth.getTwitterRequest(
+        // Http Method
+        "GET", 
+        // Endpoint you are trying to reach
+        "account/verify_credentials.json", 
+        // The options for the request
+        options: {
+          "include_email": "true",
+          "skip_status" : "true"
+        },
+      );
+
+      // Wait for the future to finish
+      var res = await twitterRequest;
+      
+      final decodedResponse = Map<String, dynamic>.from(json.decode(res.body));
+
+      await PrefManager.saveLoginType("TWITTER");
+      await PrefManager.saveLoginUsername(decodedResponse["email"]);
+      final photoUrl = decodedResponse["profile_image_url_https"].toString().replaceFirst("_normal", "");
+      Provider.of<FilePathProvider>(context, listen: false).filePath = photoUrl;
+
+      return {
+        "name" : decodedResponse["name"],
+        "email" : decodedResponse["email"],
+      };
+    }catch(error){
+      print("TWITTER LOGIN ERROR: $error");
+      throw("Error while logging in with Twitter");
     }
-
-    // Get the Logged In session
-    final TwitterSession twitterSession = loginResult.session;
-
-    final _twitterOauth = new twitterApi(
-      consumerKey: "a8VunpkaJEI8h6lkHt2fudB3c",
-      consumerSecret: "jLQ9qnm5ViNu7x03wMbsqt19qurrlGk2sWxNa7p62JGNWnqEl5",
-      token: twitterSession.token,
-      tokenSecret: twitterSession.secret
-    );
-
-    Future twitterRequest = _twitterOauth.getTwitterRequest(
-      // Http Method
-      "GET", 
-      // Endpoint you are trying to reach
-      "account/verify_credentials.json", 
-      // The options for the request
-      options: {
-        "include_email": "true",
-        "skip_status" : "true"
-      },
-    );
-
-    // Wait for the future to finish
-    var res = await twitterRequest;
-    
-    final decodedResponse = Map<String, dynamic>.from(json.decode(res.body));
-
-    await PrefManager.saveLoginType("TWITTER");
-    await PrefManager.saveLoginUsername(decodedResponse["email"]);
-    final photoUrl = decodedResponse["profile_image_url_https"].toString().replaceFirst("_normal", "");
-    Provider.of<FilePathProvider>(context, listen: false).filePath = photoUrl;
-
-    return {
-      "name" : decodedResponse["name"],
-      "email" : decodedResponse["email"],
-    };
   }
 
    Future<Map<String, String>> getProfileFromFacebook(BuildContext context) async{
-    // Trigger the sign-in flow
-    final AccessToken accessToken = await FacebookAuth.instance.login(); 
 
-    if(accessToken == null){
-      throw("Failed to Login. Please try again");
+    try{ 
+      // Trigger the sign-in flow
+      final AccessToken accessToken = await FacebookAuth.instance.login(); 
+
+      if(accessToken == null){
+        throw("Failed to Login. Please try again");
+      }
+
+      final token = accessToken.token;
+      final graphResponse = await http.get(
+                  'https://graph.facebook.com/v2.12/me?fields=name,email,id&access_token=$token');
+      final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();
+      await PrefManager.saveLoginType("FACEBOOK");
+      await PrefManager.saveLoginUsername(profile["email"]);
+      Provider.of<FilePathProvider>(context, listen: false).filePath = "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token";
+      
+      return {
+        "name" : profile["name"],
+        "email" : profile["email"],
+      };
+    }catch(error){
+      print("FACEBOOK LOGIN ERROR: $error");
+      throw("Error while logging in with Facebook");
     }
-
-    final token = accessToken.token;
-    final graphResponse = await http.get(
-                'https://graph.facebook.com/v2.12/me?fields=name,email,id&access_token=$token');
-    final profile = Map<String, dynamic>.from(json.decode(graphResponse.body)).cast<String, String>();
-    await PrefManager.saveLoginType("FACEBOOK");
-    await PrefManager.saveLoginUsername(profile["email"]);
-    Provider.of<FilePathProvider>(context, listen: false).filePath = "https://graph.facebook.com/${profile["id"]}/picture?access_token=$token";
-    
-    return {
-      "name" : profile["name"],
-      "email" : profile["email"],
-    };
   }
 
   Future<Map<String, String>> getProfileFromApple(BuildContext context) async{

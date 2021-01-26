@@ -25,10 +25,16 @@ class CreateHappyMoment extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeCubit = context.bloc<HomeCubit>();
     final randomInt = Random().nextInt(Constants.randomMoments.length);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = screenWidth * 0.4;
+    final imageWidth = cardWidth * 0.6;
+    final fontSize = cardWidth * 0.06;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             margin: const EdgeInsets.only(bottom: 8),
@@ -36,13 +42,16 @@ class CreateHappyMoment extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 150,
-                  height: 220,
+                  width: cardWidth,
+                  height: cardWidth + 70,
                   margin: const EdgeInsets.only(right: 5),
                   child: CustomCard(
                     image: AssetNames.CUSTOM_MOMENT, 
                     title: "Custom HappyMoment", 
                     body: "",
+                    imageWidth: imageWidth,
+                    imageHeight: imageWidth - 20,
+                    fontSize: fontSize,
                     onTap: (){
                       homeCubit.goToPickCategoryScreen();
                     },
@@ -50,13 +59,16 @@ class CreateHappyMoment extends StatelessWidget {
                 ),
 
                 Container(
-                  width: 150,
-                  height: 220,
+                  width: cardWidth,
+                  height: cardWidth + 70,
                   margin: const EdgeInsets.only(left: 5),
                   child: CustomCard(
                     image: AssetNames.ONE_CLICK_MOMENT, 
                     title: "1-Click HappyMoment", 
                     body: "",
+                    imageWidth: imageWidth,
+                    imageHeight: imageWidth - 20,
+                    fontSize: fontSize,
                     onTap: (){
                       final randomMoment = Constants.randomMoments[randomInt];
                       Provider.of<MomentTypeProvider>(context, listen: false).momentType = MOMENT_TYPE_ONE_CLICK;
@@ -73,13 +85,16 @@ class CreateHappyMoment extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 150,
-                height: 220,
+                width: cardWidth,
+                height: cardWidth + 70,
                 margin: const EdgeInsets.only(right: 5),
                 child: CustomCard(
                   image: AssetNames.HAPPENING_NOW, 
                   title: "Happening Now", 
                   body: "",
+                  fontSize: fontSize,
+                  imageWidth: imageWidth,
+                  imageHeight: imageWidth - 20,
                   onTap: () async{
                     final cameraPermissions = Permission.camera;
                     final photosPermissions = Permission.photos;
@@ -100,13 +115,16 @@ class CreateHappyMoment extends StatelessWidget {
               ),
 
               Container(
-                width: 150,
-                height: 220,
+                width: cardWidth,
+                height: cardWidth + 70,
                 margin: const EdgeInsets.only(left: 5),
                 child: CustomCard(
                   image: AssetNames.QR_CODE, 
                   title: "Add throughQR Code", 
-                  body: ""
+                  body: "",
+                  fontSize: fontSize,
+                  imageWidth: imageWidth,
+                  imageHeight: imageWidth - 20,
                 ),
               ),
             ],

@@ -8,8 +8,12 @@ class CustomCard extends StatelessWidget {
   final String title;
   final String body;
   final VoidCallback onTap;
+  final double imageHeight;
+  final double imageWidth;
+  final double fontSize;
 
-  CustomCard({@required this.image, @required this.title, @required this.body, this.onTap});
+  CustomCard({@required this.image, @required this.title, @required this.body, 
+  this.onTap, this.imageHeight = 100, this.imageWidth = 80, this.fontSize = 14});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +33,8 @@ class CustomCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SvgPicture.asset(image,
-                  height: 100,
-                  width: 80,
+                  height: imageHeight,
+                  width: imageWidth,
                   fit: BoxFit.cover,
                 ),
 
@@ -39,6 +43,7 @@ class CustomCard extends StatelessWidget {
                   child: CustomTextView(
                     textAlign: TextAlign.center,
                     text: title,
+                    fontSize: fontSize,
                     bold: true,
                   ),
                 ),
