@@ -214,6 +214,15 @@ class _MomentWidgetState extends State<MomentWidget> {
                               showModalBottomSheet(
                                 context: context, 
                                 builder: (context){
+                                  if(widget.moment.attendees.length <= 0){
+                                    return Center(
+                                      child: CustomTextView(
+                                        text: "No Happr contacts yet",
+                                        fontSize: 18, 
+                                      ),
+                                    );
+                                  }
+
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,

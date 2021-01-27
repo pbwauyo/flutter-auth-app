@@ -72,7 +72,7 @@ class CalendarPermission extends StatelessWidget {
                           onTap: () async{
                             final calendarPermissionStatus = await Permission.calendar.request(); 
                             if(calendarPermissionStatus.isGranted){
-                              Navigations.goToScreen(context, LocationPermission());
+                              Navigations.goToScreen(context, Home());
                             }
                             
                           }
@@ -82,7 +82,7 @@ class CalendarPermission extends StatelessWidget {
 
                     GestureDetector(
                       onTap: (){
-                        Navigations.goToScreen(context, LocationPermission());
+                        Navigations.goToScreen(context, Home());
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: 15),

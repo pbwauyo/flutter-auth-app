@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class LocationPermission extends StatelessWidget {
+class LocationPermission extends StatelessWidget { //suspended for now
   @override
   Widget build(BuildContext context) {
     return Scaffold(
