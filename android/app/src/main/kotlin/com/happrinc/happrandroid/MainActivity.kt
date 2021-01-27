@@ -1,4 +1,4 @@
-package com.example.auth_app
+package com.happrinc.happrandroid
 
 import io.flutter.embedding.android.FlutterActivity
 

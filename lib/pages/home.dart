@@ -22,6 +22,7 @@ import 'package:auth_app/widgets/moment_widget.dart';
 import 'package:auth_app/widgets/ring.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -203,11 +204,48 @@ class Home extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            child: SvgPicture.asset(
-                              AssetNames.BELL_SVG, 
-                              width: 32, 
-                              height: 32,
+                          GestureDetector(
+                            onTap: (){
+                              showCupertinoDialog(
+                                context: context, 
+                                builder: (context){
+                                  return CupertinoAlertDialog(
+                                    title: CustomTextView(
+                                      text: "No notifications currently",
+                                      bold: true,
+                                      fontSize: 16,
+                                    ),
+                                    content: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CustomTextView(
+                                          text: "New notifications will appear here",
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      CupertinoDialogAction(
+                                        child: CustomTextView(
+                                          text: "Ok",
+                                          textColor: AppColors.PRIMARY_COLOR
+                                        ),
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                  );
+                                }
+                              );
+                            },
+                            child: Container(
+                              child: SvgPicture.asset(
+                                AssetNames.BELL_SVG, 
+                                width: 32, 
+                                height: 32,
+                              ),
                             ),
                           ),
 
