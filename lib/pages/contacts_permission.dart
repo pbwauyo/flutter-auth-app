@@ -1,6 +1,7 @@
 import 'package:auth_app/pages/calendar_permission.dart';
 import 'package:auth_app/pages/contacts_list.dart';
 import 'package:auth_app/pages/home.dart';
+import 'package:auth_app/pages/interests_v2.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/ring.dart';
@@ -71,6 +72,8 @@ class ContactsPermission extends StatelessWidget {
                         final contactsPermissionStatus = await Permission.contacts.request(); 
                         if(contactsPermissionStatus.isGranted){
                           Navigations.goToScreen(context, ContactsList());
+                        }else{
+                          Navigations.goToScreen(context, InterestsV2());
                         }
                         
                       }

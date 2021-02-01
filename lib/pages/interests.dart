@@ -4,6 +4,7 @@ import 'package:auth_app/getxcontrollers/interests_search_controller.dart';
 import 'package:auth_app/getxcontrollers/selected_interests_controller.dart';
 import 'package:auth_app/models/happr_contact.dart';
 import 'package:auth_app/pages/calendar_permission.dart';
+import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/contact_rating_widget.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
@@ -189,7 +190,7 @@ class _InterestsState extends State<Interests> {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     text: "Next", 
                     onTap: () async{
-                      Navigations.goToScreen(context, CalendarPermission());
+                      Navigations.goToScreen(context, Home());
                     }
                   ),
                 ),

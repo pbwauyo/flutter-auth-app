@@ -9,8 +9,10 @@ import 'package:auth_app/widgets/custom_text_view.dart';
 import 'package:auth_app/widgets/rounded_raised_button.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TestInvitationLogin extends StatelessWidget {
   final invitationCodeController = TextEditingController();
@@ -185,12 +187,26 @@ class TestInvitationLogin extends StatelessWidget {
                               children: [
                                 TextSpan(
                                   text: "Terms of Service",
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async{
+                                      final url = "https://www.joinhappr.com/terms_conditions.html";
+                                      if(await canLaunch(url)){
+                                        await launch(url);
+                                      }
+                                    },
                                 ),
                                 TextSpan(text: " and "),
                                 TextSpan(
                                   text: "Privacy Policy",
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async{
+                                      final url = "https://www.happr.io/privacy-policy/";
+                                      if(await canLaunch(url)){
+                                        await launch(url);
+                                      }
+                                    },
                                 ),
                               ]
                             )

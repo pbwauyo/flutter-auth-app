@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auth_app/getxcontrollers/categories_controller.dart';
 import 'package:auth_app/getxcontrollers/interests_search_controller.dart';
 import 'package:auth_app/models/category.dart';
+import 'package:auth_app/pages/home.dart';
 import 'package:auth_app/utils/constants.dart';
 import 'package:auth_app/widgets/category_widget.dart';
 import 'package:auth_app/widgets/custom_input_field.dart';
@@ -213,7 +214,7 @@ class _InterestsV2State extends State<InterestsV2> {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 text: "Next", 
                 onTap: () async{
-                  Navigations.goToScreen(context, CalendarPermission());
+                  Navigations.goToScreen(context, Home());
                 }
               ),
             ),
